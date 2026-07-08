@@ -1,0 +1,94 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+
+datasource db {
+  provider = "postgresql"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+
+model users {
+  id            String          @id @default(uuid()) @db.Uuid
+  name          String          @db.VarChar(150)
+  email         String          @unique @db.VarChar(150)
+  password_hash String          @db.VarChar(255)
+  role          String          @default("user") @db.VarChar(20)
+  created_at    DateTime?       @default(now()) @db.Timestamp(6)
+  
+  bookings      bookings[]
+  notifications notifications[]
+  ai_chat_logs  ai_chat_logs[]
+}
+
+model resources {
+  id        String      @id @default(uuid()) @db.Uuid
+  name      String      @db.VarChar(150)
+  type      String?     @db.VarChar(50)
+  location  String?     @db.VarChar(150)
+  capacity  Int?
+  
+  schedules schedules[]
+}
+
+model schedules {
+  id          String     @id @default(uuid()) @db.Uuid
+  resource_id String?    @db.Uuid
+  start_time  DateTime   @db.Timestamp(6)
+  end_time    DateTime   @db.Timestamp(6)
+  status      String?    @default("available") @db.VarChar(20)
+  
+  resources   resources? @relation(fields: [resource_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  bookings    bookings[]
+}
+
+model bookings {
+  id            String          @id @default(uuid()) @db.Uuid
+  user_id       String?         @db.Uuid
+  schedule_id   String?         @db.Uuid
+  status        String?         @default("pending") @db.VarChar(20)
+  notes         String?         @db.Text
+  created_at    DateTime?       @default(now()) @db.Timestamp(6)
+  
+  users         users?          @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  schedules     schedules?      @relation(fields: [schedule_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  notifications notifications[]
+  reviews       reviews?
+}
+
+model notifications {
+  id         String    @id @default(uuid()) @db.Uuid
+  user_id    String?   @db.Uuid
+  booking_id String?   @db.Uuid
+  type       String?   @db.VarChar(30)
+  message    String?   @db.Text
+  is_read    Boolean?  @default(false)
+  created_at DateTime? @default(now()) @db.Timestamp(6)
+  
+  bookings   bookings? @relation(fields: [booking_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users      users?    @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model ai_chat_logs {
+  id         String    @id @default(uuid()) @db.Uuid
+  user_id    String?   @db.Uuid
+  message    String?   @db.Text
+  response   String?   @db.Text
+  created_at DateTime? @default(now()) @db.Timestamp(6)
+  
+  users      users?    @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model reviews {
+  id         String    @id @default(uuid()) @db.Uuid
+  booking_id String?   @unique @db.Uuid
+  rating     Int?      // Catatan: Validasi check 1-5 dihandle di NestJS DTO nanti
+  comment    String?   @db.Text
+  
+  bookings   bookings? @relation(fields: [booking_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
