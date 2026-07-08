@@ -1,6 +1,6 @@
 ### Variabel Global
 @baseUrl = http://localhost:3000
-@userId = 1555e33b-cd3d-4953-a8be-17d872df3b61 
+@userId = 624e5dee-7957-4a87-8c77-c0f88cc29aa7 
 # (Ganti @userId di atas dengan ID asli yang didapat setelah POST user)
 
 ### 1. Buat User Baru (POST)
@@ -31,3 +31,13 @@ Content-Type: application/json
 
 ### 5. Hapus User (DELETE)
 DELETE {{baseUrl}}/user/{{userId}}
+
+
+### 6. Login User (Buat Dapet Token JWT)
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "budi@ngotelin.com",
+  "password": "12345678"
+}
