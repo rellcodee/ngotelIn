@@ -1,0 +1,33 @@
+### Variabel Global
+@baseUrl = http://localhost:3000
+@userId = 1555e33b-cd3d-4953-a8be-17d872df3b61 
+# (Ganti @userId di atas dengan ID asli yang didapat setelah POST user)
+
+### 1. Buat User Baru (POST)
+POST {{baseUrl}}/user
+Content-Type: application/json
+
+{
+  "name": "Budi Santoso",
+  "email": "budi@ngotelin.com",
+  "password": "12345678",
+  "role": "user"
+}
+
+### 2. Dapatkan Semua User (GET)
+GET {{baseUrl}}/user
+
+### 3. Dapatkan Detail User berdasarkan ID (GET)
+GET {{baseUrl}}/user/{{userId}}
+
+### 4. Update Data User (PATCH)
+PATCH {{baseUrl}}/user/{{userId}}
+Content-Type: application/json
+
+{
+  "name": "Budi Santoso Edit",
+  "role": "admin"
+}
+
+### 5. Hapus User (DELETE)
+DELETE {{baseUrl}}/user/{{userId}}

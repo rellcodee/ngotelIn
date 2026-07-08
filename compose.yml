@@ -5,27 +5,31 @@ services:
     image: postgres:15-alpine
     container_name: ngotelin_postgres_container
     restart: always
+    env_file:
+      - .env
     environment:
-      POSTGRES_USER: admin_ngotel
-      POSTGRES_PASSWORD: ngotelin123
-      POSTGRES_DB: ngotelin_db
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
     ports:
-      - "5432:5432"
+      - "${POSTGRES_PORT}:5432" # Port diambil dari .env (di laptop gue konflik)
     volumes:
       - ngotelin_postgres_data:/var/lib/postgresql/data
 
-  # 4. GUI Database (PgAdmin)
+  # GUI Database (PgAdmin)gw
   ngotelin_pgadmin:
     image: dpage/pgadmin4
     container_name: ngotelin_pgadmin_container
     restart: always
+    env_file:
+      - .env
     environment:
-      PGADMIN_DEFAULT_EMAIL: admin@ngotelin.com
-      PGADMIN_DEFAULT_PASSWORD: admin123
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
     ports:
-      - "8080:80" # change if conflict port with other app
+      - "${PGADMIN_PORT}:80"
     depends_on:
-      - ngotelin_db # Same With DB Service Name
+      - ngotelin_db
 
 # Management Volume Data
 volumes:
