@@ -1,39 +1,12 @@
-### Variabel Global
 @baseUrl = http://localhost:3000
-@userId = 624e5dee-7957-4a87-8c77-c0f88cc29aa7 
-# (Ganti @userId di atas dengan ID asli yang didapat setelah POST user)
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImJ1ZGlAbmdvdGVsaW4uY29tIiwic3ViIjoiYjRmNWE0NGMtN2RhMy00MzA0LTkzOGItZjEzOTg3NTU2MjQ5Iiwicm9sZSI6InVzZXIiLCJpYXQiOjE3ODM3ODkyNDIsImV4cCI6MTc4Mzg3NTY0Mn0.cjnkSi1xnMVUBqa2IO7-3VT-_qlGPx25c5AxYkYQBs8
+@userId = 38eec7c0-2ec1-46ce-8b1c-a768cd124615
 
-### 1. Buat User Baru (POST)
-POST {{baseUrl}}/user
-Content-Type: application/json
+### =========================================
+### 1. AUTHENTICATION
+### =========================================
 
-{
-  "name": "Budi Santoso",
-  "email": "budi@ngotelin.com",
-  "password": "12345678",
-  "role": "user"
-}
-
-### 2. Dapatkan Semua User (GET)
-GET {{baseUrl}}/user
-
-### 3. Dapatkan Detail User berdasarkan ID (GET)
-GET {{baseUrl}}/user/{{userId}}
-
-### 4. Update Data User (PATCH)
-PATCH {{baseUrl}}/user/{{userId}}
-Content-Type: application/json
-
-{
-  "name": "Budi Santoso Edit",
-  "role": "admin"
-}
-
-### 5. Hapus User (DELETE)
-DELETE {{baseUrl}}/user/{{userId}}
-
-
-### 6. Login User (Buat Dapet Token JWT)
+# Login (Pastikan email dan password sesuai database)
 POST {{baseUrl}}/auth/login
 Content-Type: application/json
 
@@ -41,3 +14,161 @@ Content-Type: application/json
   "email": "budi@ngotelin.com",
   "password": "12345678"
 }
+
+### =========================================
+### 2. USERS
+### =========================================
+
+# Get All Users
+GET {{baseUrl}}/user
+# Authorization: Bearer {{token}}
+
+###
+# Get Single User by ID
+GET {{baseUrl}}/user/{{userId}}
+
+###
+# Create New User
+POST {{baseUrl}}/user
+Content-Type: application/json
+
+{
+  "name": "John Doe",
+  "email": "john@example.com",
+  "password": "password123",
+  "role": "user"
+}
+
+###
+# Update User
+PATCH {{baseUrl}}/user/{{userId}}
+Content-Type: application/json
+
+{
+  "name": "John Doe Updated"
+}
+
+###
+# Delete User
+DELETE {{baseUrl}}/user/{{userId}}
+
+### =========================================
+### 3. RESOURCES (Fasilitas / Kamar)
+### =========================================
+
+@resourceId = 7b9cdd95-0ef0-4a2b-bdc5-5a7c1e42113f
+@resourceIdVVIP = b29d1239-d475-4b7b-b1ae-c7ebb8e5e592
+
+### Create Resource (Bikin Kamar Baru)
+POST {{baseUrl}}/resources
+Content-Type: application/json
+
+{
+  "name": "Kamar VIP A",
+  "type": "vvip",
+  "location": "Lantai 2",
+  "capacity": 2
+}
+
+### Resource Update
+PATCH {{baseUrl}}/resources/{{resourceId}}
+Content-Type: application/json
+
+{
+  "name": "Kamar Standard B"
+}
+
+### Resource Delete
+DELETE {{baseUrl}}/resources/{{resourceId}}
+
+
+### Get All Resources (Bisa ditambah filter: ?search=kamar&location=lantai1&type=vip)
+GET {{baseUrl}}/resources?search=Kamar%20Standard&location=&type=
+
+### Get Single Resource
+GET {{baseUrl}}/resources/{{resourceId}}
+
+
+### =========================================
+### 4. SCHEDULES (Jadwal)
+### =========================================
+
+###
+# Create Schedule (Buat 1 Jadwal)
+POST {{baseUrl}}/schedule
+Content-Type: application/json
+
+{
+  "resource_id": "{{resourceId}}",
+  "start_time": "2024-06-20T08:00:00Z",
+  "end_time": "2024-06-20T10:00:00Z",
+  "status": "available"
+}
+
+###
+# Create Schedule BATCH (Buat Banyak Jadwal Sekaligus)
+# Catatan: Body-nya berbentuk Array [...]
+POST {{baseUrl}}/schedule/batch
+Content-Type: application/json
+
+[
+  {
+    "resource_id": "{{resourceIdVVIP}}",
+    "start_time": "2024-06-21T08:00:00Z",
+    "end_time": "2024-06-21T10:00:00Z",
+    "status": "available"
+  },
+  {
+    "resource_id": "{{resourceIdVVIP}}",
+    "start_time": "2024-06-22T08:00:00Z",
+    "end_time": "2024-06-22T10:00:00Z",
+    "status": "booked"
+  }
+]
+
+@scheduleId = bda545ef-4771-458c-9198-1c0264b7a92e
+
+### Get All Schedules
+GET {{baseUrl}}/schedule
+
+###
+# Get Schedule Stats (Semua Fasilitas secara Global)
+GET {{baseUrl}}/schedule/stats/summary
+
+###
+# Get Schedule Stats (Spesifik 1 Fasilitas saja)
+GET {{baseUrl}}/schedule/stats/summary?resourceId={{resourceIdVVIP}}
+
+###
+# Create Schedule (Masa Depan - Tahun 2027) untuk ditest di Get Available
+POST {{baseUrl}}/schedule
+Content-Type: application/json
+
+{
+  "resource_id": "{{resourceIdVVIP}}",
+  "start_time": "2027-01-01T08:00:00Z",
+  "end_time": "2027-01-01T10:00:00Z",
+  "status": "available"
+}
+
+
+###
+# Get Available Schedules (Waktu Kosong di Masa Depan untuk 1 Fasilitas)
+GET {{baseUrl}}/schedule/available/{{resourceId}}
+
+###
+# Get Single Schedule by ID
+GET {{baseUrl}}/schedule/{{scheduleId}}
+
+###
+# Update Schedule (Misalnya cuma ubah status jadi booked)
+PATCH {{baseUrl}}/schedule/{{scheduleId}}
+Content-Type: application/json
+
+{
+  "status": "booked"
+}
+
+###
+# Delete Schedule
+DELETE {{baseUrl}}/schedule/{{scheduleId}}
