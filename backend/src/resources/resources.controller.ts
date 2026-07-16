@@ -19,6 +19,14 @@ export class ResourcesController {
     return this.resourcesService.findAll(query);
   }
 
+  @Get('available')
+  async getAvailableRooms(
+    @Query('checkIn') checkIn: string,
+    @Query('checkOut') checkOut: string,
+  ) {
+    return this.resourcesService.findAvailableRooms(checkIn, checkOut);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.resourcesService.findOne(id);
@@ -33,4 +41,6 @@ export class ResourcesController {
   remove(@Param('id') id: string) {
     return this.resourcesService.remove(id);
   }
+
+
 }

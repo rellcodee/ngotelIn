@@ -15,56 +15,72 @@ import { UpdateScheduleDto } from './dto/update-schedule.dto';
 
 @Controller('schedule')
 export class ScheduleController {
-  constructor(private readonly scheduleService: ScheduleService) {}
+  constructor(private readonly scheduleService: ScheduleService) { }
 
-  @Post()
-  create(@Body() createScheduleDto: CreateScheduleDto) {
-    return this.scheduleService.create(createScheduleDto);
-  }
+  // -------------------------------------------------------------
+  // ROUTE STATIS & PENDUKUNG (Harus di atas :id)
+  // -------------------------------------------------------------
 
-  @Get()
-  findAll() {
-    return this.scheduleService.findAll();
-  }
-
-  @Get('available/:resourceId')
-  findAvailable(@Param('resourceId') resourceId: string) {
-    return this.scheduleService.findAvailable(resourceId);
-  }
-
-  // Route untuk Batch Create
+  //Create Schedule (Batch / Banyak Sekaligus)
+  // Menggunakan ParseArrayPipe agar NestJS otomatis memvalidasi isi array DTO
   @Post('batch')
-  createBatch(
-    // ParseArrayPipe memastikan request body berupa Array dari CreateScheduleDto
+  async createBatch(
     @Body(new ParseArrayPipe({ items: CreateScheduleDto }))
     createScheduleDtos: CreateScheduleDto[],
   ) {
     return this.scheduleService.createBatch(createScheduleDtos);
   }
 
-  // Route untuk Statistik
-  @Get('stats/summary')
-  getStats(@Query('resourceId') resourceId?: string) {
-    // Bisa dipanggil dengan GET /schedule/stats/summary
-    // atau GET /schedule/stats/summary?resourceId=123-abc
-    return this.scheduleService.getScheduleStats(resourceId);
+  // Get Schedule Stats (Global atau per Kamar)
+  // Akses: GET /schedules/stats ATAU /schedules/stats?resource_id=xxx
+  @Get('stats')
+  async getStats(@Query('resource_id') resource_id?: string) {
+    return this.scheduleService.getScheduleStats(resource_id);
   }
 
+  // Find Busy Schedules (Fitur Kalender Frontend)
+  // Akses: GET /schedules/busy/id-kamar
+  @Get('busy/:resource_id')
+  async findBusy(@Param('resource_id') resource_id: string) {
+    return this.scheduleService.findBusySchedules(resource_id);
+  }
+
+  // -------------------------------------------------------------
+  // ROUTE STANDAR CRUD & DINAMIS
+  // -------------------------------------------------------------
+
+  // Create Schedule (Single Booking / Maintenance)
+  @Post()
+  async create(@Body() createScheduleDto: CreateScheduleDto) {
+    return this.scheduleService.create(createScheduleDto);
+  }
+
+  // Find All Schedules (Log Global Admin)
+  @Get()
+  async findAll() {
+    return this.scheduleService.findAll();
+  }
+
+  // Find One Schedule (Detail Jadwal)
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.scheduleService.findOne(id); // (Dihapus tanda + nya)
+  async findOne(@Param('id') id: string) {
+    return this.scheduleService.findOne(id);
   }
 
+  // Update Schedule (Reschedule ATAU Cancel)
+  // -> Jalur Reschedule: Kirim start_time / end_time (Memicu cek bentrok)
+  // -> Jalur Cancel: Cuma kirim { "status": "canceled" } (Bypass cek bentrok)
   @Patch(':id')
-  update(
+  async update(
     @Param('id') id: string,
     @Body() updateScheduleDto: UpdateScheduleDto,
   ) {
-    return this.scheduleService.update(id, updateScheduleDto); // (Dihapus tanda + nya)
+    return this.scheduleService.update(id, updateScheduleDto);
   }
 
+  // Remove Schedule (Hapus Permanen)
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.scheduleService.remove(id); // (Dihapus tanda + nya)
+  async remove(@Param('id') id: string) {
+    return this.scheduleService.remove(id);
   }
 }

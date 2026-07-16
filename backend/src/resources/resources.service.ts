@@ -99,4 +99,29 @@ export class ResourcesService {
       }
     }
   }
+
+  async findAvailableRooms(checkIn: string, checkOut: string) {
+    const busySchedules = await this.prisma.schedules.findMany({
+      where: {
+        status: { in: ['booked', 'maintenance'] },
+        start_time: { lt: new Date(checkOut) },
+        end_time: { gt: new Date(checkIn) },
+      },
+      select: {
+        resource_id: true, // ambil id kamar sibuk
+      },
+    });
+
+    const busyResourceIds = busySchedules.map((s) => s.resource_id)
+      .filter((id: string): id is string => id !== null);
+
+    // 2. Tampilkan semua kamar dari tabel Resources yang ID-nya TIDAK ADA di list kamar sibuk
+    return this.prisma.resources.findMany({
+      where: {
+        id: {
+          notIn: busyResourceIds, // KUNCI UTAMA: Tampilkan yang tidak sibuk!
+        },
+      },
+    });
+  }
 }

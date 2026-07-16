@@ -57,7 +57,7 @@ DELETE {{baseUrl}}/user/{{userId}}
 ### =========================================
 
 @resourceId = 3639087e-a5d6-4ca6-8356-6b6bbd9570a5
-@resourceIdVVIP = f3796c4c-016c-4c6b-a2f7-a2cb531e47d9
+@resourceIdVVIP = f3796c4c-016c-4c6b-a2f7-a2cb531e47d9  
 
 ### Create Resource (Bikin Kamar Baru)
 POST {{baseUrl}}/resources
@@ -95,82 +95,70 @@ GET {{baseUrl}}/resources/{{resourceId}}
 ### 4. SCHEDULES (Jadwal)
 ### =========================================
 
-###
+
+@scheduleId = ea040dd5-653b-439a-aa5d-7c26a7fbe632
+
+# NEW SCHEDULE
 # Create Schedule (Buat 1 Jadwal)
+###
 POST {{baseUrl}}/schedule
 Content-Type: application/json
 
 {
   "resource_id": "{{resourceId}}",
-  "start_time": "2024-06-20T08:00:00Z",
-  "end_time": "2024-06-20T10:00:00Z",
-  "status": "available"
+  "start_time": "2026-07-23T12:00:00.000Z",
+  "end_time": "2026-07-23T21:00:00.000Z",
+  "status": "booked"
 }
 
+# Create Batch
 ###
-# Create Schedule BATCH (Buat Banyak Jadwal Sekaligus)
-# Catatan: Body-nya berbentuk Array [...]
 POST {{baseUrl}}/schedule/batch
 Content-Type: application/json
 
 [
   {
     "resource_id": "{{resourceIdVVIP}}",
-    "start_time": "2024-06-21T08:00:00Z",
-    "end_time": "2024-06-21T10:00:00Z",
-   
+    "start_time": "2026-07-21T08:00:00.000Z",
+    "end_time": "2026-07-21T10:00:00.000Z",
+    "status": "maintenance"
   },
   {
     "resource_id": "{{resourceIdVVIP}}",
-    "start_time": "2024-06-22T08:00:00Z",
-    "end_time": "2024-06-22T10:00:00Z",
+    "start_time": "2026-07-21T13:00:00.000Z",
+    "end_time": "2026-07-21T15:00:00.000Z",
     "status": "booked"
   }
 ]
 
-@scheduleId = 9b1267e9-8438-4b2e-b392-7ac1a0e08912
-
-### Get All Schedules
+### Get Find All
 GET {{baseUrl}}/schedule
-
-###
-# Get Schedule Stats (Semua Fasilitas secara Global)
-GET {{baseUrl}}/schedule/stats/summary
-
-###
-# Get Schedule Stats (Spesifik 1 Fasilitas saja)
-GET {{baseUrl}}/schedule/stats/summary?resourceId={{resourceIdVVIP}}
-
-###
-# Create Schedule (Masa Depan - Tahun 2027) untuk ditest di Get Available
-POST {{baseUrl}}/schedule
 Content-Type: application/json
 
-{
-  "resource_id": "{{resourceIdVVIP}}",
-  "start_time": "2027-01-01T08:00:00Z",
-  "end_time": "2027-01-01T10:00:00Z",
-  "status": "available"
-}
-
-
-###
-# Get Available Schedules (Waktu Kosong di Masa Depan untuk 1 Fasilitas)
-GET {{baseUrl}}/schedule/available/{{resourceId}}
-
-###
-# Get Single Schedule by ID
+### Find By Id
 GET {{baseUrl}}/schedule/{{scheduleId}}
+Content-Type: application/json
 
-###
-# Update Schedule (Misalnya cuma ubah status jadi booked)
+### Find Busy Schedule
+GET {{baseUrl}}/schedule/busy/{{resourceId}}
+Content-Type: application/json
+
+### Update Schedule (skenario ubah waktu boking)
 PATCH {{baseUrl}}/schedule/{{scheduleId}}
 Content-Type: application/json
 
 {
-  "status": "booked"
+  "start_time": "2026-07-20T09:00:00.000Z",
+  "end_time": "2026-07-20T13:00:00.000Z"
 }
 
-###
-# Delete Schedule
+### Update Schedule (skenario ubah status jadi canceled, karena available otomtis sesuai tenggat waktu) 
+PATCH {{baseUrl}}/schedule/{{scheduleId}}
+Content-Type: application/json
+
+{
+  "status": "canceled"
+}
+
+### Delete Schedule
 DELETE {{baseUrl}}/schedule/{{scheduleId}}
