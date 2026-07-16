@@ -6,6 +6,7 @@ import { PrismaModule } from './prisma/prisma.module';
 import { AuthModule } from './auth/auth.module';
 import { ResourcesModule } from './resources/resources.module';
 import { ScheduleModule } from './schedule/schedule.module';
+import { RoomImagesModule } from './room_images/room_images.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { ScheduleModule } from './schedule/schedule.module';
     AuthModule,
     ResourcesModule,
     ScheduleModule,
+    RoomImagesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

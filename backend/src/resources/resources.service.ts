@@ -54,12 +54,18 @@ export class ResourcesService {
     // Eksekusi ke database dengan semua filter yang aktif
     return await this.prisma.resources.findMany({
       where: whereCondition,
+      include: {
+        room_images: true,
+      }
     });
   }
 
   async findOne(id: string) {
     const resource = await this.prisma.resources.findUnique({
       where: { id },
+      include: {
+        room_images: true,
+      }
     });
 
     if (!resource) {

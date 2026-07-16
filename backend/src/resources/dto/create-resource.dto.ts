@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsInt, IsString, Min } from "class-validator";
+import { IsNotEmpty, IsInt, IsString, Min, IsArray } from "class-validator";
 
 export class CreateResourceDto {
     @IsString({ message: 'Name must be a string' })
@@ -17,4 +17,13 @@ export class CreateResourceDto {
     @IsNotEmpty({ message: 'Capacity is required' })
     @Min(1, { message: 'Capacity must be at least 1' })
     capacity: number;
+
+    @IsNotEmpty()
+    @IsInt()
+    @Min(100000) // Minimal harga kamar misalnya Rp100.000, gak boleh Rp0
+    price_per_night: number;
+
+    @IsArray()
+    @IsNotEmpty({ each: true })
+    facilities: string[];
 }

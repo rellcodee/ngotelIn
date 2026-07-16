@@ -56,18 +56,20 @@ DELETE {{baseUrl}}/user/{{userId}}
 ### 3. RESOURCES (Fasilitas / Kamar)
 ### =========================================
 
-@resourceId = 7b9cdd95-0ef0-4a2b-bdc5-5a7c1e42113f
-@resourceIdVVIP = b29d1239-d475-4b7b-b1ae-c7ebb8e5e592
+@resourceId = 3639087e-a5d6-4ca6-8356-6b6bbd9570a5
+@resourceIdVVIP = f3796c4c-016c-4c6b-a2f7-a2cb531e47d9
 
 ### Create Resource (Bikin Kamar Baru)
 POST {{baseUrl}}/resources
 Content-Type: application/json
 
 {
-  "name": "Kamar VIP A",
-  "type": "vvip",
-  "location": "Lantai 2",
-  "capacity": 2
+  "name": "deluxe room 101",
+  "type": "deluxe",
+  "location": "Lantai 1",
+  "capacity": 2,
+  "price_per_night": 200000,
+  "facilities": ["TV", "AC"]
 }
 
 ### Resource Update
@@ -83,7 +85,7 @@ DELETE {{baseUrl}}/resources/{{resourceId}}
 
 
 ### Get All Resources (Bisa ditambah filter: ?search=kamar&location=lantai1&type=vip)
-GET {{baseUrl}}/resources?search=Kamar%20Standard&location=&type=
+GET {{baseUrl}}/resources?search=&location=&type=
 
 ### Get Single Resource
 GET {{baseUrl}}/resources/{{resourceId}}
@@ -116,7 +118,7 @@ Content-Type: application/json
     "resource_id": "{{resourceIdVVIP}}",
     "start_time": "2024-06-21T08:00:00Z",
     "end_time": "2024-06-21T10:00:00Z",
-    "status": "available"
+   
   },
   {
     "resource_id": "{{resourceIdVVIP}}",
@@ -126,7 +128,7 @@ Content-Type: application/json
   }
 ]
 
-@scheduleId = bda545ef-4771-458c-9198-1c0264b7a92e
+@scheduleId = 9b1267e9-8438-4b2e-b392-7ac1a0e08912
 
 ### Get All Schedules
 GET {{baseUrl}}/schedule
