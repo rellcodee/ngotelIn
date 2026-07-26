@@ -1,10 +1,9 @@
-import { IsIn, IsOptional, IsString } from 'class-validator';
-
+import { IsOptional, IsString, IsEnum } from 'class-validator';
+import { BookingStatus } from 'src/common/enums';
 export class UpdateBookingDto {
-    @IsString()
     @IsOptional()
-    @IsIn(['pending', 'approved', 'checked_in', 'completed', 'rejected', 'canceled'])
-    status?: string;
+    @IsEnum(BookingStatus, { message: 'Invalid booking status' })
+    status?: BookingStatus;
 
     @IsString()
     @IsOptional()

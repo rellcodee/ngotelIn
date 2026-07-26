@@ -1,5 +1,5 @@
-import { IsUUID, IsNotEmpty, IsDateString, IsOptional, IsString } from 'class-validator';
-
+import { IsUUID, IsNotEmpty, IsDateString, IsOptional, IsString, IsEnum } from 'class-validator';
+import { PaymentMethod } from 'src/common/enums';
 export class CreateBookingDto {
     @IsUUID()
     @IsNotEmpty()
@@ -21,7 +21,6 @@ export class CreateBookingDto {
     @IsOptional()
     notes?: string;
 
-    @IsString()
-    @IsNotEmpty()
-    payment_method: string;
+    @IsEnum(PaymentMethod, { message: 'Invalid payment method' })
+    payment_method: PaymentMethod;
 }

@@ -1,7 +1,9 @@
-import { Injectable, ConflictException, NotFoundException } from '@nestjs/common';
+import { Injectable, ConflictException, NotFoundException, BadRequestException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service'; // Sesuaikan path PrismaService lu
 import { CreateBookingDto } from './dto/create-booking.dto';
 import { UpdateBookingDto } from './dto/update-booking.dto';
+import { ScheduleStatus, BookingStatus, PaymentStatus } from '../common/enums';
+
 
 @Injectable()
 export class BookingsService {
@@ -13,7 +15,7 @@ export class BookingsService {
 
     // Validasi dasar: Jam selesai gak boleh sebelum jam mulai
     if (endTime <= startTime) {
-      throw new ConflictException('Waktu selesai harus lebih lambat dari waktu mulai!');
+      throw new BadRequestException('Waktu selesai harus lebih lambat dari waktu mulai!');
     }
 
     // Jalankan database transaction
@@ -24,7 +26,7 @@ export class BookingsService {
       const overlappingSchedule = await tx.schedules.findFirst({
         where: {
           resource_id: dto.resource_id,
-          status: { not: 'available' },
+          status: { in: [ScheduleStatus.BOOKED, ScheduleStatus.MAINTENANCE] },
           AND: [
             { start_time: { lt: endTime } },
             { end_time: { gt: startTime } },
@@ -39,7 +41,12 @@ export class BookingsService {
       // 2. AMBIL DATA RESOURCE & HITUNG TOTAL HARGA BERDASARKAN MALAM
       const resource = await tx.resources.findUnique({ where: { id: dto.resource_id } });
       if (!resource) {
-        throw new NotFoundException('Resource tidak ditemukan!');
+        throw new NotFoundException('Resource/kamar tidak ditemukan!');
+      }
+
+      const user = await tx.users.findUnique({ where: { id: dto.user_id } });
+      if (!user) {
+        throw new NotFoundException('User tidak ditemukan di database!');
       }
 
       // Ambil tanggalnya saja (tanpa jam) untuk menghitung selisih malam secara akurat
@@ -59,7 +66,7 @@ export class BookingsService {
           resource_id: dto.resource_id,
           start_time: startTime,
           end_time: endTime,
-          status: 'booked', // Dikunci biar orang lain gak bisa nyelonong booking jam yang sama
+          status: ScheduleStatus.BOOKED, // Dikunci biar orang lain gak bisa nyelonong booking jam yang sama
         },
       });
 
@@ -68,7 +75,7 @@ export class BookingsService {
         data: {
           user_id: dto.user_id,
           schedule_id: newSchedule.id, // Hubungkan dengan schedule_id yang baru dibuat di atas
-          status: 'pending',
+          status: BookingStatus.PENDING,
           notes: dto.notes,
           total_price: totalPrice,
         },
@@ -80,7 +87,7 @@ export class BookingsService {
           booking_id: newBooking.id, // Hubungkan ke booking yang barusan kelar dibuat
           amount: totalPrice,
           payment_method: dto.payment_method,
-          status: 'pending',
+          status: PaymentStatus.PENDING,
         },
       });
 
@@ -110,37 +117,37 @@ export class BookingsService {
       }
 
       // 3. Validasi: Kalau sudah dicancel, jangan diperbolehkan cancel lagi
-      if (booking.status === 'canceled') {
+      if (booking.status === BookingStatus.CANCELED) {
         throw new ConflictException('Booking ini sudah dibatalkan sebelumnya!');
       }
 
       // 4. Validasi Operasional (Opsional tapi penting): 
       // Jika tamu sudah terlanjur check-in atau selesai, tidak boleh dicancel sepihak
-      if (booking.status === 'checked_in' || booking.status === 'completed') {
+      if (booking.status === BookingStatus.CHECKED_IN || booking.status === BookingStatus.COMPLETED) {
         throw new ConflictException('Tidak bisa membatalkan booking yang sedang berjalan atau sudah selesai!');
       }
 
       // 5. UPDATE status di tabel bookings menjadi "canceled"
       const updatedBooking = await tx.bookings.update({
         where: { id: bookingId },
-        data: { status: 'canceled' },
+        data: { status: BookingStatus.CANCELED },
       });
 
-      // 6. UPDATE status di tabel schedules menjadi "available"
+      // 6. UPDATE status di tabel schedules menjadi "canceled"
       // Ini krusial! Biar query checkOverlap mendeteksi kalau kamar ini sudah BEBAS ditabrak lagi
       if (booking.schedule_id) {
         await tx.schedules.update({
           where: { id: booking.schedule_id },
-          data: { status: 'available' },
+          data: { status: ScheduleStatus.CANCELED },
         });
       }
 
       // 7. UPDATE status di tabel payments menjadi "canceled" atau "expire"
       // Kita cuma cancel payment yang statusnya masih belum dibayar (pending)
-      if (booking.payment && booking.payment.status === 'pending') {
+      if (booking.payment && booking.payment.status === PaymentStatus.PENDING) {
         await tx.payments.update({
-          where: { booking_id: bookingId },
-          data: { status: 'canceled' },
+          where: { id: booking.payment.id },
+          data: { status: PaymentStatus.CANCELED },
         });
       }
 
@@ -156,7 +163,7 @@ export class BookingsService {
     return this.prisma.bookings.findMany({
       where: {
         ...(userId && { user_id: userId }),
-        ...(status && { status: status }),
+        ...(status && { status: status as BookingStatus }),
       },
       include: {
         users: {
@@ -192,9 +199,9 @@ export class BookingsService {
     return booking;
   }
 
-  // ==================== [ UPDATE OPERASIONAL ] ====================
+  // Update Operasional
   async update(id: string, dto: UpdateBookingDto) {
-    // Kita jalankan transaction karena perubahan status booking bisa berdampak ke tabel schedule/payment
+    // jalankan transaction karena perubahan status booking bisa berdampak ke tabel schedule/payment
     return this.prisma.$transaction(async (tx) => {
       const booking = await tx.bookings.findUnique({ where: { id } });
 
@@ -202,22 +209,23 @@ export class BookingsService {
         throw new NotFoundException('Data booking tidak ditemukan!');
       }
 
-      // Logika khusus: Jika staff mengubah status ke "completed" (User sudah check-out/pulang)
-      // Maka kita harus melepaskan slot schedule-nya menjadi "available" agar bisa dipesan orang lagi
-      if (dto.status === 'completed' && booking.schedule_id) {
+      // Logika khusus: Jika staff mengubah status ke "canceled" atau "rejected"
+      // Maka kita harus melepaskan slot schedule-nya menjadi "canceled" agar bisa dipesan orang lagi
+      // namun riwayat pemesanan tetap tercatat.
+      if ((dto.status === BookingStatus.CANCELED || dto.status === BookingStatus.REJECTED) && booking.schedule_id) {
         await tx.schedules.update({
           where: { id: booking.schedule_id },
-          data: { status: 'available' },
+          data: { status: ScheduleStatus.CANCELED },
         });
       }
 
       // Logika khusus: Jika di-update ke "approved" (artinya pembayaran manual sukses / dikonfirmasi staff)
       // Maka otomatis status di tabel payment juga kita ikut sukseskan
-      if (dto.status === 'approved') {
+      if (dto.status === BookingStatus.APPROVED) {
         await tx.payments.updateMany({
           where: { booking_id: id },
           data: {
-            status: 'success',
+            status: PaymentStatus.PAID,
             paid_at: new Date()
           },
         });
