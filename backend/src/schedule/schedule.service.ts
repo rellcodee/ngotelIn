@@ -8,6 +8,7 @@ import { CreateScheduleDto } from './dto/create-schedule.dto';
 import { UpdateScheduleDto } from './dto/update-schedule.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Prisma } from '@prisma/client';
+import { ScheduleStatus } from 'src/common/enums';
 
 @Injectable()
 export class ScheduleService {
@@ -26,7 +27,7 @@ export class ScheduleService {
         id: excludeScheduleId ? { not: excludeScheduleId } : undefined,
         // HANYA status ini yang mengunci kamar. 
         // Jika ada jadwal 'canceled', sistem akan mengabaikannya (kamar dianggap kosong).
-        status: { in: ['booked', 'maintenance'] },
+        status: { in: [ScheduleStatus.BOOKED, ScheduleStatus.MAINTENANCE] },
         start_time: { lt: new Date(end_time) },
         end_time: { gt: new Date(start_time) },
       },
@@ -50,9 +51,9 @@ export class ScheduleService {
     });
 
     const result: Record<string, number> = {
-      booked: 0,
-      canceled: 0,
-      maintenance: 0,
+      [ScheduleStatus.BOOKED]: 0,
+      [ScheduleStatus.CANCELED]: 0,
+      [ScheduleStatus.MAINTENANCE]: 0,
     };
 
     stats.forEach((item) => {
@@ -86,7 +87,7 @@ export class ScheduleService {
     // Cek Bentrok ke Database
     const overlapConditions = createScheduleDtos.map((dto) => ({
       resource_id: dto.resource_id,
-      status: { in: ['booked', 'maintenance'] },
+      status: { in: [ScheduleStatus.BOOKED, ScheduleStatus.MAINTENANCE] },
       start_time: { lt: new Date(dto.end_time) },
       end_time: { gt: new Date(dto.start_time) },
     }));
@@ -138,21 +139,35 @@ export class ScheduleService {
     });
   }
 
-  async findAll() {
+  async findAll(status?: ScheduleStatus) {
     return this.prisma.schedules.findMany({
-      include: { resources: true },
-      orderBy: { start_time: 'asc' },
+      where: status
+        ? { status } // Kalau admin explicitly minta ?status=CANCELLED
+        : { status: { not: ScheduleStatus.CANCELED } }, // Default: Sembunyikan yang CANCELLED
+      include: {
+        resources: true,
+      },
+      orderBy: {
+        start_time: 'asc',
+      },
     });
   }
-
   // 5. PENCARI JADWAL SIBUK (Pengganti findAvailable)
   // Method ini digunakan frontend untuk me-nonaktifkan tanggal di komponen Kalender (DatePicker)
   async findBusySchedules(resource_id: string) {
     return this.prisma.schedules.findMany({
       where: {
         resource_id,
-        status: { in: ['booked', 'maintenance'] }, // Ambil yang memblokir saja
-        end_time: { gte: new Date() }, // Abaikan jadwal masa lalu
+        // KUNCI UTAMA: Cuma ambil yang sedang mengunci kamar/ruangan
+        status: {
+          in: [ScheduleStatus.BOOKED, ScheduleStatus.MAINTENANCE],
+        },
+      },
+      select: {
+        id: true,
+        start_time: true,
+        end_time: true,
+        status: true,
       },
       orderBy: {
         start_time: 'asc',
@@ -169,7 +184,7 @@ export class ScheduleService {
     // jika statusnya akan diubah jadi canceled, kita tidak perlu cek bentrok lagi.
     // kita hanya cek bentrok kalau statusnya dibiarkan booked/maintenance
     if (
-      (currentStatus === 'booked' || currentStatus === 'maintenance') &&
+      (currentStatus === ScheduleStatus.BOOKED || currentStatus === ScheduleStatus.MAINTENANCE) &&
       (updateScheduleDto.start_time || updateScheduleDto.end_time || updateScheduleDto.resource_id)
     ) {
       const resourceId = updateScheduleDto.resource_id || existingSchedule.resource_id;

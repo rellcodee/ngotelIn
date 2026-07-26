@@ -1,5 +1,5 @@
-import { IsDateString, IsIn, IsOptional, IsUUID } from 'class-validator';
-
+import { IsDateString, IsEnum, IsOptional, IsUUID } from 'class-validator';
+import { ScheduleStatus } from 'src/common/enums';
 export class CreateScheduleDto {
   @IsUUID()
   @IsOptional()
@@ -11,7 +11,7 @@ export class CreateScheduleDto {
   @IsDateString()
   end_time: string;
 
-  @IsIn(['available', 'booked', 'canceled', 'maintenance'])
+  @IsEnum(ScheduleStatus, { message: 'Invalid schedule status' })
   @IsOptional()
-  status?: string;
+  status?: ScheduleStatus;
 }

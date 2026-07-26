@@ -7,6 +7,7 @@ import { AuthModule } from './auth/auth.module';
 import { ResourcesModule } from './resources/resources.module';
 import { ScheduleModule } from './schedule/schedule.module';
 import { RoomImagesModule } from './room_images/room_images.module';
+import { BookingsModule } from './bookings/bookings.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { RoomImagesModule } from './room_images/room_images.module';
     ResourcesModule,
     ScheduleModule,
     RoomImagesModule,
+    BookingsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
