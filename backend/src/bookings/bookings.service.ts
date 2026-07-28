@@ -9,13 +9,22 @@ import { ScheduleStatus, BookingStatus, PaymentStatus } from '../common/enums';
 export class BookingsService {
   constructor(private readonly prisma: PrismaService) { }
 
+  private extractWibDateString(dateInput: string | Date): string {
+    const date = typeof dateInput === 'string' ? new Date(dateInput) : dateInput;
+    // 'en-CA' menghasilkan format standar YYYY-MM-DD
+    return new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Jakarta' }).format(date);
+  }
+
   async createBooking(dto: CreateBookingDto) {
-    const startTime = new Date(dto.start_time);
-    const endTime = new Date(dto.end_time);
+    const startDateStr = this.extractWibDateString(dto.start_time);
+    const endDateStr = this.extractWibDateString(dto.end_time);
+
+    const startTime = new Date(`${startDateStr}T14:00:00+07:00`);
+    const endTime = new Date(`${endDateStr}T12:00:00+07:00`);
 
     // Validasi dasar: Jam selesai gak boleh sebelum jam mulai
     if (endTime <= startTime) {
-      throw new BadRequestException('Waktu selesai harus lebih lambat dari waktu mulai!');
+      throw new BadRequestException('Waktu check-out harus minimal 1 hari (besoknya) setelah check-in!');
     }
 
     // Jalankan database transaction
@@ -35,7 +44,7 @@ export class BookingsService {
       });
 
       if (overlappingSchedule) {
-        throw new ConflictException('Resource/Ruangan sudah dibooking pada jam tersebut!');
+        throw new ConflictException('Resource/Ruangan sudah dibooking pada tanggal tersebut!');
       }
 
       // 2. AMBIL DATA RESOURCE & HITUNG TOTAL HARGA BERDASARKAN MALAM

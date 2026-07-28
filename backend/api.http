@@ -4,7 +4,7 @@
 @resourceId = 3639087e-a5d6-4ca6-8356-6b6bbd9570a5
 @resourceIdVVIP = f3796c4c-016c-4c6b-a2f7-a2cb531e47d9  
 @scheduleId = c4abc3e7-4c0b-4875-86f4-d323a875e71a
-@bookingId = 7b9f91c2-b8b4-4654-be2a-612e450e0cde
+@bookingId = f11038d2-dbbc-4959-a249-d880015390e4
 
 
 ### =========================================
@@ -16,8 +16,8 @@ POST {{baseUrl}}/auth/login
 Content-Type: application/json
 
 {
-  "email": "budi@ngotelin.com",
-  "password": "12345678"
+  "email": "gibran@mail.ngotel",
+  "password": "11111111"
 }
 
 ### =========================================
@@ -107,8 +107,8 @@ Content-Type: application/json
 
 {
   "resource_id": "{{resourceId}}",
-  "start_time": "2026-07-27T09:00:00.000Z",
-  "end_time": "2026-07-28T13:00:00.000Z",
+  "start_time": "2026-07-30T12:15:00.000Z",
+  "end_time": "2026-07-30T14:30:00.000Z",
   "status": "maintenance"
 }
 
@@ -176,9 +176,9 @@ Content-Type: application/json
 {
   "user_id": "{{userId}}",
   "resource_id": "{{resourceId}}",
-  "start_time": "2026-08-01T14:00:00Z",
-  "end_time": "2026-08-02T12:00:00Z",
-  "notes": "Tolong ruangan dibersihkan sebelum masuk",
+  "start_time": "2026-08-02T10:00:00Z",
+  "end_time": "2026-08-04T12:00:00Z",
+  "notes": "Tolong siapkan yg terbaik",
   "payment_method": "qris" 
 }
 ### Note payment_method sesuaikan dengan enum PaymentMethod lu (misal: 'transfer', 'cash', dll)
@@ -227,3 +227,16 @@ Content-Type: application/json
 ### 9. DELETE / CANCEL BOOKING (Oleh User/Staff)
 ### (Otomatis ubah schedule jadi CANCELED)
 DELETE {{baseUrl}}/bookings/{{bookingId}}
+
+### =========================================
+### 6. AI BOT
+### =========================================
+
+# Test Chat with AI 
+POST {{baseUrl}}/ai/chat
+Content-Type: application/json
+
+{
+  "user_id": "{{userId}}",
+  "message": "gua tertarik sama 505, lo bisa bantu bookingin?"
+}
