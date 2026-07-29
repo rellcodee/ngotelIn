@@ -21,7 +21,7 @@ model users {
 
 model resources {
   id        String      @id @default(uuid()) @db.Uuid
-  name      String      @db.VarChar(150)
+  name      String      @unique @db.VarChar(150)
   type      String?     @db.VarChar(50)
   location  String?     @db.VarChar(150)
   capacity  Int?
@@ -56,7 +56,7 @@ model schedules {
 model bookings {
   id            String    @id @default(uuid()) @db.Uuid
   user_id       String?   @db.Uuid
-  schedule_id   String?   @db.Uuid
+  schedule_id   String?   @unique @db.Uuid
   status        String?   @default("pending") @db.VarChar(20)
   notes         String?   @db.Text
   created_at    DateTime? @default(now()) @db.Timestamp(6)

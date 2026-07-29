@@ -4,9 +4,8 @@
 @resourceId = 3639087e-a5d6-4ca6-8356-6b6bbd9570a5
 @resourceIdVVIP = f3796c4c-016c-4c6b-a2f7-a2cb531e47d9  
 @scheduleId = c4abc3e7-4c0b-4875-86f4-d323a875e71a
-@bookingId = f11038d2-dbbc-4959-a249-d880015390e4
-
-
+@bookingId = 16323624-3dd5-41ed-bf67-8442bb887453
+@notificationId = 629eeae3-db89-4bce-86b4-5ff49476e66c
 ### =========================================
 ### 1. AUTHENTICATION
 ### =========================================
@@ -175,7 +174,7 @@ Content-Type: application/json
 
 {
   "user_id": "{{userId}}",
-  "resource_id": "{{resourceId}}",
+  "resource_id": "{{resourceIdVVIP}}",
   "start_time": "2026-08-02T10:00:00Z",
   "end_time": "2026-08-04T12:00:00Z",
   "notes": "Tolong siapkan yg terbaik",
@@ -240,3 +239,23 @@ Content-Type: application/json
   "user_id": "{{userId}}",
   "message": "gua tertarik sama 505, lo bisa bantu bookingin?"
 }
+
+### Notification
+# Get All Notification
+GET {{baseUrl}}/notifications
+Content-Type: application/json
+
+# unread-count
+###
+GET {{baseUrl}}/notifications/unread-count
+Content-Type: application/json
+
+# read-all
+###
+PATCH {{baseUrl}}/notifications/read-all
+Content-Type: application/json
+
+# read single notification
+###
+PATCH {{baseUrl}}/notifications/{{notificationId}}/read
+Content-Type: application/json
