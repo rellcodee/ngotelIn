@@ -8,14 +8,19 @@ import {
   Delete,
   Query,
   ParseArrayPipe,
+  UseGuards,
 } from '@nestjs/common';
 import { ScheduleService } from './schedule.service';
 import { CreateScheduleDto } from './dto/create-schedule.dto';
 import { UpdateScheduleDto } from './dto/update-schedule.dto';
+import { AuthGuard } from '@nestjs/passport';
+import { Roles } from '../common/decorators/roles.decorator';
+import { RolesGuard } from '../common/guards/roles.guard';
+import { Role } from '../common/enums';
 
 @Controller('schedule')
 export class ScheduleController {
-  constructor(private readonly scheduleService: ScheduleService) { }
+  constructor(private readonly scheduleService: ScheduleService) {}
 
   // -------------------------------------------------------------
   // ROUTE STATIS & PENDUKUNG (Harus di atas :id)
@@ -23,6 +28,8 @@ export class ScheduleController {
 
   //Create Schedule (Batch / Banyak Sekaligus)
   // Menggunakan ParseArrayPipe agar NestJS otomatis memvalidasi isi array DTO
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles(Role.ADMIN, Role.STAFF)
   @Post('batch')
   async createBatch(
     @Body(new ParseArrayPipe({ items: CreateScheduleDto }))
@@ -50,18 +57,24 @@ export class ScheduleController {
   // -------------------------------------------------------------
 
   // Create Schedule (Single Booking / Maintenance)
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles(Role.ADMIN, Role.STAFF)
   @Post()
   async create(@Body() createScheduleDto: CreateScheduleDto) {
     return this.scheduleService.create(createScheduleDto);
   }
 
   // Find All Schedules (Log Global Admin)
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles(Role.ADMIN, Role.STAFF)
   @Get()
   async findAll() {
     return this.scheduleService.findAll();
   }
 
   // Find One Schedule (Detail Jadwal)
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles(Role.ADMIN, Role.STAFF)
   @Get(':id')
   async findOne(@Param('id') id: string) {
     return this.scheduleService.findOne(id);
@@ -70,6 +83,8 @@ export class ScheduleController {
   // Update Schedule (Reschedule ATAU Cancel)
   // -> Jalur Reschedule: Kirim start_time / end_time (Memicu cek bentrok)
   // -> Jalur Cancel: Cuma kirim { "status": "canceled" } (Bypass cek bentrok)
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles(Role.ADMIN, Role.STAFF)
   @Patch(':id')
   async update(
     @Param('id') id: string,
@@ -79,6 +94,8 @@ export class ScheduleController {
   }
 
   // Remove Schedule (Hapus Permanen)
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles(Role.ADMIN, Role.STAFF)
   @Delete(':id')
   async remove(@Param('id') id: string) {
     return this.scheduleService.remove(id);

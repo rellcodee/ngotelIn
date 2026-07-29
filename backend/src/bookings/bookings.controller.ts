@@ -1,39 +1,63 @@
-import { Controller, Post, Body, Delete, Patch, Get, Query, Param } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Delete,
+  Patch,
+  Get,
+  Query,
+  Param,
+  UseGuards,
+} from '@nestjs/common';
 import { BookingsService } from './bookings.service';
 import { CreateBookingDto } from './dto/create-booking.dto';
 import { UpdateBookingDto } from './dto/update-booking.dto';
+import { AuthGuard } from '@nestjs/passport';
+import { RolesGuard } from '../common/guards/roles.guard';
+import { Roles } from '../common/decorators/roles.decorator';
+import { Role } from '../common/enums';
+import { CurrentUser } from '../common/decorators/current-user.decorator';
 
-@Controller('bookings') // Base URL: http://localhost:3000/bookings
+@UseGuards(AuthGuard('jwt'), RolesGuard)
+@Controller('bookings')
 export class BookingsController {
-  constructor(private readonly bookingsService: BookingsService) { }
+  constructor(private readonly bookingsService: BookingsService) {}
 
   @Post()
   async create(
-    @Body() createBookingDto: CreateBookingDto) {
+    @Body() createBookingDto: CreateBookingDto,
+    @CurrentUser() currentUser: { userId: string; role: string },
+  ) {
+    createBookingDto.user_id = currentUser.userId;
     return this.bookingsService.createBooking(createBookingDto);
   }
 
-  @Delete(':id') // DELETE http://localhost:3000/bookings/uuid-booking
-  async remove(@Param('id') id: string) {
-    return this.bookingsService.cancelBooking(id);
+  @Delete(':id')
+  async remove(
+    @Param('id') id: string,
+    @CurrentUser() currentUser: { userId: string; role: string },
+  ) {
+    return this.bookingsService.cancelBooking(id, currentUser);
   }
 
-  // GET ALL (Bisa lewat URL: http://localhost:3000/bookings atau dengan query filter)
   @Get()
   async findAll(
-    @Query('user_id') userId?: string,   // Contoh: ?user_id=uuid-si-user (Buat history user)
-    @Query('status') status?: string,    // Contoh: ?status=pending (Buat antrean staff)
+    @CurrentUser() currentUser: { userId: string; role: string },
+    @Query('user_id') userId?: string,
+    @Query('status') status?: string,
   ) {
-    return this.bookingsService.findAll(userId, status);
+    return this.bookingsService.findAll(currentUser, userId, status);
   }
 
-  // 2. GET DETAIL (URL: http://localhost:3000/bookings/uuid-booking)
   @Get(':id')
-  async findOne(@Param('id') id: string) {
-    return this.bookingsService.findOne(id);
+  async findOne(
+    @Param('id') id: string,
+    @CurrentUser() currentUser: { userId: string; role: string },
+  ) {
+    return this.bookingsService.findOne(id, currentUser);
   }
 
-  // 3. PATCH UPDATE (URL: PATCH http://localhost:3000/bookings/uuid-booking)
+  @Roles(Role.ADMIN, Role.STAFF)
   @Patch(':id')
   async update(
     @Param('id') id: string,
@@ -41,5 +65,4 @@ export class BookingsController {
   ) {
     return this.bookingsService.update(id, updateBookingDto);
   }
-
 }
