@@ -14,10 +14,18 @@ import {
   PaymentStatus,
   Role,
 } from '../common/enums';
+import * as midtransClient from 'midtrans-client';
 
 @Injectable()
 export class BookingsService {
   constructor(private readonly prisma: PrismaService) {}
+
+  // Midtrans
+  private snap = new midtransClient.Snap({
+    isProduction: false,
+    serverKey: process.env.MIDTRANS_SERVER_KEY || '',
+    clientKey: process.env.MIDTRANS_CLIENT_KEY || '',
+  });
 
   // --- CEK KEPEMILIKAN TRANSAKSI ---
   private checkBookingOwnership(
@@ -123,11 +131,26 @@ export class BookingsService {
         },
       });
 
+      const parameter = {
+        transaction_details: {
+          order_id: newBooking.id,
+          gross_amount: totalPrice,
+        },
+        customer_details: {
+          first_name: user.name,
+          email: user.email,
+        },
+      };
+      // Minta token Snap ke Midtrans
+      const transaction = await this.snap.createTransaction(parameter);
+
       return {
-        message: 'Booking dan invoice pembayaran berhasil dibuat!',
+        message: 'Booking berhasil! Silakan selesaikan pembayaran Anda.',
         booking: newBooking,
         schedule: newSchedule,
         payment: newPayment,
+        midtrans_token: transaction.token,
+        midtrans_redirect_url: transaction.redirect_url,
       };
     });
   }
@@ -175,7 +198,7 @@ export class BookingsService {
 
       if (
         booking.payment &&
-        (booking.payment.status as string) === (PaymentStatus.PENDING as string)
+        (booking.payment.status) === (PaymentStatus.PENDING as string)
       ) {
         await tx.payments.update({
           where: { id: booking.payment.id },

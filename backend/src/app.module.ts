@@ -8,6 +8,7 @@ import { ResourcesModule } from './resources/resources.module';
 import { ScheduleModule } from './schedule/schedule.module';
 import { RoomImagesModule } from './room_images/room_images.module';
 import { BookingsModule } from './bookings/bookings.module';
+import { PaymentsModule } from './payments/payments.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { BookingsModule } from './bookings/bookings.module';
     ScheduleModule,
     RoomImagesModule,
     BookingsModule,
+    PaymentsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

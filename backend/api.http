@@ -4,7 +4,7 @@
 # PUSAT VARIABEL SIKLUS HIDUP TRANSAKSI HOTEL (TEMPEL HASIL RESPONS DI SINI)
 # =============================================================================
 # Token di bawah ini nantikan kamu isi/salin setelah menekan Send Request di BAB 2 (Login)
-@adminToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQG5nb3RlbGluLmNvbSIsInN1YiI6ImVhYzJkMjJlLTc1ODUtNGJkMy1hMjgzLWQ2ODZhYWM1MDJmNiIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc4NTMyNDU5NCwiZXhwIjoxNzg1NDEwOTk0fQ.xFAcmdKFg98ycUfQYJQdmud79SjzA_T-xAHYrXCRBhU
+@adminToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQG5nb3RlbGluLmNvbSIsInN1YiI6ImVhYzJkMjJlLTc1ODUtNGJkMy1hMjgzLWQ2ODZhYWM1MDJmNiIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc4NTUyMzY3NSwiZXhwIjoxNzg1NjEwMDc1fQ.6SwkmhvmytQjNh9KQiJCYFLnwCV8eNgy6eSJD7szPQc
 @staffToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InN0YWZmQG5nb3RlbGluLmNvbSIsInN1YiI6IjVjMTQ4YTJhLTM3MWEtNDljOC04NzlhLTQ2YjFlN2Q0ZDZiMCIsInJvbGUiOiJzdGFmZiIsImlhdCI6MTc4NTMyNDIxNiwiZXhwIjoxNzg1NDEwNjE2fQ.4P4y9oIaWODQ0pCscxg_VSi-llnE-ukYkofT_4kChL8
 @userToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImlkaGFtQG5nb3RlbGluLmNvbSIsInN1YiI6ImY0MmI5NDEzLTU0NTUtNDU1Yy1iNWRhLTUyYmZjMzA0NzFiYSIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzg1MzI4Nzg3LCJleHAiOjE3ODU0MTUxODd9.rGVQ54Utj0qymby1yMlY2EK8Dvs-pZzFJyDvKOPLAJU
 
@@ -379,4 +379,51 @@ Authorization: Bearer {{staffToken}}
 # -> Catatan: Kita menekan DELETE pada rute ini BUKAN menghapus permanen dari DB (supaya audit laporan akuntansi tidak musnah / berlubang).
 # -> EFEKNYA: Status pesanan berubah jadi "canceled", invoice gugur, dan slot jadwal hotel kembali "available"!
 DELETE {{baseUrl}}/bookings/{{bookingId}}
+Authorization: Bearer {{userToken}}
+
+
+### =========================================================================
+### 🟠 BAB 6: TEST MIDTRANS PAYMENT GATEWAY
+### =========================================================================
+
+###
+# 6.1 [ADMIN] Bikin Kamar Baru Khusus Test Midtrans
+POST {{baseUrl}}/resources
+Content-Type: application/json
+Authorization: Bearer {{adminToken}}
+
+{
+  "name": "Kamar Test Midtrans",
+  "type": "Midtrans Suite",
+  "location": "Lantai 99",
+  "capacity": 2,
+  "price_per_night": 250000,
+  "facilities": ["AC", "WiFi", "TV", "Simulator Midtrans"]
+}
+
+###
+# 6.2 [TAMU] Bikin Booking Baru buat Kamar Test Midtrans
+# PENTING: Ganti nilai variabel ini pakai ID kamar yang lu dapet dari respon 6.1!
+@midtransRoomId = b405a8af-210d-41de-a55e-47ddde3b9109
+
+POST {{baseUrl}}/bookings
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+
+{
+  "resource_id": "{{midtransRoomId}}",
+  "start_time": "2026-12-25T14:00:00.000Z",
+  "end_time": "2026-12-26T12:00:00.000Z",
+  "payment_method": "gopay",
+  "notes": "Tolong siapin simulator Midtransnya wkwk"
+}
+
+###
+GET {{baseUrl}}/bookings
+Authorization: Bearer {{userToken}}
+
+###
+# 6.3 [TAMU] Cek Status Booking & Payment Setelah Bayar di Midtrans
+# PENTING: Ganti ID di bawah sama ID Booking yang lu dapet dari respon 6.2 (kolom id)
+GET {{baseUrl}}/bookings/af1d58fe-ce3d-4f22-8590-8b9b4e0506e5
 Authorization: Bearer {{userToken}}
