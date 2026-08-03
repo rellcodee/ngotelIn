@@ -4,8 +4,9 @@
 @resourceId = 3639087e-a5d6-4ca6-8356-6b6bbd9570a5
 @resourceIdVVIP = f3796c4c-016c-4c6b-a2f7-a2cb531e47d9  
 @scheduleId = c4abc3e7-4c0b-4875-86f4-d323a875e71a
-@bookingId = 16323624-3dd5-41ed-bf67-8442bb887453
+@bookingId = 2f8e3c46-f392-44b6-a604-b2d7ca1785c0
 @notificationId = 629eeae3-db89-4bce-86b4-5ff49476e66c
+@reviewId = 39078c3d-d53b-45e8-b501-9c6f3b1300be
 ### =========================================
 ### 1. AUTHENTICATION
 ### =========================================
@@ -65,12 +66,12 @@ POST {{baseUrl}}/resources
 Content-Type: application/json
 
 {
-  "name": "deluxe room 101",
-  "type": "deluxe",
+  "name": "Triple Room Luxury",
+  "type": "standard",
   "location": "Lantai 1",
-  "capacity": 2,
-  "price_per_night": 200000,
-  "facilities": ["TV", "AC"]
+  "capacity": 3,
+  "price_per_night": 500000,
+  "facilities": ["TV", "AC", "Wi-Fi", "Extra Bed"]
 }
 
 ### Resource Update
@@ -177,7 +178,7 @@ Content-Type: application/json
   "resource_id": "{{resourceIdVVIP}}",
   "start_time": "2026-08-02T10:00:00Z",
   "end_time": "2026-08-04T12:00:00Z",
-  "notes": "Tolong siapkan yg terbaik",
+  "notes": "Nak Nginepv3",
   "payment_method": "qris" 
 }
 ### Note payment_method sesuaikan dengan enum PaymentMethod lu (misal: 'transfer', 'cash', dll)
@@ -239,7 +240,9 @@ Content-Type: application/json
   "user_id": "{{userId}}",
   "message": "gua tertarik sama 505, lo bisa bantu bookingin?"
 }
-
+### =========================================
+### 7. NOTIFICATIONS
+### =========================================
 ### Notification
 # Get All Notification
 GET {{baseUrl}}/notifications
@@ -259,3 +262,59 @@ Content-Type: application/json
 ###
 PATCH {{baseUrl}}/notifications/{{notificationId}}/read
 Content-Type: application/json
+
+### =========================================
+### 8. REVIEW
+### =========================================
+POST {{baseUrl}}/reviews
+Content-Type: application/json
+
+{
+  "booking_id": "{{bookingId}}",
+  "rating": 5,
+  "comment": "Luar biasa"
+}
+
+###
+GET {{baseUrl}}/reviews/resource/{{resourceIdVVIP}}
+Content-Type: application/json
+
+###
+GET {{baseUrl}}/reviews/{{reviewId}}
+Content-Type: application/json
+
+###
+DELETE {{baseUrl}}/reviews/{{reviewId}}
+Content-Type: application/json
+
+### =========================================
+### 9. ROOM IMAGE
+### =========================================
+
+###
+POST {{baseUrl}}/room-images/upload
+Content-Type: multipart/form-data
+
+{
+  "resource_id": "{{resourceId}}",
+  "file": "https://pin.it/KCpJOaPgm" ,
+  "is_primary": true 
+}
+
+### Get All
+GET {{baseUrl}}/room-images
+Content-Type: application/json
+
+### Room Image Sekaligus Resource (bikin kamar sekaligus upload foto)
+POST {{baseUrl}}/resources
+Content-Type: multipart/form-data
+
+{
+  "name": "SSH Room",
+  "type": "standard",
+  "location": "Lantai 2, Blok Z",
+  "capacity": 1,
+  "price_per_night": 500000,
+  "facilities": ["Wi-Fi", "AC", "TV", "Kamar Mandi Dalam"],
+  "file": "https://pin.it/KCpJOaPgm" 
+}

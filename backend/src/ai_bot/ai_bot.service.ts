@@ -38,7 +38,7 @@ export class AiBotService {
             // 2. Ambil Data Kamar dari DB (TAMBAH id: true AGAR LINK KAMAR JALAN)
             const resourcesData = await this.prisma.resources.findMany({
                 select: {
-                    id: true, // <--- WAJIB ADA UNTUK UUID LINK
+                    id: true,
                     name: true,
                     type: true,
                     capacity: true,
