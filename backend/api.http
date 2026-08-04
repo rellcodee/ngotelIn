@@ -1,10 +1,10 @@
 @baseUrl = http://localhost:3000
 @token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImJ1ZGlAbmdvdGVsaW4uY29tIiwic3ViIjoiYjRmNWE0NGMtN2RhMy00MzA0LTkzOGItZjEzOTg3NTU2MjQ5Iiwicm9sZSI6InVzZXIiLCJpYXQiOjE3ODM3ODkyNDIsImV4cCI6MTc4Mzg3NTY0Mn0.cjnkSi1xnMVUBqa2IO7-3VT-_qlGPx25c5AxYkYQBs8
 @userId = 6210b2d2-175b-4f64-a184-51174d8e193a
-@resourceId = 3639087e-a5d6-4ca6-8356-6b6bbd9570a5
+@resourceId = ba81f869-3ae5-49b0-8209-972b71a5edac
 @resourceIdVVIP = f3796c4c-016c-4c6b-a2f7-a2cb531e47d9  
-@scheduleId = c4abc3e7-4c0b-4875-86f4-d323a875e71a
-@bookingId = 2f8e3c46-f392-44b6-a604-b2d7ca1785c0
+@scheduleId = 59e07058-b436-4aca-ae78-7fad7770f505
+@bookingId = d88ba27f-0092-41cd-932f-c6f49f32316e
 @notificationId = 629eeae3-db89-4bce-86b4-5ff49476e66c
 @reviewId = 39078c3d-d53b-45e8-b501-9c6f3b1300be
 ### =========================================
@@ -93,6 +93,87 @@ GET {{baseUrl}}/resources?search=&location=&type=
 GET {{baseUrl}}/resources/{{resourceId}}
 
 
+### resource with image create (sebaiknya postman karena mengambil file local)
+POST {{baseUrl}}/resources
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxk
+
+------WebKitFormBoundary7MA4YWxk
+Content-Disposition: form-data; name="name"
+
+Suite Room Mentri
+------WebKitFormBoundary7MA4YWxk
+Content-Disposition: form-data; name="type"
+
+suite
+------WebKitFormBoundary7MA4YWxk
+Content-Disposition: form-data; name="location"
+
+Lantai 3, VIP Area
+------WebKitFormBoundary7MA4YWxk
+Content-Disposition: form-data; name="capacity"
+
+2
+------WebKitFormBoundary7MA4YWxk
+Content-Disposition: form-data; name="price_per_night"
+
+1500000
+------WebKitFormBoundary7MA4YWxk
+Content-Disposition: form-data; name="facilities"
+
+Wi-Fi
+------WebKitFormBoundary7MA4YWxk
+Content-Disposition: form-data; name="facilities"
+
+AC
+------WebKitFormBoundary7MA4YWxk
+Content-Disposition: form-data; name="files"; filename="kamar1.jpeg"
+Content-Type: image/jpeg
+
+< ./test-assets/kamar1.jpeg
+
+
+------WebKitFormBoundary7MA4YWxk
+Content-Disposition: form-data; name="files"; filename="kamar2.jpeg"
+Content-Type: image/jpeg
+
+< ./test-assets/kamar2.jpeg
+
+------WebKitFormBoundary7MA4YWxk--
+
+
+# resource with image edit
+
+PATCH http://localhost:3000/resources/042cee9c-01ce-49b4-96ed-466495d1eb6d
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxk
+
+------WebKitFormBoundary7MA4YWxk
+Content-Disposition: form-data; name="name"
+
+Suite Room Mentri (Updated)
+------WebKitFormBoundary7MA4YWxk
+Content-Disposition: form-data; name="price_per_night"
+
+1800000
+------WebKitFormBoundary7MA4YWxk
+Content-Disposition: form-data; name="facilities"
+
+Wi-Fi
+------WebKitFormBoundary7MA4YWxk
+Content-Disposition: form-data; name="facilities"
+
+AC
+------WebKitFormBoundary7MA4YWxk
+Content-Disposition: form-data; name="facilities"
+
+Smart TV
+------WebKitFormBoundary7MA4YWxk
+Content-Disposition: form-data; name="files"; filename="kamar_baru.jpeg"
+Content-Type: image/jpeg
+
+< ./test-images/kamar1.jpeg
+
+------WebKitFormBoundary7MA4YWxk--
+
 ### =========================================
 ### 4. SCHEDULES (Jadwal)
 ### =========================================
@@ -107,8 +188,8 @@ Content-Type: application/json
 
 {
   "resource_id": "{{resourceId}}",
-  "start_time": "2026-07-30T12:15:00.000Z",
-  "end_time": "2026-07-30T14:30:00.000Z",
+  "start_time": "2026-08-05T12:15:00.000Z",
+  "end_time": "2026-08-05T14:00:00.000Z",
   "status": "maintenance"
 }
 
@@ -149,8 +230,8 @@ PATCH {{baseUrl}}/schedule/{{scheduleId}}
 Content-Type: application/json
 
 {
-  "start_time": "2026-07-27T09:00:00.000Z",
-  "end_time": "2026-07-28T13:00:00.000Z"
+  "start_time": "2026-08-05T09:00:00+07:00",
+  "end_time": "2026-08-05T12:00:00+07:00"
 }
 
 ### Update Schedule (skenario ubah status jadi canceled, karena available otomtis sesuai tenggat waktu) 
@@ -175,10 +256,10 @@ Content-Type: application/json
 
 {
   "user_id": "{{userId}}",
-  "resource_id": "{{resourceIdVVIP}}",
-  "start_time": "2026-08-02T10:00:00Z",
-  "end_time": "2026-08-04T12:00:00Z",
-  "notes": "Nak Nginepv3",
+  "resource_id": "{{resourceId}}",
+  "start_time": "2026-08-05T01:00:00Z",
+  "end_time": "2026-08-07T09:00:00Z",
+  "notes": "perkara utc gua nginep",
   "payment_method": "qris" 
 }
 ### Note payment_method sesuaikan dengan enum PaymentMethod lu (misal: 'transfer', 'cash', dll)
@@ -212,7 +293,7 @@ Content-Type: application/json
 
 {
   "status": "rejected",
-  "notes": "Booking fiktif, user diblacklist"
+  "notes": "Booking fiktif, utc kaga jelas"
 }
 
 ### 8. UPDATE BOOKING: CHECK-IN / COMPLETED

@@ -22,8 +22,11 @@ export class BookingsService {
     const startDateStr = this.extractWibDateString(dto.start_time);
     const endDateStr = this.extractWibDateString(dto.end_time);
 
-    const startTime = new Date(`${startDateStr}T14:00:00+07:00`);
-    const endTime = new Date(`${endDateStr}T12:00:00+07:00`);
+    // 14:00 WIB setara dengan 07:00 UTC
+    const startTime = new Date(`${startDateStr}T07:00:00.000Z`);
+
+    // 12:00 WIB setara dengan 05:00 UTC
+    const endTime = new Date(`${endDateStr}T05:00:00.000Z`);
 
     // Validasi dasar: Jam selesai gak boleh sebelum jam mulai
     if (endTime <= startTime) {
@@ -43,6 +46,7 @@ export class BookingsService {
       });
 
       if (overlappingSchedule) {
+
         throw new ConflictException('Resource/Ruangan sudah dibooking pada tanggal tersebut!');
       }
 

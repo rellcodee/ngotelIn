@@ -72,7 +72,8 @@ export class ResourcesController {
   async update(
     @Param('id') id: string,
     @Body() updateResourceDto: UpdateResourceDto,
-    @Body('delete_image_ids') deleteImageIdsRaw?: string | string[], // Bisa kirim string tunggal atau array
+    @Body('delete_image_ids') deleteImageIdsRaw?: string | string[],
+    @Body('primary_image_id') primaryImageId?: string,
     @UploadedFiles() files?: Express.Multer.File[],
   ) {
     // Formatting ID foto yang mau dihapus biar selalu berupa Array
@@ -83,7 +84,7 @@ export class ResourcesController {
       deleteImageIds = deleteImageIdsRaw;
     }
 
-    return this.resourcesService.update(id, updateResourceDto, files, deleteImageIds);
+    return this.resourcesService.update(id, updateResourceDto, files, deleteImageIds, primaryImageId);
   }
 
   @Delete(':id')
