@@ -1,17 +1,23 @@
 import {
   Controller, Get, Post, Body, Patch, Param, Delete, Query, UseInterceptors,
   UploadedFiles,
-  BadRequestException
+  BadRequestException, UseGuards
 } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { ResourcesService } from './resources.service';
 import { CreateResourceDto } from './dto/create-resource.dto';
 import { UpdateResourceDto } from './dto/update-resource.dto';
+import { AuthGuard } from '@nestjs/passport';
+import { Roles } from '../common/decorators/roles.decorator';
+import { RolesGuard } from '../common/guards/roles.guard';
+import { Role } from '../common/enums';
 
 @Controller('resources')
 export class ResourcesController {
   constructor(private readonly resourcesService: ResourcesService) { }
 
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles(Role.ADMIN)
   @Post()
   @UseInterceptors(
     FilesInterceptor('files', 5, { // maksimal 5 gambar
@@ -36,7 +42,7 @@ export class ResourcesController {
 
   @Get()
   findAll(
-    @Query() query: { search?: string; location?: string; type?: string }
+    @Query() query: { search?: string; location?: string; type?: string },
   ) {
     return this.resourcesService.findAll(query);
   }
@@ -54,6 +60,8 @@ export class ResourcesController {
     return this.resourcesService.findOne(id);
   }
 
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles(Role.ADMIN)
   @Patch(':id')
   @UseInterceptors(
     FilesInterceptor('files', 5, { // Upload gambar baru jika ada
@@ -87,10 +95,10 @@ export class ResourcesController {
     return this.resourcesService.update(id, updateResourceDto, files, deleteImageIds, primaryImageId);
   }
 
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles(Role.ADMIN)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.resourcesService.remove(id);
   }
-
-
 }

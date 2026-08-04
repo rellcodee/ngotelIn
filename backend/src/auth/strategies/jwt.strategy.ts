@@ -6,9 +6,15 @@ import { Injectable } from '@nestjs/common';
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor() {
     super({
-      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      // 1. Ambil JWT dari HTTP-Only Cookie, atau jatuh kembali ke Auth Header (Postman)
+      jwtFromRequest: ExtractJwt.fromExtractors([
+        (request: any) => {
+          return request?.cookies?.access_token || null;
+        },
+        ExtractJwt.fromAuthHeaderAsBearerToken(),
+      ]),
       ignoreExpiration: false,
-      secretOrKey: process.env.JWT_SECRET || 'super_rahasia_ngotelin_123!',
+      secretOrKey: process.env.JWT_SECRET || 'ngotelin_jaya_jaya',
     });
   }
 

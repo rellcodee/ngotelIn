@@ -1,69 +1,179 @@
 @baseUrl = http://localhost:3000
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImJ1ZGlAbmdvdGVsaW4uY29tIiwic3ViIjoiYjRmNWE0NGMtN2RhMy00MzA0LTkzOGItZjEzOTg3NTU2MjQ5Iiwicm9sZSI6InVzZXIiLCJpYXQiOjE3ODM3ODkyNDIsImV4cCI6MTc4Mzg3NTY0Mn0.cjnkSi1xnMVUBqa2IO7-3VT-_qlGPx25c5AxYkYQBs8
-@userId = 6210b2d2-175b-4f64-a184-51174d8e193a
-@resourceId = ba81f869-3ae5-49b0-8209-972b71a5edac
-@resourceIdVVIP = f3796c4c-016c-4c6b-a2f7-a2cb531e47d9  
-@scheduleId = 59e07058-b436-4aca-ae78-7fad7770f505
-@bookingId = d88ba27f-0092-41cd-932f-c6f49f32316e
-@notificationId = 629eeae3-db89-4bce-86b4-5ff49476e66c
-@reviewId = 39078c3d-d53b-45e8-b501-9c6f3b1300be
-### =========================================
-### 1. AUTHENTICATION
-### =========================================
 
-# Login (Pastikan email dan password sesuai database)
-POST {{baseUrl}}/auth/login
+# =============================================================================
+# PUSAT VARIABEL SIKLUS HIDUP TRANSAKSI HOTEL (TEMPEL HASIL RESPONS DI SINI)
+# =============================================================================
+# Token di bawah ini nantikan kamu isi/salin setelah menekan Send Request di BAB 2 (Login)
+@adminToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQG5nb3RlbGluLmNvbSIsInN1YiI6Ijk0N2RiN2E0LTBiOGItNGJlNC04ZGJhLTMwYTFlZTRmNWQ1NyIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc4NTczNTUxMywiZXhwIjoxNzg1ODIxOTEzfQ.YqAcuF8acjnO1hNB5oCzvjx-l8r6s1H6TjUTrg-STHw
+@staffToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InN0YWZmQG5nb3RlbGluLmNvbSIsInN1YiI6IjIzYTgxMmY1LTcwY2MtNDcyMi1iMjI0LTQzM2FhZWRhYTA3ZiIsInJvbGUiOiJzdGFmZiIsImlhdCI6MTc4NTczNjg4NSwiZXhwIjoxNzg1ODIzMjg1fQ.QivsNbiuajfruD7y5ctmVIwSsdzKWSDFkjT001NqZnw
+@userToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im1hdEBuZ290ZWxpbi5jb20iLCJzdWIiOiIwMTgwNTNlMy03YjYxLTQ4ZjMtODlmMC1iMzQ5ZmM2OGEwMDMiLCJyb2xlIjoidXNlciIsImlhdCI6MTc4NTczNjk4OCwiZXhwIjoxNzg1ODIzMzg4fQ.PlsKwOj8_8J25QKmifwWGfsPdfohFqyJka0MJz4PmME
+
+# ID di bawah ini disalin secara berurutan waktu menempuh babak pengetasan di bawah:
+@userId = 018053e3-7b61-48f3-89f0-b349fc68a003
+@resourceId = 0d1d024a-56c5-4631-b9a6-54be397031a4
+@resourceIdVVIP = 874da42f-e0e8-4304-b50d-44654c837ecf
+@roomImageId = 4348123d-f0aa-47ab-9a62-1acc14bf89c9
+@scheduleId = ed3331c6-9e5d-4542-898d-26d60886fa04
+@bookingId = a62d49ed-01a3-4427-92a4-69cdc42085f7
+@adminId = 947db7a4-0b8b-4be4-8dba-30a1ee4f5d57
+
+### =========================================================================
+### 🟢 BAB 1: REGISTRASI 3 AKUN UTAMA HOTEL (TANPA SEEDER & UJI KEAMANAN DTO)
+### -> Langsung tekan Send Request berturutan untuk mencetak aktor-aktor hotelmu!
+### =========================================================================
+
+# 1.1 Bikin Akun Admin (Owner Hotel / Chief Concierge) via Rute Official
+POST {{baseUrl}}/user/official
 Content-Type: application/json
 
 {
-  "email": "gibran@mail.ngotel",
-  "password": "11111111"
+  "name": "admin2",
+  "email": "admin2@ngotelin.com",
+  "password": "12345678",
+  "role": "admin"
 }
 
-### =========================================
-### 2. USERS
-### =========================================
+###
+# 1.2 Bikin Akun Staff (Receptionist & Housekeeping) via Rute Official
+POST {{baseUrl}}/user/official
+Content-Type: application/json
 
-# Get All Users
-GET {{baseUrl}}/user
-# Authorization: Bearer {{token}}
+{
+  "name": "Rizqulloh",
+  "email": "rizqulloh@ngotelin.com",
+  "password": "staffpassword123",
+  "role": "staff"
+}
 
 ###
-# Get Single User by ID
-GET {{baseUrl}}/user/{{userId}}
-
-###
-# Create New User
+# 1.3 Bikin Akun Tamu Awam (Calon Pembeli) via Rute Publik
+# -> Notice: Tidak perlu param 'role', otomatis diterapkan @default("user") oleh DB!
 POST {{baseUrl}}/user
 Content-Type: application/json
 
 {
-  "name": "John Doe",
-  "email": "john@example.com",
-  "password": "password123",
-  "role": "user"
+  "name": "Riko Simanjuntak",
+  "email": "riko@ngotelin.com",
+  "password": "12345678"
 }
+# 👆 SALIN "id" dari respons di atas, tempel ke variabel @userId di atas layar!
 
 ###
-# Update User
-PATCH {{baseUrl}}/user/{{userId}}
+# 1.4 UJI KEAMANAN 1: Mass-Assignment Attack Protection di Rute Publik
+# -> Hacker mencoba daftar lewat rute umum tapi memaksa isian "role": "admin".
+# -> HASILNYA: Ditolak mentah 400 Bad Request
+POST {{baseUrl}}/user
 Content-Type: application/json
 
 {
-  "name": "John Doe Updated"
+  "name": "Hacker Menyusup",
+  "email": "hacker_iseng@ngotelin.com",
+  "password": "hackedpassword123",
+  "role": "admin"
 }
 
 ###
-# Delete User
-DELETE {{baseUrl}}/user/{{userId}}
+# 1.5 UJI KEAMANAN 2: Penolakan Pangkat Palsu di Rute Official
+# -> Coba mendaftar rute bos (/user/official) tapi menyandarkan role "user" atau "supergod".
+# -> HASILNYA: Ditolak mentah 400 Bad Request karena pengawaman @IsIn([Role.ADMIN, Role.STAFF])!
+POST {{baseUrl}}/user/official
+Content-Type: application/json
 
-### =========================================
-### 3. RESOURCES (Fasilitas / Kamar)
-### =========================================
+{
+  "name": "Penyusup Ruang 2",
+  "email": "penyusup2@ngotelin.com",
+  "password": "12345678",
+  "role": "admin"
+}
 
-### Create Resource (Bikin Kamar Baru)
+###
+# 1.6 Cek Seluruh Daftar Akun Terdaftar & Konfirmasi Role Mereka
+# -> CUMA BOLEH DIAKSES ADMIN & STAFF
+GET {{baseUrl}}/user
+Authorization: Bearer {{adminToken}}
+
+###
+# 1.7 [UJI KEPEMILIKAN AKUN] Tamu Biasa Mencoba Melihat Daftar Seluruh User
+# -> HASILNYA: 403 Forbidden (Hanya Admin & Staff yang boleh)
+GET {{baseUrl}}/user
+Authorization: Bearer {{userToken}}
+###
+# 1.8 [UJI KEPEMILIKAN AKUN] Tamu Biasa (Idham) Mencoba Mengedit Profil Admin
+# -> HASILNYA: 403 Forbidden (Akses Ditolak! Anda tidak berhak memanipulasi profil orang lain.)
+# -> Pastikan id di bawah ini diganti dengan ID Admin!
+PATCH {{baseUrl}}/user/{{adminId}}
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+
+{
+  "name": "Hacked by Idham"
+}
+
+###
+# 1.9 [UJI KEPEMILIKAN AKUN] Tamu Biasa (Idham) Mengedit Profilnya Sendiri
+# -> HASILNYA: Sukses 200 OK!
+PATCH {{baseUrl}}/user/{{userId}}
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+
+{
+  "name": "Idham Kholid SE"
+}
+
+
+### =========================================================================
+### 🟡 BAB 2: LOGIN AKUN & SETUP TIKET TOKEN (HTTP-Only Cookie Check)
+### -> Ambil masing-masing access_token & salin ke kotak variabel di atas!
+### =========================================================================
+
+# 2.1 Login Admin (Owner Hotel)
+# -> Salin string "access_token" dari respons ini ke variabel @adminToken di paling atas!
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@ngotelin.com",
+  "password": "12345678"
+}
+
+###
+# 2.2 Login Staff (Housekeeping / Front Office)
+# -> Salin string "access_token" dari respons ini ke variabel @staffToken di paling atas!
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "staff@ngotelin.com",
+  "password": "staffpassword123"
+}
+
+###
+# 2.3 Login Tamu Hotel (User Awam)
+# -> Salin string "access_token" dari respons ini ke variabel @userToken di paling atas!
+# -> INTIP PANEL HEADERS DI KANAN: Server resmi melampirkan "Set-Cookie: access_token=..." yang Anti-XSS!
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "mat@ngotelin.com",
+  "password": "12345678"
+}
+
+###
+# 2.4 Test Endpoint Logout (Untuk melihat penghapusan Cookie dari Browser)
+POST {{baseUrl}}/auth/logout
+
+
+### =========================================================================
+### 🔵 BAB 3: PERSIAPAN MASTER KAMAR HOTEL & GALERI (Oleh Admin & Uji RBAC)
+### -> Bukti arsitektur bahwa hanya Admin yang mampu mengatur master properti hotel!
+### =========================================================================
+
+# 3.1 [RBAC: ADMIN ONLY] Admin Membuat Kamar Deluxe 101
+# -> Pasang token admin. Setelah berhasil, salin "id" kamar ke variabel @resourceId di atas!
 POST {{baseUrl}}/resources
 Content-Type: application/json
+Authorization: Bearer {{adminToken}}
 
 {
   "name": "Triple Room Luxury",
@@ -73,20 +183,45 @@ Content-Type: application/json
   "price_per_night": 500000,
   "facilities": ["TV", "AC", "Wi-Fi", "Extra Bed"]
 }
+# 👆 SALIN ID DARI KAMAR INI KE VARIABEL @resourceId DI ATAS!
 
-### Resource Update
-PATCH {{baseUrl}}/resources/{{resourceId}}
+###
+GET  {{baseUrl}}/resources/
+Authorization: Bearer {{adminToken}}
+
+
+###
+# 3.2 [RBAC: ADMIN ONLY] Admin Membuat Kamar VVIP Penthouse 202
+# -> Salin "id" kamar VVIP ke variabel @resourceIdVVIP di atas!
+POST {{baseUrl}}/resources
 Content-Type: application/json
+Authorization: Bearer {{adminToken}}
 
 {
-  "name": "Kamar Standard B"
+  "name": "VVIP Penthouse Suite 202",
+  "type": "vvip",
+  "location": "Lantai 10 (Rooftop View)",
+  "capacity": 6,
+  "price_per_night": 2000000,
+  "facilities": ["Private Jacuzzi", "Private Elevator", "Butler Service 24/7", "AI Smart Concierge"]
 }
+# 👆 SALIN ID DARI KAMAR INI KE VARIABEL @resourceIdVVIP DI ATAS!
 
-### Resource Delete
-DELETE {{baseUrl}}/resources/{{resourceId}}
+###
+# 3.3 [RBAC: ADMIN ONLY] Admin Menambah Foto Galeri untuk Kamar Deluxe
+POST {{baseUrl}}/room-images
+Content-Type: application/json
+Authorization: Bearer {{adminToken}}
 
+{
+  "resource_id": "{{resourceId}}",
+  "image_url": "./Jamil.png",
+  "is_primary": true
+}
+# 👆 SALIN ID GAMBAR KE VARIABEL @roomImageId DI ATAS!
 
-### Get All Resources (Bisa ditambah filter: ?search=kamar&location=lantai1&type=vip)
+###
+# 3.4 [PUBLIC ROUTE] Tamu Awam Mengecek Katalog Seluruh Kamar Hotel
 GET {{baseUrl}}/resources?search=&location=&type=
 
 ### Get Single Resource
@@ -174,17 +309,37 @@ Content-Type: image/jpeg
 
 ------WebKitFormBoundary7MA4YWxk--
 
-### =========================================
-### 4. SCHEDULES (Jadwal)
-### =========================================
-
-
 
 # NEW SCHEDULE
 # Create Schedule (Buat 1 Jadwal)
 ###
+# 3.5 [PUBLIC ROUTE] Tamu Mengecek Detail Ketersediaan Kamar by Rentang Tanggal
+GET {{baseUrl}}/resources/available?checkIn=2026-08-01&checkOut=2026-08-05
+
+###
+# 3.6 [UJI MENTAL PENJAGA RBAC!] Tamu Awam Mencoba Menghasut & Merubah Harga Kamar
+# -> Kita sengaja pasangkan {{userToken}} (token tamu) ke endpoint khusus Admin.
+# -> HASILNYA: Satpam kita langsung membentengi rute dan menjawab "403 FORBIDDEN - Akses Ditolak!"
+PATCH {{baseUrl}}/resources/{{resourceId}}
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+
+{
+  "price_per_night": 1000,
+  "name": "Kamar Udah Gue Bajak Harganya"
+}
+
+
+### =========================================================================
+### 🟣 BAB 4: PENGATURAN JADWAL OPERASIONAL & MAINTENANCE (Oleh Staff / Admin)
+### -> Memperlihatkan sinergisitas tim teknisi kamar & penjagaan RBAC
+### =========================================================================
+
+# 4.1 [RBAC: STAFF & ADMIN ONLY] Housekeeping Mengunci Jadwal Kamar VVIP untuk Maintenance
+# -> Staff berwenang mengunci kamar agar tidak ditawarkan oleh AI atau disewa tamu awam.
 POST {{baseUrl}}/schedule
 Content-Type: application/json
+Authorization: Bearer {{staffToken}}
 
 {
   "resource_id": "{{resourceId}}",
@@ -192,210 +347,123 @@ Content-Type: application/json
   "end_time": "2026-08-05T14:00:00.000Z",
   "status": "maintenance"
 }
+# 👆 SALIN ID JADWAL INI KE VARIABEL @scheduleId DI ATAS!
 
-# Create Batch (lewat semenit bisa di kasi aksi. jika jadwal available)
-### 
-POST {{baseUrl}}/schedule/batch
+###
+# 4.2 [PUBLIC ROUTE] Kalender Frontend Cek Apakah Kamar VVIP Sedang Sibuk / Blocked
+GET {{baseUrl}}/schedule/busy/{{resourceIdVVIP}}
 Content-Type: application/json
 
-[
-  {
-    "resource_id": "{{resourceIdVVIP}}",
-    "start_time": "2026-07-27T09:00:00.000Z",
-    "end_time": "2026-07-28T12:00:00.000Z",
-    "status": "maintenance"
-  },
-  {
-    "resource_id": "{{resourceIdVVIP}}",
-    "start_time": "2026-07-28T12:01:00.000Z",
-    "end_time": "2026-07-29T12:00:00.000Z",
-    "status": "booked"
-  }
-]
+###
+# 4.3 [RBAC: STAFF ONLY] Staff Memperbarui Waktu Servis Kamar
+PATCH {{baseUrl}}/schedule/{{scheduleId}}
+Content-Type: application/json
+Authorization: Bearer {{staffToken}}
 
-### Get Find All
+{
+  "end_time": "2026-07-29T20:00:00.000Z"
+}
+
+###
+# 4.4 [UJI RBAC] Admin/Staff Ngecek Seluruh Log Jadwal Hotel
+# -> HASILNYA: Sukses 200 OK (Menampilkan data log maintenance dan reservasi)
 GET {{baseUrl}}/schedule
-Content-Type: application/json
+Authorization: Bearer {{staffToken}}
 
-### Find By Id
-GET {{baseUrl}}/schedule/{{scheduleId}}
-Content-Type: application/json
-
-### Find Busy Schedule (check pada jam 12 siang tanggal 26, jika tidak ada respon "ce857014-f4a7-4e63-b9ea-1d1d44c43f56", maka dia menangkap yg benar booked/maintenece pada rentang waktu realtime() - dia mencatat tanggal yg masi belum di lewati
-GET {{baseUrl}}/schedule/busy/{{resourceId}}
-Content-Type: application/json
-
-### Update Schedule (skenario ubah waktu boking)
-PATCH {{baseUrl}}/schedule/{{scheduleId}}
-Content-Type: application/json
-
-{
-  "start_time": "2026-08-05T09:00:00+07:00",
-  "end_time": "2026-08-05T12:00:00+07:00"
-}
-
-### Update Schedule (skenario ubah status jadi canceled, karena available otomtis sesuai tenggat waktu) 
-PATCH {{baseUrl}}/schedule/{{scheduleId}}
-Content-Type: application/json
-
-{
-  "status": "canceled"
-}
-
-### Delete Schedule
-DELETE {{baseUrl}}/schedule/{{scheduleId}}
-
-### =========================================
-### 5. BOOKINGS (Penyewaan)
-### =========================================
+###
+# 4.5 [UJI RBAC] Tamu Mencoba Mengintip Log Jadwal Internal Hotel
+# -> HASILNYA: 403 Forbidden (Akses Ditolak! Rute ini barusan lu gembok khusus Admin/Staff)
+GET {{baseUrl}}/schedule
+Authorization: Bearer {{userToken}}
 
 
-### 1. CREATE BOOKING (Otomatis bikin Schedule & Payment)
+###
+GET {{baseUrl}}/resources
+Authorization: Bearer {{adminToken}}
+
+
+
+### =========================================================================
+### 🟠 BAB 5: PENYEWAAN KAMAR (BOOKING), DOUBLE-BOOKING PROTECTION & INVOICE
+### -> Puncaknya di mana uang dan transaksi dikawal ketat oleh Atomic Database Transaction!
+### =========================================================================
+
+# 5.1 [TAMU LOGIN REQUIRED] Sultan Budi Memesan Kamar Deluxe 101 Selama 3 Malam
+# -> OTOMATIS: Sistem mengalikan harga kamar (500.000 x 3 malam = 1.500.000) dan diset abadi di total_price.
+# -> OTOMATIS: Terbuat 1 baris jadwal (Schedule) berstatus "booked" yang mengunci slot tanggal tersebut.
+# -> OTOMATIS: Menerbitkan invoice pembayaran (Payment) di database berstatus "pending".
 POST {{baseUrl}}/bookings
 Content-Type: application/json
+Authorization: Bearer {{userToken}}
 
 {
-  "user_id": "{{userId}}",
   "resource_id": "{{resourceId}}",
-  "start_time": "2026-08-05T01:00:00Z",
-  "end_time": "2026-08-07T09:00:00Z",
-  "notes": "perkara utc gua nginep",
-  "payment_method": "qris" 
+  "start_time": "2026-08-01T14:00:00Z",
+  "end_time": "2026-08-04T12:00:00Z",
+  "notes": "Tolong disiapkan welcome drink buah segar dan selimut tambahan ya Mba",
+  "payment_method": "qris"
 }
-### Note payment_method sesuaikan dengan enum PaymentMethod lu (misal: 'transfer', 'cash', dll)
+# 👆 SALIN "id" DARI BOOKING YANG TERCIERTA INI KE VARIABEL @bookingId DI ATAS!
 
-### 2. GET ALL BOOKINGS (Data lengkap + relasi)
-GET {{baseUrl}}/bookings
+###
+# 5.2 [UJI KESAKTIAN ANTI DOUBLE-BOOKING!] Tamu Lain Mengklik Reservasi di Kamar & Jam yang Sama
+# -> Silakan kamu tekan "Send Request" SEKALI LAGI di jam yang beririsan ini.
+# -> HASILNYA SEKRUP ATOMIK TRANSAKSI BERJALAN: Sistem membalas "409 Conflict: Resource/Ruangan sudah dibooking pada jam tersebut!"
+POST {{baseUrl}}/bookings
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
 
-### 3. GET BOOKINGS FILTER: ANTRIAN STAFF
-GET {{baseUrl}}/bookings?status=pending
+{
+  "resource_id": "{{resourceId}}",
+  "start_time": "2026-08-02T10:00:00Z",
+  "end_time": "2026-08-03T12:00:00Z",
+  "notes": "Saya juga mau pesan di tanggal yang sama dong!",
+  "payment_method": "gopay"
+}
 
-### 4. GET BOOKINGS FILTER: RIWAYAT USER TERTENTU
-GET {{baseUrl}}/bookings?user_id={{userId}}
-
-### 5. GET DETAIL BOOKING (By ID)
+###
+# 5.3 [TAMU LOGIN REQUIRED] Sultan Budi Mengecek Rincian Pesanan dan Status Tagihannya
+# -> Kamu akan melihat relasi tabel "payment: { amount: 1500000, status: 'pending' }" di balasan JSON
 GET {{baseUrl}}/bookings/{{bookingId}}
+Authorization: Bearer {{userToken}}
 
-### 6. UPDATE BOOKING: STAFF APPROVE
-### (Otomatis melunaskan tabel payment)
+###
+# 5.4 [RBAC: ADMIN & STAFF] Mba Front Office Cek Antrian Bookingan Masalah Pending
+GET {{baseUrl}}/bookings?status=pending
+Authorization: Bearer {{staffToken}}
+
+###
+# 5.5 [RBAC: ADMIN & STAFF] KONFIRMASI PEMBAYARAN SUKSES (Manual Reconciliation)
+# -> Kejaibannya: Ketika status bookingan diset jadi "approved", SISTEM OTOMATIS MERUBAH TABEL PAYMENT JADI "PAID" dan mencetak jam bayar!
 PATCH {{baseUrl}}/bookings/{{bookingId}}
 Content-Type: application/json
+Authorization: Bearer {{staffToken}}
 
 {
   "status": "approved",
-  "notes": "Pembayaran telah dikonfirmasi oleh Admin"
+  "notes": "Bukti QRIS 1.500.000 tervalidasi masuk akal. Kunci kamar 101 siap diberikan."
 }
 
-### 7. UPDATE BOOKING: STAFF REJECT
-### (Otomatis ubah schedule jadi CANCELED)
+###
+# 5.6 [TAMU LOGIN REQUIRED] Tamu Melihat Kuitansi Bukti Pembayaran Lunas
+# -> Perhatikan bagian payment di JSON response: "status: 'paid'" dan "paid_at: <Waktu_Sekarang>"
+GET {{baseUrl}}/bookings/{{bookingId}}
+Authorization: Bearer {{userToken}}
+
+###
+# 5.7 [RBAC: ADMIN & STAFF] Guest Check-Out (Selesai Menginap)
 PATCH {{baseUrl}}/bookings/{{bookingId}}
 Content-Type: application/json
+Authorization: Bearer {{staffToken}}
 
 {
-  "status": "rejected",
-  "notes": "Booking fiktif, utc kaga jelas"
+  "status": "completed",
+  "notes": "Tamu sudah checkout dengan rapi, kunci dikembalikan tanpa kerusakan."
 }
 
-### 8. UPDATE BOOKING: CHECK-IN / COMPLETED
-PATCH {{baseUrl}}/bookings/{{bookingId}}
-Content-Type: application/json
-
-{
-  "status": "approved",
-  "notes": "Guest sudah check-out, kunci dikembalikan"
-}
-
-### 9. DELETE / CANCEL BOOKING (Oleh User/Staff)
-### (Otomatis ubah schedule jadi CANCELED)
+###
+# 5.8 [UJI BEST PRACTICE CORPO] Skenario Soft-Cancel / Batal Pesanan (Oleh Tamu)
+# -> Catatan: Kita menekan DELETE pada rute ini BUKAN menghapus permanen dari DB (supaya audit laporan akuntansi tidak musnah / berlubang).
+# -> EFEKNYA: Status pesanan berubah jadi "canceled", invoice gugur, dan slot jadwal hotel kembali "available"!
 DELETE {{baseUrl}}/bookings/{{bookingId}}
-
-### =========================================
-### 6. AI BOT
-### =========================================
-
-# Test Chat with AI 
-POST {{baseUrl}}/ai/chat
-Content-Type: application/json
-
-{
-  "user_id": "{{userId}}",
-  "message": "gua tertarik sama 505, lo bisa bantu bookingin?"
-}
-### =========================================
-### 7. NOTIFICATIONS
-### =========================================
-### Notification
-# Get All Notification
-GET {{baseUrl}}/notifications
-Content-Type: application/json
-
-# unread-count
-###
-GET {{baseUrl}}/notifications/unread-count
-Content-Type: application/json
-
-# read-all
-###
-PATCH {{baseUrl}}/notifications/read-all
-Content-Type: application/json
-
-# read single notification
-###
-PATCH {{baseUrl}}/notifications/{{notificationId}}/read
-Content-Type: application/json
-
-### =========================================
-### 8. REVIEW
-### =========================================
-POST {{baseUrl}}/reviews
-Content-Type: application/json
-
-{
-  "booking_id": "{{bookingId}}",
-  "rating": 5,
-  "comment": "Luar biasa"
-}
-
-###
-GET {{baseUrl}}/reviews/resource/{{resourceIdVVIP}}
-Content-Type: application/json
-
-###
-GET {{baseUrl}}/reviews/{{reviewId}}
-Content-Type: application/json
-
-###
-DELETE {{baseUrl}}/reviews/{{reviewId}}
-Content-Type: application/json
-
-### =========================================
-### 9. ROOM IMAGE
-### =========================================
-
-###
-POST {{baseUrl}}/room-images/upload
-Content-Type: multipart/form-data
-
-{
-  "resource_id": "{{resourceId}}",
-  "file": "https://pin.it/KCpJOaPgm" ,
-  "is_primary": true 
-}
-
-### Get All
-GET {{baseUrl}}/room-images
-Content-Type: application/json
-
-### Room Image Sekaligus Resource (bikin kamar sekaligus upload foto)
-POST {{baseUrl}}/resources
-Content-Type: multipart/form-data
-
-{
-  "name": "SSH Room",
-  "type": "standard",
-  "location": "Lantai 2, Blok Z",
-  "capacity": 1,
-  "price_per_night": 500000,
-  "facilities": ["Wi-Fi", "AC", "TV", "Kamar Mandi Dalam"],
-  "file": "https://pin.it/KCpJOaPgm" 
-}
+Authorization: Bearer {{userToken}}

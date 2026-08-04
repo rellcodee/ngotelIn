@@ -1,9 +1,9 @@
-import { Injectable, ConflictException, NotFoundException, BadRequestException } from '@nestjs/common';
+import { Injectable, ConflictException, NotFoundException, BadRequestException, ForbiddenException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { CreateBookingDto } from './dto/create-booking.dto';
 import { UpdateBookingDto } from './dto/update-booking.dto';
-import { ScheduleStatus, BookingStatus, PaymentStatus } from '../common/enums';
+import { ScheduleStatus, BookingStatus, PaymentStatus, Role } from '../common/enums';
 import { BookingStatusUpdatedEvent } from '../notifications/events/booking-status-updated.event';
 
 @Injectable()
@@ -11,6 +11,21 @@ export class BookingsService {
   constructor(private readonly prisma: PrismaService,
     private readonly eventEmitter: EventEmitter2
   ) { }
+
+  // --- CEK KEPEMILIKAN TRANSAKSI ---
+  private checkBookingOwnership(
+    bookingUserId: string | null,
+    currentUser: { userId: string; role: string },
+  ) {
+    if (currentUser.role === Role.ADMIN || currentUser.role === Role.STAFF) {
+      return;
+    }
+    if (currentUser.userId !== bookingUserId) {
+      throw new ForbiddenException(
+        'Akses Ditolak! Anda tidak berhak memanipulasi atau melihat transaksi tamu lain.',
+      );
+    }
+  }
 
   private extractWibDateString(dateInput: string | Date): string {
     const date = typeof dateInput === 'string' ? new Date(dateInput) : dateInput;
@@ -28,7 +43,6 @@ export class BookingsService {
     // 12:00 WIB setara dengan 05:00 UTC
     const endTime = new Date(`${endDateStr}T05:00:00.000Z`);
 
-    // Validasi dasar: Jam selesai gak boleh sebelum jam mulai
     if (endTime <= startTime) {
       throw new BadRequestException('Waktu check-out harus minimal 1 hari (besoknya) setelah check-in!');
     }
@@ -109,20 +123,36 @@ export class BookingsService {
     };
   }
 
-  async cancelBooking(bookingId: string) {
-    const updatedBooking = await this.prisma.$transaction(async (tx) => {
+  async cancelBooking(
+    bookingId: string,
+    currentUser: { userId: string; role: string },
+  ) {
+    return this.prisma.$transaction(async (tx) => {
       const booking = await tx.bookings.findUnique({
         where: { id: bookingId },
         include: { payment: true },
       });
 
-      if (!booking) throw new NotFoundException('Data booking tidak ditemukan!');
-      if (booking.status === BookingStatus.CANCELED) throw new ConflictException('Booking ini sudah dibatalkan sebelumnya!');
-      if (booking.status === BookingStatus.CHECKED_IN || booking.status === BookingStatus.COMPLETED) {
-        throw new ConflictException('Tidak bisa membatalkan booking yang sedang berjalan atau sudah selesai!');
+      if (!booking)
+        throw new NotFoundException('Data booking tidak ditemukan!');
+
+      // PENGECEKAN KEPEMILIKAN!
+      this.checkBookingOwnership(booking.user_id, currentUser);
+
+      if ((booking.status as string) === (BookingStatus.CANCELED as string)) {
+        throw new ConflictException('Booking ini sudah dibatalkan sebelumnya!');
       }
 
-      const updated = await tx.bookings.update({
+      if (
+        (booking.status as string) === (BookingStatus.CHECKED_IN as string) ||
+        (booking.status as string) === (BookingStatus.COMPLETED as string)
+      ) {
+        throw new ConflictException(
+          'Tidak bisa membatalkan booking yang sedang berjalan atau sudah selesai!',
+        );
+      }
+
+      const updatedBooking = await tx.bookings.update({
         where: { id: bookingId },
         data: { status: BookingStatus.CANCELED },
       });
@@ -134,32 +164,42 @@ export class BookingsService {
         });
       }
 
-      if (booking.payment && booking.payment.status === PaymentStatus.PENDING) {
+      if (
+        booking.payment &&
+        (booking.payment.status as string) === (PaymentStatus.PENDING as string)
+      ) {
         await tx.payments.update({
           where: { id: booking.payment.id },
           data: { status: PaymentStatus.CANCELED },
         });
       }
 
-      return updated;
+      // 4. EMIT EVENT CANCEL
+      this.eventEmitter.emit('booking.status_updated', {
+        user_id: updatedBooking.user_id,
+        booking_id: updatedBooking.id,
+        status: BookingStatus.CANCELED,
+      } as BookingStatusUpdatedEvent);
+
+      return {
+        message: 'Booking berhasil dibatalkan. Kamar telah tersedia kembali.',
+        booking_id: updatedBooking.id,
+        booking_status: updatedBooking.status,
+      };
+
     });
 
-    // 4. EMIT EVENT CANCEL
-    this.eventEmitter.emit('booking.status_updated', {
-      user_id: updatedBooking.user_id,
-      booking_id: updatedBooking.id,
-      status: BookingStatus.CANCELED,
-    } as BookingStatusUpdatedEvent);
-
-    return {
-      message: 'Booking berhasil dibatalkan. Kamar telah tersedia kembali.',
-      booking_id: updatedBooking.id,
-      booking_status: updatedBooking.status,
-    };
   }
 
-  async findAll(userId?: string, status?: string) {
-    // Bisa ditarik semua (Staff), atau difilter per user (Client History)
+  async findAll(
+    currentUser: { userId: string; role: string },
+    userId?: string,
+    status?: string,
+  ) {
+    if (currentUser.role === (Role.USER as string)) {
+      userId = currentUser.userId;
+    }
+
     return this.prisma.bookings.findMany({
       where: {
         ...(userId && { user_id: userId }),
@@ -176,13 +216,11 @@ export class BookingsService {
         },
         payment: true,
       },
-      orderBy: {
-        created_at: 'desc', // terbaru
-      },
+      orderBy: { created_at: 'desc' },
     });
   }
 
-  async findOne(id: string) {
+  async findOne(id: string, currentUser: { userId: string; role: string }) {
     const booking = await this.prisma.bookings.findUnique({
       where: { id },
       include: {
@@ -192,14 +230,14 @@ export class BookingsService {
       },
     });
 
-    if (!booking) {
+    if (!booking)
       throw new NotFoundException(`Booking dengan ID ${id} tidak ditemukan!`);
-    }
+
+    this.checkBookingOwnership(booking.user_id, currentUser);
 
     return booking;
   }
 
-  // Update Operasional
   async update(id: string, dto: UpdateBookingDto) {
     const updatedBooking = await this.prisma.$transaction(async (tx) => {
       const booking = await tx.bookings.findUnique({ where: { id } });

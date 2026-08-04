@@ -1,26 +1,33 @@
-import { IsUUID, IsNotEmpty, IsDateString, IsOptional, IsString, IsEnum } from 'class-validator';
+import {
+  IsUUID,
+  IsNotEmpty,
+  IsDateString,
+  IsOptional,
+  IsString,
+  IsEnum,
+} from 'class-validator';
 import { PaymentMethod } from 'src/common/enums';
 export class CreateBookingDto {
-    @IsUUID()
-    @IsNotEmpty()
-    user_id: string; // Tambahkan ini sementara untuk tes di Postman
+  @IsUUID()
+  @IsOptional()
+  user_id?: string;
 
-    @IsUUID()
-    @IsNotEmpty()
-    resource_id: string;
+  @IsUUID()
+  @IsNotEmpty()
+  resource_id: string;
 
-    @IsDateString()
-    @IsNotEmpty()
-    start_time: string;
+  @IsDateString()
+  @IsNotEmpty()
+  start_time: string;
 
-    @IsDateString()
-    @IsNotEmpty()
-    end_time: string;
+  @IsDateString()
+  @IsNotEmpty()
+  end_time: string;
 
-    @IsString()
-    @IsOptional()
-    notes?: string;
+  @IsString()
+  @IsOptional()
+  notes?: string;
 
-    @IsEnum(PaymentMethod, { message: 'Invalid payment method' })
-    payment_method: PaymentMethod;
+  @IsEnum(PaymentMethod, { message: 'Invalid payment method' })
+  payment_method: PaymentMethod;
 }
