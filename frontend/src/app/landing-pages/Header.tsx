@@ -1,10 +1,15 @@
 "use client"; // Menandakan bahwa komponen ini adalah Client Component di Next.js (bisa menggunakan interactivity/state)
 
 import React, { useState } from "react"; // Mengimpor React dan hook useState untuk mengelola state menu mobile
+import Link from "next/link"; // Mengimpor komponen Link dari Next.js untuk navigasi antar halaman tanpa reload
 import { Building2, Menu, X } from "lucide-react"; // Mengimpor ikon logo, hamburger menu, dan tombol tutup dari lucide-react
 
+interface HeaderProps {
+  activePage?: "home" | "kamar" | string; // Prop opsional untuk menentukan halaman mana yang sedang aktif
+}
+
 // Komponen Header: Menampilkan navigasi utama di bagian teratas halaman website SiniBook Hotel
-export default function Header() {
+export default function Header({ activePage = "home" }: HeaderProps) {
   // State untuk melacak apakah menu navigasi versi mobile sedang terbuka atau tertutup
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -15,9 +20,9 @@ export default function Header() {
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3.5 sm:px-6 lg:px-8">
         
         {/* SECTION LOGO: Menampilkan logo SiniBook Hotel di sebelah kiri */}
-        <div className="flex items-center gap-2">
+        <Link href="/" className="flex items-center gap-2 group">
           {/* Kotak latar ikon logo dengan warna hijau terang yang memberikan aksen modern */}
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#126E4E] text-white shadow-inner">
+          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#126E4E] text-white shadow-inner transition-transform group-hover:scale-105">
             {/* Ikon Gedung / Hotel */}
             <Building2 className="h-5 w-5" />
           </div>
@@ -25,32 +30,46 @@ export default function Header() {
           <span className="text-xl sm:text-2xl font-bold tracking-tight text-white">
             SiniBook
           </span>
-        </div>
+        </Link>
 
         {/* SECTION NAVIGASI DESKTOP: Menampilkan menu navigasi utama (persis sesuai screenshot desain) */}
         <nav className="hidden items-center gap-7 md:flex">
           {/* Link Beranda */}
-          <a href="#beranda" className="text-sm font-medium text-white transition-colors hover:text-emerald-200">
+          <Link
+            href="/"
+            className={`text-sm font-medium transition-colors hover:text-emerald-200 relative py-1 ${
+              activePage === "home"
+                ? "text-white font-bold after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-emerald-400 after:rounded-full"
+                : "text-emerald-100/90"
+            }`}
+          >
             Beranda
-          </a>
-          {/* Link Kamar (Disiapkan untuk Halaman Terpisah Nanti) */}
-          <a href="#" onClick={(e) => e.preventDefault()} className="text-sm font-medium text-emerald-100/90 transition-colors hover:text-white cursor-pointer">
+          </Link>
+          {/* Link Kamar */}
+          <Link
+            href="/kamar"
+            className={`text-sm font-medium transition-colors hover:text-emerald-200 relative py-1 ${
+              activePage === "kamar"
+                ? "text-white font-bold after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-emerald-400 after:rounded-full"
+                : "text-emerald-100/90"
+            }`}
+          >
             Kamar
-          </a>
-          {/* Link Fasilitas (Disiapkan untuk Halaman Terpisah Nanti) */}
-          <a href="#" onClick={(e) => e.preventDefault()} className="text-sm font-medium text-emerald-100/90 transition-colors hover:text-white cursor-pointer">
+          </Link>
+          {/* Link Fasilitas */}
+          <a href="/#fasilitas" className="text-sm font-medium text-emerald-100/90 transition-colors hover:text-white cursor-pointer">
             Fasilitas
           </a>
-          {/* Link Tentang Hotel (Disiapkan untuk Halaman Terpisah Nanti) */}
-          <a href="#" onClick={(e) => e.preventDefault()} className="text-sm font-medium text-emerald-100/90 transition-colors hover:text-white cursor-pointer">
+          {/* Link Tentang Hotel */}
+          <a href="/#tentang-kami" className="text-sm font-medium text-emerald-100/90 transition-colors hover:text-white cursor-pointer">
             Tentang Hotel
           </a>
           {/* Link Promo */}
-          <a href="#promo" className="text-sm font-medium text-emerald-100/90 transition-colors hover:text-white">
+          <a href="/#promo" className="text-sm font-medium text-emerald-100/90 transition-colors hover:text-white">
             Promo
           </a>
           {/* Link Kontak */}
-          <a href="#kontak" className="text-sm font-medium text-emerald-100/90 transition-colors hover:text-white">
+          <a href="/#kontak" className="text-sm font-medium text-emerald-100/90 transition-colors hover:text-white">
             Kontak
           </a>
         </nav>
@@ -85,12 +104,12 @@ export default function Header() {
         <div className="border-t border-emerald-800 bg-[#073524] px-4 pt-3 pb-6 md:hidden">
           <div className="flex flex-col gap-3">
             {/* Link Navigasi versi mobile */}
-            <a href="#beranda" className="rounded-md px-3 py-2 text-base font-medium text-white hover:bg-[#0B4F37]" onClick={() => setIsMobileMenuOpen(false)}>Beranda</a>
-            <a href="#" className="rounded-md px-3 py-2 text-base font-medium text-emerald-100 hover:bg-[#0B4F37]" onClick={(e) => { e.preventDefault(); setIsMobileMenuOpen(false); }}>Kamar</a>
-            <a href="#" className="rounded-md px-3 py-2 text-base font-medium text-emerald-100 hover:bg-[#0B4F37]" onClick={(e) => { e.preventDefault(); setIsMobileMenuOpen(false); }}>Fasilitas</a>
-            <a href="#" className="rounded-md px-3 py-2 text-base font-medium text-emerald-100 hover:bg-[#0B4F37]" onClick={(e) => { e.preventDefault(); setIsMobileMenuOpen(false); }}>Tentang Hotel</a>
-            <a href="#promo" className="rounded-md px-3 py-2 text-base font-medium text-emerald-100 hover:bg-[#0B4F37]" onClick={() => setIsMobileMenuOpen(false)}>Promo</a>
-            <a href="#kontak" className="rounded-md px-3 py-2 text-base font-medium text-emerald-100 hover:bg-[#0B4F37]" onClick={() => setIsMobileMenuOpen(false)}>Kontak</a>
+            <Link href="/" className={`rounded-md px-3 py-2 text-base font-medium ${activePage === "home" ? "bg-[#0B4F37] text-white font-bold" : "text-emerald-100 hover:bg-[#0B4F37]"}`} onClick={() => setIsMobileMenuOpen(false)}>Beranda</Link>
+            <Link href="/kamar" className={`rounded-md px-3 py-2 text-base font-medium ${activePage === "kamar" ? "bg-[#0B4F37] text-white font-bold" : "text-emerald-100 hover:bg-[#0B4F37]"}`} onClick={() => setIsMobileMenuOpen(false)}>Kamar</Link>
+            <a href="/#fasilitas" className="rounded-md px-3 py-2 text-base font-medium text-emerald-100 hover:bg-[#0B4F37]" onClick={() => setIsMobileMenuOpen(false)}>Fasilitas</a>
+            <a href="/#tentang-kami" className="rounded-md px-3 py-2 text-base font-medium text-emerald-100 hover:bg-[#0B4F37]" onClick={() => setIsMobileMenuOpen(false)}>Tentang Hotel</a>
+            <a href="/#promo" className="rounded-md px-3 py-2 text-base font-medium text-emerald-100 hover:bg-[#0B4F37]" onClick={() => setIsMobileMenuOpen(false)}>Promo</a>
+            <a href="/#kontak" className="rounded-md px-3 py-2 text-base font-medium text-emerald-100 hover:bg-[#0B4F37]" onClick={() => setIsMobileMenuOpen(false)}>Kontak</a>
             
             {/* Tombol aksi versi mobile */}
             <div className="mt-4 flex flex-col gap-2 pt-2 border-t border-emerald-800/60">
@@ -107,3 +126,4 @@ export default function Header() {
     </header>
   );
 }
+
