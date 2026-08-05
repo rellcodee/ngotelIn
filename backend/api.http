@@ -455,3 +455,50 @@ Authorization: Bearer {{staffToken}}
 # -> EFEKNYA: Status pesanan berubah jadi "canceled", invoice gugur, dan slot jadwal hotel kembali "available"!
 DELETE {{baseUrl}}/bookings/{{bookingId}}
 Authorization: Bearer {{userToken}}
+
+
+### =========================================================================
+### 🟠 BAB 6: TEST MIDTRANS PAYMENT GATEWAY
+### =========================================================================
+
+###
+# 6.1 [ADMIN] Bikin Kamar Baru Khusus Test Midtrans
+POST {{baseUrl}}/resources
+Content-Type: application/json
+Authorization: Bearer {{adminToken}}
+
+{
+  "name": "Kamar Test Midtrans",
+  "type": "Midtrans Suite",
+  "location": "Lantai 99",
+  "capacity": 2,
+  "price_per_night": 250000,
+  "facilities": ["AC", "WiFi", "TV", "Simulator Midtrans"]
+}
+
+###
+# 6.2 [TAMU] Bikin Booking Baru buat Kamar Test Midtrans
+# PENTING: Ganti nilai variabel ini pakai ID kamar yang lu dapet dari respon 6.1!
+@midtransRoomId = b405a8af-210d-41de-a55e-47ddde3b9109
+
+POST {{baseUrl}}/bookings
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+
+{
+  "resource_id": "{{midtransRoomId}}",
+  "start_time": "2026-12-25T14:00:00.000Z",
+  "end_time": "2026-12-26T12:00:00.000Z",
+  "payment_method": "gopay",
+  "notes": "Tolong siapin simulator Midtransnya wkwk"
+}
+
+###
+GET {{baseUrl}}/bookings
+Authorization: Bearer {{userToken}}
+
+###
+# 6.3 [TAMU] Cek Status Booking & Payment Setelah Bayar di Midtrans
+# PENTING: Ganti ID di bawah sama ID Booking yang lu dapet dari respon 6.2 (kolom id)
+GET {{baseUrl}}/bookings/af1d58fe-ce3d-4f22-8590-8b9b4e0506e5
+Authorization: Bearer {{userToken}}

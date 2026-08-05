@@ -5,12 +5,21 @@ import { CreateBookingDto } from './dto/create-booking.dto';
 import { UpdateBookingDto } from './dto/update-booking.dto';
 import { ScheduleStatus, BookingStatus, PaymentStatus, Role } from '../common/enums';
 import { BookingStatusUpdatedEvent } from '../notifications/events/booking-status-updated.event';
+import * as midtransClient from 'midtrans-client';
+
 
 @Injectable()
 export class BookingsService {
   constructor(private readonly prisma: PrismaService,
     private readonly eventEmitter: EventEmitter2
   ) { }
+
+  // Midtrans
+  private snap = new midtransClient.Snap({
+    isProduction: false,
+    serverKey: process.env.MIDTRANS_SERVER_KEY || '',
+    clientKey: process.env.MIDTRANS_CLIENT_KEY || '',
+  });
 
   // --- CEK KEPEMILIKAN TRANSAKSI ---
   private checkBookingOwnership(
@@ -166,7 +175,7 @@ export class BookingsService {
 
       if (
         booking.payment &&
-        (booking.payment.status as string) === (PaymentStatus.PENDING as string)
+        (booking.payment.status) === (PaymentStatus.PENDING as string)
       ) {
         await tx.payments.update({
           where: { id: booking.payment.id },
