@@ -4,9 +4,9 @@
 # PUSAT VARIABEL SIKLUS HIDUP TRANSAKSI HOTEL (TEMPEL HASIL RESPONS DI SINI)
 # =============================================================================
 # Token di bawah ini nantikan kamu isi/salin setelah menekan Send Request di BAB 2 (Login)
-@adminToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQG5nb3RlbGluLmNvbSIsInN1YiI6Ijk0N2RiN2E0LTBiOGItNGJlNC04ZGJhLTMwYTFlZTRmNWQ1NyIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc4NTczNTUxMywiZXhwIjoxNzg1ODIxOTEzfQ.YqAcuF8acjnO1hNB5oCzvjx-l8r6s1H6TjUTrg-STHw
-@staffToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InN0YWZmQG5nb3RlbGluLmNvbSIsInN1YiI6IjIzYTgxMmY1LTcwY2MtNDcyMi1iMjI0LTQzM2FhZWRhYTA3ZiIsInJvbGUiOiJzdGFmZiIsImlhdCI6MTc4NTczNjg4NSwiZXhwIjoxNzg1ODIzMjg1fQ.QivsNbiuajfruD7y5ctmVIwSsdzKWSDFkjT001NqZnw
-@userToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im1hdEBuZ290ZWxpbi5jb20iLCJzdWIiOiIwMTgwNTNlMy03YjYxLTQ4ZjMtODlmMC1iMzQ5ZmM2OGEwMDMiLCJyb2xlIjoidXNlciIsImlhdCI6MTc4NTczNjk4OCwiZXhwIjoxNzg1ODIzMzg4fQ.PlsKwOj8_8J25QKmifwWGfsPdfohFqyJka0MJz4PmME
+@adminToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQG5nb3RlbGluLmNvbSIsInN1YiI6Ijk0N2RiN2E0LTBiOGItNGJlNC04ZGJhLTMwYTFlZTRmNWQ1NyIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc4NTg5MjgzNSwiZXhwIjoxNzg1OTc5MjM1fQ.teINEZKXKiL-ymni-cLlyEZ9JqZOeXAfXQr0S2dAWmg
+@staffToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InN0YWZmQG5nb3RlbGluLmNvbSIsInN1YiI6IjIzYTgxMmY1LTcwY2MtNDcyMi1iMjI0LTQzM2FhZWRhYTA3ZiIsInJvbGUiOiJzdGFmZiIsImlhdCI6MTc4NTg5MjkwNiwiZXhwIjoxNzg1OTc5MzA2fQ.vBTeM4MRC6YqWRCuX5z5IroJXITDIKiJS1kJhEHXOlk
+@userToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im1hdEBuZ290ZWxpbi5jb20iLCJzdWIiOiIwMTgwNTNlMy03YjYxLTQ4ZjMtODlmMC1iMzQ5ZmM2OGEwMDMiLCJyb2xlIjoidXNlciIsImlhdCI6MTc4NTg5Mjk1NiwiZXhwIjoxNzg1OTc5MzU2fQ.44-s9D5SqqDiN3kxeiR9bP0qGkAihuA4i-Z8gou9ufM
 
 # ID di bawah ini disalin secara berurutan waktu menempuh babak pengetasan di bawah:
 @userId = 018053e3-7b61-48f3-89f0-b349fc68a003
@@ -27,8 +27,8 @@ POST {{baseUrl}}/user/official
 Content-Type: application/json
 
 {
-  "name": "admin2",
-  "email": "admin2@ngotelin.com",
+  "name": "admintel",
+  "email": "admintel@ngotelin.com",
   "password": "12345678",
   "role": "admin"
 }
@@ -39,8 +39,8 @@ POST {{baseUrl}}/user/official
 Content-Type: application/json
 
 {
-  "name": "Rizqulloh",
-  "email": "rizqulloh@ngotelin.com",
+  "name": "hibban",
+  "email": "hibban@ngotelin.com",
   "password": "staffpassword123",
   "role": "staff"
 }
@@ -52,8 +52,8 @@ POST {{baseUrl}}/user
 Content-Type: application/json
 
 {
-  "name": "Riko Simanjuntak",
-  "email": "riko@ngotelin.com",
+  "name": "Andi",
+  "email": "andi@ngotelin.com",
   "password": "12345678"
 }
 # 👆 SALIN "id" dari respons di atas, tempel ke variabel @userId di atas layar!
@@ -62,6 +62,7 @@ Content-Type: application/json
 # 1.4 UJI KEAMANAN 1: Mass-Assignment Attack Protection di Rute Publik
 # -> Hacker mencoba daftar lewat rute umum tapi memaksa isian "role": "admin".
 # -> HASILNYA: Ditolak mentah 400 Bad Request
+# Sebaiknya tidak role di sini, karena api publik defaultnya adalah user, jadinya kalau butuh admin/staff harus lewat rute official
 POST {{baseUrl}}/user
 Content-Type: application/json
 
@@ -69,7 +70,6 @@ Content-Type: application/json
   "name": "Hacker Menyusup",
   "email": "hacker_iseng@ngotelin.com",
   "password": "hackedpassword123",
-  "role": "admin"
 }
 
 ###
@@ -80,8 +80,8 @@ POST {{baseUrl}}/user/official
 Content-Type: application/json
 
 {
-  "name": "Penyusup Ruang 2",
-  "email": "penyusup2@ngotelin.com",
+  "name": "Penyusup Ruang 3(izin admin)",
+  "email": "penyusup3@ngotelin.com",
   "password": "12345678",
   "role": "admin"
 }
@@ -117,7 +117,7 @@ Content-Type: application/json
 Authorization: Bearer {{userToken}}
 
 {
-  "name": "Idham Kholid SE"
+  "name": "Somaduh"
 }
 
 
@@ -171,14 +171,15 @@ POST {{baseUrl}}/auth/logout
 
 # 3.1 [RBAC: ADMIN ONLY] Admin Membuat Kamar Deluxe 101
 # -> Pasang token admin. Setelah berhasil, salin "id" kamar ke variabel @resourceId di atas!
+# Sebaiknya menggunakan Postman, Karena ada field opsional yaitu foto, dan max 5 foto
 POST {{baseUrl}}/resources
 Content-Type: application/json
 Authorization: Bearer {{adminToken}}
 
 {
-  "name": "Triple Room Luxury",
-  "type": "standard",
-  "location": "Lantai 1",
+  "name": "Maniac Room",
+  "type": "suite",
+  "location": "Lantai 3",
   "capacity": 3,
   "price_per_night": 500000,
   "facilities": ["TV", "AC", "Wi-Fi", "Extra Bed"]
@@ -208,27 +209,14 @@ Authorization: Bearer {{adminToken}}
 # 👆 SALIN ID DARI KAMAR INI KE VARIABEL @resourceIdVVIP DI ATAS!
 
 ###
-# 3.3 [RBAC: ADMIN ONLY] Admin Menambah Foto Galeri untuk Kamar Deluxe
-POST {{baseUrl}}/room-images
-Content-Type: application/json
-Authorization: Bearer {{adminToken}}
-
-{
-  "resource_id": "{{resourceId}}",
-  "image_url": "./Jamil.png",
-  "is_primary": true
-}
-# 👆 SALIN ID GAMBAR KE VARIABEL @roomImageId DI ATAS!
-
-###
 # 3.4 [PUBLIC ROUTE] Tamu Awam Mengecek Katalog Seluruh Kamar Hotel
-GET {{baseUrl}}/resources?search=&location=&type=
+GET {{baseUrl}}/resources?search=&location=lantai 1&type=
 
 ### Get Single Resource
 GET {{baseUrl}}/resources/{{resourceId}}
 
 
-### resource with image create (sebaiknya postman karena mengambil file local)
+### resource with image create (sebaiknya postman karena mengambil file local, di field opsional yaitu files)
 POST {{baseUrl}}/resources
 Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxk
 
@@ -276,7 +264,7 @@ Content-Type: image/jpeg
 ------WebKitFormBoundary7MA4YWxk--
 
 
-# resource with image edit
+# resource with image edit sebaiknya postman karena mengambil file local)
 
 PATCH http://localhost:3000/resources/042cee9c-01ce-49b4-96ed-466495d1eb6d
 Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxk
