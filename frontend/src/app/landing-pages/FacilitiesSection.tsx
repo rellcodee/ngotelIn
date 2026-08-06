@@ -1,108 +1,142 @@
-"use client"; // Client Component Next.js
+"use client";
 
-import React from "react"; // Mengimpor React
-import Image from "next/image"; // Mengimpor komponen Image dari Next.js untuk optimasi gambar
-import { ArrowRight } from "lucide-react"; // Mengimpor ikon panah kanan
+import { useState, useEffect } from "react";
+import { Building, CheckCircle2, Layers } from "lucide-react"; 
 
-// Array data 6 fasilitas hotel lengkap dengan gambar dan deskripsi
-const facilitiesData = [
-  {
-    id: 1,
-    title: "Kolam Renang",
-    description: "Kolam renang outdoor dengan pemandangan kota yang menakjubkan.",
-    image: "/images/pool.png", // Menggunakan gambar hasil generate rooftop pool
-  },
-  {
-    id: 2,
-    title: "Restoran",
-    description: "Menu kuliner khas nusantara dan hidangan internasional.",
-    image: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=800&q=80",
-  },
-  {
-    id: 3,
-    title: "Fitness Center",
-    description: "Peralatan gym modern dan lengkap untuk aktivitas olahraga harian.",
-    image: "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=800&q=80",
-  },
-  {
-    id: 4,
-    title: "Wi-Fi Kencang",
-    description: "Akses internet berkecepatan tinggi gratis di seluruh area hotel.",
-    image: "https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&w=800&q=80",
-  },
-  {
-    id: 5,
-    title: "Spa & Massage",
-    description: "Layanan pijat relaksasi dan perawatan tubuh oleh terapis berpengalaman.",
-    image: "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?auto=format&fit=crop&w=800&q=80",
-  },
-  {
-    id: 6,
-    title: "Ruang Rapat",
-    description: "Ruang meeting modern dan terfasilitasi lengkap untuk bisnis Anda.",
-    image: "https://images.unsplash.com/photo-1517502884422-41eaead166d4?auto=format&fit=crop&w=800&q=80",
-  },
-];
+interface FacilityResource {
+  id: string;
+  name: string;
+  type?: string | null;
+  facilities?: string[];
+}
 
-// Komponen FacilitiesSection: Menampilkan 6 kartu fasilitas hotel mewah
-export default function FacilitiesSection() {
+interface GroupedCategory {
+  type: string;
+  facilities: string[];
+}
+
+export default function FacilitiesByTypeSection() {
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+  
+  const [groupedData, setGroupedData] = useState<GroupedCategory[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchAndGroupFacilities() {
+      try {
+        const res = await fetch(`${apiUrl}/resources`);
+        if (!res.ok) throw new Error("Failed to fetch");
+        
+        const data: FacilityResource[] = await res.json();
+
+        // --- LOGIC PENGELOMPOKAN BERDASARKAN TYPE ---
+        const map = new Map<string, Set<string>>();
+
+        data.forEach((item) => {
+          // Kalau type-nya kosong/null, kita masukin ke kategori "Lainnya"
+          const category = item.type || "Lainnya";
+
+          if (!map.has(category)) {
+            map.set(category, new Set());
+          }
+
+          // Masukin semua fasilitas kamar ini ke Set kategori tersebut (biar gak duplikat)
+          item.facilities?.forEach((fac) => {
+            map.get(category)?.add(fac);
+          });
+        });
+
+        // Ubah balik format Map ke Array of Object biar gampang di-map ke JSX
+        const formatted: GroupedCategory[] = Array.from(map.entries()).map(([type, facSet]) => ({
+          type,
+          facilities: Array.from(facSet), // Ubah Set jadi Array string biasa
+        }));
+
+        setGroupedData(formatted);
+      } catch (err) {
+        console.error("Error fetching or grouping facilities:", err);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchAndGroupFacilities();
+  }, [apiUrl]);
+
+  if (loading) {
+    return (
+      <section className="w-full bg-[#F4F8F5] py-16 text-center">
+        <p className="text-gray-500 font-medium animate-pulse">Memuat fasilitas berdasarkan kategori...</p>
+      </section>
+    );
+  }
+
   return (
-    // Section utama fasilitas hotel dengan latar belakang putih netral
-    <section className="w-full bg-white py-16 sm:py-20" id="fasilitas">
-      {/* Wrapper pembatas lebar konten */}
+    <section className="w-full bg-[#F4F8F5] py-16 sm:py-20">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         
-        {/* HEADER SECTION: Judul di kiri dan Link 'Lihat semua fasilitas' di kanan */}
-        <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between mb-10">
-          <div>
+        {/* HEADER SECTION */}
+        <div className="flex items-center justify-between mb-12">
+          <div className="max-w-2xl">
             <h2 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl lg:text-4xl">
-              Fasilitas Hotel
+              Fasilitas Berdasarkan Tipe Kamar
             </h2>
-            <p className="mt-1 text-sm text-gray-500">
-              Nikmati fasilitas unggulan yang kami sediakan untuk kenyamanan menginap Anda.
+            <p className="mt-2 text-sm text-gray-600 sm:text-base">
+              Gabungan fasilitas unggulan dari setiap kategori tipe kamar yang tersedia.
             </p>
           </div>
-          {/* Link Lihat Semua Fasilitas */}
-          <a
-            href="#semua-fasilitas"
-            className="group flex items-center gap-1.5 text-sm font-semibold text-[#0B4F37] hover:text-[#073524]"
-          >
-            <span>Lihat semua fasilitas</span>
-            <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-          </a>
+          <div className="hidden sm:flex h-12 w-12 items-center justify-center rounded-2xl bg-[#0B4F37] text-white shadow-lg">
+            <Building className="h-6 w-6" />
+          </div>
         </div>
 
-        {/* GRID KARTU FASILITAS: 6 Kartu Fasilitas (2 baris x 3 kolom di desktop) */}
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {facilitiesData.map((item) => (
-            <div
-              key={item.id}
-              className="group relative h-64 overflow-hidden rounded-2xl bg-gray-900 shadow-md transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
-            >
-              {/* GAMBAR BACKGROUND KARTU FASILITAS */}
-              <Image
-                src={item.image}
-                alt={item.title}
-                fill
-                className="object-cover transition-transform duration-500 group-hover:scale-105"
-              />
+        {/* LOOPING PER KATEGORI (TYPE) */}
+        <div className="space-y-16">
+          {groupedData.length > 0 ? (
+            groupedData.map((group, index) => (
+              <div key={index} className="border-t border-emerald-100/60 pt-8 first:border-0 first:pt-0">
+                
+                {/* Judul Kategori / Type Kamar */}
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#0B4F37] text-white">
+                    <Layers className="h-5 w-5" />
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-900 uppercase tracking-wide">
+                    Tipe: {group.type}
+                  </h3>
+                </div>
 
-              {/* OVERLAY GRADIENT DARK: Agar teks judul dan penjelasan terlihat jelas */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
+                {/* Grid Fasilitas yang Udah Digabung & Dihilangin Duplikatnya */}
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                  {group.facilities.length > 0 ? (
+                    group.facilities.map((facName, idx) => (
+                      <div
+                        key={idx}
+                        className="flex items-start gap-4 rounded-xl bg-white p-4 shadow-sm border border-emerald-50 transition-all hover:border-[#0B4F37] hover:shadow-md"
+                      >
+                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-emerald-50 text-[#0B4F37]">
+                          <CheckCircle2 className="h-5 w-5" />
+                        </div>
+                        <div>
+                          <h4 className="text-sm font-bold text-gray-900 capitalize">
+                            {facName}
+                          </h4>
+                          <p className="mt-1 text-xs text-gray-500">
+                            Nikmati fasilitas {facName.toLowerCase()} pilihan untuk kenyamanan kelas {group.type}
+                          </p>
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <p className="text-sm text-gray-500 italic">Belum ada fasilitas terdaftar untuk tipe ini.</p>
+                  )}
+                </div>
 
-              {/* TEKS INFORMASI FASILITAS DIBAGIAN BAWAH KARTU */}
-              <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
-                {/* Judul Fasilitas */}
-                <h3 className="text-xl font-bold tracking-tight group-hover:text-emerald-300 transition-colors">
-                  {item.title}
-                </h3>
-                {/* Penjelasan Ringkas Fasilitas */}
-                <p className="mt-1 text-xs text-gray-200 line-clamp-2 font-light">
-                  {item.description}
-                </p>
               </div>
-            </div>
-          ))}
+            ))
+          ) : (
+            <p className="text-center text-gray-500 text-sm">Tidak ada data kategori kamar.</p>
+          )}
         </div>
 
       </div>

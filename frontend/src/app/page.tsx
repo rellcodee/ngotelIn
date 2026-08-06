@@ -4,7 +4,6 @@
 import React from "react"; // Mengimpor React
 import Header from "./landing-pages/Header"; // Mengimpor komponen Navigasi Header
 import HeroSection from "./landing-pages/HeroSection"; // Mengimpor komponen Banner Hero & Form Pencarian
-import PromoSection from "./landing-pages/PromoSection"; // Mengimpor komponen Kartu Promo Spesial
 import WhyUsSection from "./landing-pages/WhyUsSection"; // Mengimpor komponen 5 Keunggulan Hotel
 import FacilitiesSection from "./landing-pages/FacilitiesSection"; // Mengimpor komponen Fasilitas Hotel
 import AboutSection from "./landing-pages/AboutSection"; // Mengimpor komponen Profil Tentang Kami & Video Tour
@@ -27,22 +26,19 @@ export default function Home() {
         {/* 2. Banner Utama Hero & Form Pencarian Tanggal/Kamar */}
         <HeroSection />
 
-        {/* 3. Section Promo Spesial (3 Kartu Promo) */}
-        <PromoSection />
-
-        {/* 4. Section Mengapa Memilih SiniBook Hotel (5 Keunggulan) */}
+        {/* 3. Section Mengapa Memilih SiniBook Hotel (5 Keunggulan) */}
         <WhyUsSection />
 
-        {/* 5. Section Fasilitas Hotel (6 Fasilitas Mewah) */}
+        {/* 4. Section Fasilitas Hotel (6 Fasilitas Mewah) */}
         <FacilitiesSection />
 
-        {/* 6. Section Tentang SiniBook Hotel & Preview Video */}
+        {/* 5. Section Tentang SiniBook Hotel & Preview Video */}
         <AboutSection />
 
-        {/* 7. Section Testimoni Tamu (4 Ulasan Tamu) */}
+        {/* 6. Section Testimoni Tamu (4 Ulasan Tamu) */}
         <TestimonialSection />
 
-        {/* 8. Section Pertanyaan Populer FAQ (#faq) */}
+        {/* 7. Section Pertanyaan Populer FAQ (#faq) */}
         <FaqSection />
       </main>
 

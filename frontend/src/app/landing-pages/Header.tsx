@@ -66,7 +66,7 @@ export default function Header({ activePage = "home" }: HeaderProps) {
           </a>
           {/* Link Promo */}
           <a href="/#promo" className="text-sm font-medium text-emerald-100/90 transition-colors hover:text-white">
-            Promo
+            Testimoni
           </a>
           {/* Link Kontak */}
           <a href="/#kontak" className="text-sm font-medium text-emerald-100/90 transition-colors hover:text-white">
