@@ -1,25 +1,19 @@
 "use client"; // Client Component di Next.js App Router untuk interaktivitas modal & navigasi
 
-import React, { useState } from "react"; // Mengimpor React dan useState untuk mengelola state halaman
+import React, { useState, useEffect } from "react"; // Mengimpor React, useState, dan useEffect
 import Image from "next/image"; // Komponen Image Next.js untuk optimasi loading gambar kamar
 import Link from "next/link"; // Komponen Link Next.js untuk berpindah ke halaman detail kamar
 import {
-  Square,
-  Bed,
-  Wifi,
   Sparkles,
-  Utensils,
-  Coffee,
-  Headphones,
   Bot,
   PhoneCall,
   Search,
   Heart,
   X,
   SlidersHorizontal,
-  Star,
   Users,
-  Flame,
+  CheckCircle2,
+  MapPin,
 } from "lucide-react"; // Mengimpor ikon-ikon modern dari Lucide React
 
 // Mengimpor komponen layout utama (Header, Footer, dan Widget Chatbot AI)
@@ -27,233 +21,57 @@ import Header from "../landing-pages/Header";
 import Footer from "../landing-pages/Footer";
 import AiAssistantModal from "../landing-pages/AiAssistantModal";
 
-// Interface / tipe data typescript untuk struktur kartu kamar
-interface RoomSpec {
-  label: string;
-  icon: React.ElementType;
+// Interface / tipe data typescript untuk struktur kamar dari API
+interface RoomImage {
+  id: string;
+  image_url: string;
+  is_primary: boolean;
 }
 
 interface RoomItem {
   id: string;
-  badge: string;
-  title: string;
-  description: string;
-  image: string;
-  specs: RoomSpec[];
-  originalPrice: string;
-  discountBadge: string;
-  finalPrice: string;
-  period: string;
-  buttonText: string;
-  rating: string;
-  reviewCount: number;
-  stockBadge?: string;
-  isSolidButton?: boolean;
+  name: string;
+  type: string;
+  location: string;
+  capacity: number;
+  price_per_night: number;
+  facilities: string[];
+  room_images: RoomImage[];
 }
 
-// Data Katalog 8 Pilihan Kamar Lengkap & Variatif (100% Bahasa Indonesia)
-const ROOMS_DATA: RoomItem[] = [
-  {
-    id: "standard-room",
-    badge: "Pilihan Hemat",
-    title: "Standard Room",
-    description:
-      "Kamar ekonomis yang bersih, rapi, dan nyaman untuk backpacker atau traveler mandiri.",
-    image:
-      "https://images.unsplash.com/photo-1566665797739-1674de7a421a?auto=format&fit=crop&w=800&q=80",
-    specs: [
-      { label: "20 m²", icon: Square },
-      { label: "Single Bed", icon: Bed },
-      { label: "Wi-Fi Cepat", icon: Wifi },
-    ],
-    originalPrice: "Rp 650.000",
-    discountBadge: "DISKON 20%",
-    finalPrice: "Rp 520.000",
-    period: "/ malam",
-    buttonText: "Detail →",
-    rating: "4.7",
-    reviewCount: 62,
-    stockBadge: "Tersisa 3 Kamar!",
-    isSolidButton: false,
-  },
-  {
-    id: "superior-room",
-    badge: "Favorit Bisnis",
-    title: "Superior Room",
-    description:
-      "Kamar nyaman dan rapi yang dirancang khusus untuk profesional bisnis dengan area kerja pribadi.",
-    image:
-      "https://images.unsplash.com/photo-1611892440504-42a792e24d32?auto=format&fit=crop&w=800&q=80",
-    specs: [
-      { label: "25 m²", icon: Square },
-      { label: "Queen Bed", icon: Bed },
-      { label: "Wi-Fi Cepat", icon: Wifi },
-    ],
-    originalPrice: "Rp 850.000",
-    discountBadge: "DISKON 20%",
-    finalPrice: "Rp 680.000",
-    period: "/ malam",
-    buttonText: "Detail →",
-    rating: "4.8",
-    reviewCount: 78,
-    stockBadge: "Tersisa 4 Kamar!",
-    isSolidButton: false,
-  },
-  {
-    id: "deluxe-room",
-    badge: "Populer",
-    title: "Deluxe Room",
-    description:
-      "Kamar luas dengan pemandangan lanskap kota yang memukau dari jendela serta tempat tidur kelas premium.",
-    image:
-      "https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=800&q=80",
-    specs: [
-      { label: "35 m²", icon: Square },
-      { label: "King Bed", icon: Bed },
-      { label: "Pemandangan Kota", icon: Sparkles },
-    ],
-    originalPrice: "Rp 1.100.000",
-    discountBadge: "DISKON 15%",
-    finalPrice: "Rp 935.000",
-    period: "/ malam",
-    buttonText: "Detail →",
-    rating: "4.9",
-    reviewCount: 124,
-    stockBadge: "🔥 Paling Dicari!",
-    isSolidButton: false,
-  },
-  {
-    id: "executive-room",
-    badge: "Eksklusif",
-    title: "Executive Room",
-    description:
-      "Fasilitas eksklusif dengan ornamen kayu kenari berkualitas tinggi dan akses khusus ke executive lounge.",
-    image:
-      "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=800&q=80",
-    specs: [
-      { label: "Akses Lounge", icon: Utensils },
-      { label: "Mesin Nespresso", icon: Coffee },
-      { label: "Bathtub Mewah", icon: Sparkles },
-    ],
-    originalPrice: "Rp 1.500.000",
-    discountBadge: "DISKON 10%",
-    finalPrice: "Rp 1.350.000",
-    period: "/ malam",
-    buttonText: "Detail →",
-    rating: "4.9",
-    reviewCount: 96,
-    stockBadge: "Tersisa 2 Kamar!",
-    isSolidButton: false,
-  },
-  {
-    id: "family-suite",
-    badge: "Liburan Keluarga",
-    title: "Family Suite",
-    description:
-      "Kamar keluarga super luas dengan 2 Queen Bed, area bermain santai, dan sarapan buffet untuk 4 orang.",
-    image:
-      "https://images.unsplash.com/photo-1598928506311-c55ded91a20c?auto=format&fit=crop&w=800&q=80",
-    specs: [
-      { label: "Luas 50 m²", icon: Square },
-      { label: "2 Queen Bed", icon: Bed },
-      { label: "Kapasitas 4 Orang", icon: Users },
-    ],
-    originalPrice: "Rp 2.100.000",
-    discountBadge: "DISKON 15%",
-    finalPrice: "Rp 1.785.000",
-    period: "/ malam",
-    buttonText: "Detail →",
-    rating: "4.9",
-    reviewCount: 110,
-    stockBadge: "Gratis Sarapan 4 Orang",
-    isSolidButton: false,
-  },
-  {
-    id: "honeymoon-suite",
-    badge: "Romantis Pasangan",
-    title: "Honeymoon Suite",
-    description:
-      "Suasana romantis pasangan dengan tempat tidur berhias mawar, bathtub aromaterapi, dan wine gratis.",
-    image:
-      "https://images.unsplash.com/photo-1578683010236-d716f9a3f461?auto=format&fit=crop&w=800&q=80",
-    specs: [
-      { label: "Bathtub Aromaterapi", icon: Sparkles },
-      { label: "King Bed Romantis", icon: Bed },
-      { label: "Gratis Wine", icon: Utensils },
-    ],
-    originalPrice: "Rp 2.300.000",
-    discountBadge: "DISKON 15%",
-    finalPrice: "Rp 1.955.000",
-    period: "/ malam",
-    buttonText: "Detail →",
-    rating: "5.0",
-    reviewCount: 45,
-    stockBadge: "Gratis Paket Spa",
-    isSolidButton: false,
-  },
-  {
-    id: "suite-room",
-    badge: "Koleksi Teratas",
-    title: "Suite Room",
-    description:
-      "Pengalaman menginap paling mewah dengan perpaduan pencahayaan hangat dan interior marmer yang megah.",
-    image:
-      "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?auto=format&fit=crop&w=800&q=80",
-    specs: [
-      { label: "Ruang Tamu", icon: Square },
-      { label: "Jacuzzi", icon: Sparkles },
-      { label: "Butler 24 Jam", icon: Headphones },
-    ],
-    originalPrice: "Rp 2.500.000",
-    discountBadge: "DISKON 15%",
-    finalPrice: "Rp 2.125.000",
-    period: "/ malam",
-    buttonText: "Sewa →",
-    rating: "5.0",
-    reviewCount: 52,
-    stockBadge: "Tersisa 1 Kamar!",
-    isSolidButton: true,
-  },
-  {
-    id: "presidential-suite",
-    badge: "Kemewahan Tertinggi",
-    title: "Presidential Suite",
-    description:
-      "Penthouse termegah lantai paling atas dengan kolam renang pribadi, ruang rapat VIP, dan lift privat.",
-    image:
-      "https://images.unsplash.com/photo-1591088398332-8a7791972843?auto=format&fit=crop&w=800&q=80",
-    specs: [
-      { label: "Kolam Renang Privat", icon: Sparkles },
-      { label: "Penthouse 120 m²", icon: Square },
-      { label: "Lift Privat VIP", icon: Headphones },
-    ],
-    originalPrice: "Rp 4.500.000",
-    discountBadge: "DISKON 15%",
-    finalPrice: "Rp 3.825.000",
-    period: "/ malam",
-    buttonText: "Sewa →",
-    rating: "5.0",
-    reviewCount: 34,
-    stockBadge: "Kolam Renang Privat",
-    isSolidButton: true,
-  },
-];
 
-// Daftar Kategori Filter Tambahan
-const CATEGORIES = [
-  "Semua",
-  "Pilihan Hemat",
-  "Favorit Bisnis",
-  "Populer",
-  "Eksklusif",
-  "Liburan Keluarga",
-  "Romantis Pasangan",
-  "Koleksi Teratas",
-  "Kemewahan Tertinggi",
-];
-
-// Komponen Utama Halaman Kamar (Rute /kamar)
+// Fetch Api
 export default function KamarPage() {
+  const [rooms, setRooms] = useState<RoomItem[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const categories = [
+    "Semua",
+    ...Array.from(new Set(rooms.map((room) => {
+      // Ubah huruf pertama jadi kapital biar rapi (contoh: suite -> Suite)
+      return room.type.charAt(0).toUpperCase() + room.type.slice(1);
+    })))
+  ];
+
+  // Ambil URL API dari env
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+
+  useEffect(() => {
+    const fetchRooms = async () => {
+      try {
+        const res = await fetch(`${apiUrl}/resources`);
+        if (!res.ok) throw new Error("Gagal mengambil data kamar");
+        const data = await res.json();
+        setRooms(data);
+      } catch (error) {
+        console.error("Error fetching rooms:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchRooms();
+  }, [apiUrl]);
+
   // State untuk Pencarian & Filter Kategori
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("Semua");
@@ -284,12 +102,13 @@ export default function KamarPage() {
   };
 
   // Logika Penyaringan Kamar berdasarkan Pencarian & Kategori
-  const filteredRooms = ROOMS_DATA.filter((room) => {
+  const filteredRooms = rooms.filter((room) => {
     const matchesSearch =
-      room.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      room.description.toLowerCase().includes(searchQuery.toLowerCase());
+      room.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      room.location.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesCategory =
-      selectedCategory === "Semua" || room.badge === selectedCategory;
+      selectedCategory === "Semua" || 
+      room.type.toLowerCase() === selectedCategory.toLowerCase();
     return matchesSearch && matchesCategory;
   });
 
@@ -319,7 +138,7 @@ export default function KamarPage() {
           <div className="relative z-10 mx-auto max-w-4xl px-4 text-center sm:px-6 lg:px-8">
             <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/20 px-4 py-1 text-xs font-semibold text-emerald-300 backdrop-blur-md border border-emerald-400/30 mb-4">
               <Sparkles className="h-3.5 w-3.5" />
-              <span>8 Pilihan Kamar Mewah Bintang 5</span>
+              <span>Pilihan Kamar Mewah Bintang 5</span>
             </span>
             <h1 className="text-3xl font-extrabold tracking-tight sm:text-4xl md:text-5xl lg:text-6xl text-white">
               Pilihan Kamar Terbaik
@@ -344,7 +163,7 @@ export default function KamarPage() {
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Cari nama atau jenis kamar..."
+                placeholder="Cari nama atau lokasi kamar..."
                 className="w-full rounded-full border border-gray-300 bg-gray-50 pl-10 pr-9 py-2 text-xs text-gray-800 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#0B4F37] transition-all"
               />
               {searchQuery && (
@@ -363,7 +182,7 @@ export default function KamarPage() {
                 <SlidersHorizontal className="h-3.5 w-3.5" />
                 <span>Filter:</span>
               </span>
-              {CATEGORIES.map((category) => (
+              {categories.map((category) => (
                 <button
                   key={category}
                   onClick={() => setSelectedCategory(category)}
@@ -382,13 +201,19 @@ export default function KamarPage() {
         </section>
 
         {/* ========================================================================= */}
-        {/* 4. GRID KATALOG 8 KAMAR LENGKAP */}
+        {/* 4. GRID KATALOG KAMAR DARI API */}
         {/* ========================================================================= */}
         <section className="w-full py-12 sm:py-16 md:py-20 bg-slate-50">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             
-            {/* JIKA KAMAR TIDAK DITEMUKAN PADA HASIL PENCARIAN */}
-            {filteredRooms.length === 0 ? (
+            {loading ? (
+              <div className="text-center py-20">
+                <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-[#0B4F37] border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]" role="status">
+                  <span className="!absolute !-m-px !h-px !w-px !overflow-hidden !whitespace-nowrap !border-0 !p-0 ![rect(0,0,0,0)]">Loading...</span>
+                </div>
+                <p className="mt-4 text-sm text-gray-500 font-medium">Memuat data kamar...</p>
+              </div>
+            ) : filteredRooms.length === 0 ? (
               <div className="rounded-3xl bg-white p-12 text-center shadow-sm border border-gray-200/80 max-w-lg mx-auto">
                 <Search className="mx-auto h-12 w-12 text-gray-300 mb-3" />
                 <h3 className="text-lg font-bold text-gray-900">Kamar Tidak Ditemukan</h3>
@@ -406,28 +231,34 @@ export default function KamarPage() {
                 </button>
               </div>
             ) : (
-              /* Grid Container 2 Kolom pada Layar Sedang & Besar */
+              /* Grid Container 2 Kolom */
               <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:gap-10">
                 {filteredRooms.map((room) => {
                   const isFav = favoriteIds.includes(room.id);
+                  // Ambil foto utama (is_primary), jika tidak ada ambil index ke-0, jika masih kosong gunakan fallback unsplash
+                  const primaryImage = room.room_images?.find((img) => img.is_primary)?.image_url
+                    || room.room_images?.[0]?.image_url
+                    || "https://images.unsplash.com/photo-1566665797739-1674de7a421a?auto=format&fit=crop&w=800&q=80";
+
                   return (
                     // Kartu Kamar Individual
                     <div
                       key={room.id}
                       className="group flex flex-col overflow-hidden rounded-2xl bg-white border border-gray-100 shadow-md transition-all duration-300 hover:-translate-y-1 hover:shadow-xl relative"
                     >
-                      {/* FOTO KAMAR, IKON FAVORIT WISHLIST, STOK BADGE & KATEGORI BADGE */}
+                      {/* FOTO KAMAR, IKON FAVORIT WISHLIST, & KATEGORI BADGE */}
                       <div className="relative h-64 sm:h-72 w-full overflow-hidden bg-gray-100">
                         <Image
-                          src={room.image}
-                          alt={room.title}
+                          src={primaryImage}
+                          alt={room.name}
                           fill
                           className="object-cover transition-transform duration-500 group-hover:scale-105"
+                          unoptimized // Mengizinkan URL blob vercel / external dimuat tanpa error NextImage
                         />
 
                         {/* TOMBOL FAVORIT WISHLIST (IKON HATI) */}
                         <button
-                          onClick={() => toggleFavorite(room.id, room.title)}
+                          onClick={() => toggleFavorite(room.id, room.name)}
                           aria-label="Simpan ke Favorit"
                           className={`absolute top-4 left-4 z-10 flex h-9 w-9 items-center justify-center rounded-full shadow-md backdrop-blur-md transition-all hover:scale-110 active:scale-95 ${
                             isFav
@@ -437,21 +268,11 @@ export default function KamarPage() {
                         >
                           <Heart className={`h-5 w-5 ${isFav ? "fill-current" : ""}`} />
                         </button>
-                        
-                        {/* BADGE STOK TERBATAS / HIGHLIGHT */}
-                        {room.stockBadge && (
-                          <div className="absolute bottom-4 left-4 z-10">
-                            <span className="flex items-center gap-1 rounded-md bg-amber-500/90 px-2.5 py-1 text-[11px] font-bold text-white shadow-md backdrop-blur-md">
-                              <Flame className="h-3.5 w-3.5 fill-current" />
-                              <span>{room.stockBadge}</span>
-                            </span>
-                          </div>
-                        )}
 
                         {/* BADGE KATEGORI DI KANAN ATAS */}
                         <div className="absolute top-4 right-4 z-10">
-                          <span className="rounded-full bg-[#0B4F37]/90 px-3.5 py-1 text-xs font-semibold text-white shadow-md backdrop-blur-md border border-white/20">
-                            {room.badge}
+                          <span className="rounded-full bg-[#0B4F37]/90 px-3.5 py-1 text-xs font-semibold text-white shadow-md backdrop-blur-md border border-white/20 uppercase">
+                            {room.type}
                           </span>
                         </div>
                       </div>
@@ -459,37 +280,33 @@ export default function KamarPage() {
                       {/* KONTEN DETAIL TEKS & HARGA KAMAR */}
                       <div className="flex flex-1 flex-col justify-between p-6 sm:p-7">
                         <div>
-                          {/* Nama Kamar & SKOR RATING BINTANG */}
+                          {/* Nama Kamar & Lokasi */}
                           <div className="flex items-center justify-between gap-2">
                             <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-gray-900 group-hover:text-[#0B4F37] transition-colors">
-                              {room.title}
+                              {room.name}
                             </h2>
-                            <div className="flex items-center gap-1 bg-amber-50 px-2 py-0.5 rounded border border-amber-200 text-xs font-bold text-amber-700 shrink-0">
-                              <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
-                              <span>{room.rating}</span>
-                              <span className="text-[10px] text-gray-400 font-normal">({room.reviewCount})</span>
-                            </div>
+                            <span className="inline-flex items-center gap-1 text-xs text-gray-500 font-medium bg-slate-100 px-2 py-1 rounded">
+                              <MapPin className="h-3.5 w-3.5 text-[#0B4F37]" />
+                              <span>{room.location}</span>
+                            </span>
                           </div>
 
-                          {/* Deskripsi Singkat Kamar */}
-                          <p className="mt-2.5 text-xs sm:text-sm text-gray-600 leading-relaxed font-normal">
-                            {room.description}
-                          </p>
-
-                          {/* LIST IKON SPESIFIKASI / FASILITAS KAMAR */}
+                          {/* LIST SPESIFIKASI / FASILITAS KAMAR */}
                           <div className="mt-5 flex flex-wrap items-center gap-4 border-t border-b border-gray-100 py-3.5">
-                            {room.specs.map((spec, idx) => {
-                              const SpecIcon = spec.icon;
-                              return (
-                                <div
-                                  key={idx}
-                                  className="flex items-center gap-1.5 text-xs font-medium text-gray-600"
-                                >
-                                  <SpecIcon className="h-4 w-4 text-[#0B4F37]" />
-                                  <span>{spec.label}</span>
-                                </div>
-                              );
-                            })}
+                            <div className="flex items-center gap-1.5 text-xs font-semibold text-gray-600">
+                              <Users className="h-4 w-4 text-[#0B4F37]" />
+                              <span>Kapasitas {room.capacity} Orang</span>
+                            </div>
+                            
+                            {room.facilities?.map((facility, idx) => (
+                              <div
+                                key={idx}
+                                className="flex items-center gap-1.5 text-xs font-medium text-gray-600 bg-emerald-50 text-emerald-800 px-2 py-0.5 rounded"
+                              >
+                                <CheckCircle2 className="h-4 w-4" />
+                                <span>{facility}</span>
+                              </div>
+                            ))}
                           </div>
                         </div>
 
@@ -499,42 +316,23 @@ export default function KamarPage() {
                             <span className="block text-[10px] font-bold tracking-wider text-gray-400 uppercase">
                               MULAI DARI
                             </span>
-                            
-                            <div className="mt-0.5 flex items-center gap-2">
-                              <span className="text-xs text-gray-400 line-through">
-                                {room.originalPrice}
-                              </span>
-                              <span className="rounded bg-rose-100 px-1.5 py-0.5 text-[10px] font-bold text-rose-700">
-                                {room.discountBadge}
-                              </span>
-                            </div>
-
                             <div className="flex items-baseline gap-1 mt-0.5">
                               <span className="text-lg sm:text-xl font-extrabold text-[#0B4F37]">
-                                {room.finalPrice}
+                                Rp {room.price_per_night?.toLocaleString("id-ID")}
                               </span>
                               <span className="text-xs text-gray-500 font-normal">
-                                {room.period}
+                                / malam
                               </span>
                             </div>
                           </div>
 
                           <div>
-                            {room.isSolidButton ? (
-                              <Link
-                                href={`/kamar/${room.id}`}
-                                className="flex items-center gap-1.5 rounded-full bg-[#0B4F37] px-6 py-2.5 text-xs sm:text-sm font-bold text-white shadow transition-all hover:bg-[#073524] hover:shadow-md active:scale-95"
-                              >
-                                <span>{room.buttonText}</span>
-                              </Link>
-                            ) : (
-                              <Link
-                                href={`/kamar/${room.id}`}
-                                className="flex items-center gap-1.5 rounded-full border-2 border-[#0B4F37] px-6 py-2 text-xs sm:text-sm font-bold text-[#0B4F37] transition-all hover:bg-[#0B4F37] hover:text-white active:scale-95"
-                              >
-                                <span>{room.buttonText}</span>
-                              </Link>
-                            )}
+                            <Link
+                              href={`/kamar/${room.id}`}
+                              className="flex items-center gap-1.5 rounded-full bg-[#0B4F37] px-6 py-2.5 text-xs sm:text-sm font-bold text-white shadow transition-all hover:bg-[#073524] hover:shadow-md active:scale-95"
+                            >
+                              <span>Detail →</span>
+                            </Link>
                           </div>
                         </div>
 
