@@ -21,7 +21,6 @@ export class CreateOfficialDto {
   @IsNotEmpty()
   password: string;
 
-  // 👈 Di sini kuncinya: rute resmi boleh menyutikkan Role (misal: "admin" atau "staff")
   @IsIn([Role.ADMIN, Role.STAFF], {
     message: 'Role official hanya boleh bernilai: admin atau staff!',
   })

@@ -1,23 +1,25 @@
-import {
-  Injectable,
-  ConflictException,
-  NotFoundException,
-  BadRequestException,
-  ForbiddenException,
-} from '@nestjs/common';
+import { Injectable, ConflictException, NotFoundException, BadRequestException, ForbiddenException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { CreateBookingDto } from './dto/create-booking.dto';
 import { UpdateBookingDto } from './dto/update-booking.dto';
-import {
-  ScheduleStatus,
-  BookingStatus,
-  PaymentStatus,
-  Role,
-} from '../common/enums';
+import { ScheduleStatus, BookingStatus, PaymentStatus, Role } from '../common/enums';
+import { BookingStatusUpdatedEvent } from '../notifications/events/booking-status-updated.event';
+import * as midtransClient from 'midtrans-client';
+
 
 @Injectable()
 export class BookingsService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService,
+    private readonly eventEmitter: EventEmitter2
+  ) { }
+
+  // Midtrans
+  private snap = new midtransClient.Snap({
+    isProduction: false,
+    serverKey: process.env.MIDTRANS_SERVER_KEY || '',
+    clientKey: process.env.MIDTRANS_CLIENT_KEY || '',
+  });
 
   // --- CEK KEPEMILIKAN TRANSAKSI ---
   private checkBookingOwnership(
@@ -34,17 +36,32 @@ export class BookingsService {
     }
   }
 
+  private extractWibDateString(dateInput: string | Date): string {
+    const date = typeof dateInput === 'string' ? new Date(dateInput) : dateInput;
+    // standar YYYY-MM-DD
+    return new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Jakarta' }).format(date);
+  }
+
   async createBooking(dto: CreateBookingDto) {
-    const startTime = new Date(dto.start_time);
-    const endTime = new Date(dto.end_time);
+    const startDateStr = this.extractWibDateString(dto.start_time);
+    const endDateStr = this.extractWibDateString(dto.end_time);
+
+    // 14:00 WIB setara dengan 07:00 UTC
+    const startTime = new Date(`${startDateStr}T07:00:00.000Z`);
+    // 12:00 WIB setara dengan 05:00 UTC
+    const endTime = new Date(`${endDateStr}T05:00:00.000Z`);
 
     if (endTime <= startTime) {
-      throw new BadRequestException(
-        'Waktu selesai harus lebih lambat dari waktu mulai!',
-      );
+      throw new BadRequestException('Waktu check-out harus minimal 1 hari setelah check-in!');
     }
 
-    return this.prisma.$transaction(async (tx) => {
+    const startMs = new Date(startDateStr).getTime();
+    const endMs = new Date(endDateStr).getTime();
+    const oneDayInMs = 1000 * 60 * 60 * 24;
+    const totalNights = Math.max(1, Math.round((endMs - startMs) / oneDayInMs));
+
+    // 1. Eksekusi Database (Cepat & Terisolasi)
+    const result = await this.prisma.$transaction(async (tx) => {
       const overlappingSchedule = await tx.schedules.findFirst({
         where: {
           resource_id: dto.resource_id,
@@ -57,42 +74,15 @@ export class BookingsService {
       });
 
       if (overlappingSchedule) {
-        throw new ConflictException(
-          'Resource/Ruangan sudah dibooking pada jam tersebut!',
-        );
+        throw new ConflictException('Resource/Ruangan sudah dibooking pada tanggal tersebut!');
       }
 
-      const resource = await tx.resources.findUnique({
-        where: { id: dto.resource_id },
-      });
-      if (!resource) {
-        throw new NotFoundException('Resource/kamar tidak ditemukan!');
-      }
+      const resource = await tx.resources.findUnique({ where: { id: dto.resource_id } });
+      if (!resource) throw new NotFoundException('Resource/kamar tidak ditemukan!');
 
-      const user = await tx.users.findUnique({
-        where: { id: dto.user_id as string },
-      });
-      if (!user) {
-        throw new NotFoundException('User tidak ditemukan di database!');
-      }
+      const user = await tx.users.findUnique({ where: { id: dto.user_id as string } });
+      if (!user) throw new NotFoundException('User tidak ditemukan di database!');
 
-      const startDateOnly = new Date(
-        startTime.getFullYear(),
-        startTime.getMonth(),
-        startTime.getDate(),
-      );
-      const endDateOnly = new Date(
-        endTime.getFullYear(),
-        endTime.getMonth(),
-        endTime.getDate(),
-      );
-      const oneDayInMs = 1000 * 60 * 60 * 24;
-      const totalNights = Math.max(
-        1,
-        Math.round(
-          (endDateOnly.getTime() - startDateOnly.getTime()) / oneDayInMs,
-        ),
-      );
       const totalPrice = resource.price_per_night * totalNights;
 
       const newSchedule = await tx.schedules.create({
@@ -123,13 +113,47 @@ export class BookingsService {
         },
       });
 
-      return {
-        message: 'Booking dan invoice pembayaran berhasil dibuat!',
-        booking: newBooking,
-        schedule: newSchedule,
-        payment: newPayment,
-      };
+      return { newBooking, newSchedule, newPayment, user, totalPrice };
     });
+
+    // 2. Panggil API Midtrans (Di Luar Transaksi DB)
+    const parameter: any = {
+      transaction_details: {
+        order_id: result.newBooking.id,
+        gross_amount: result.totalPrice,
+      },
+      customer_details: {
+        first_name: result.user.name,
+        email: result.user.email,
+      },
+    };
+
+    if (process.env.MIDTRANS_NOTIFICATION_URL) {
+      parameter.override_notification_url = process.env.MIDTRANS_NOTIFICATION_URL;
+    }
+
+    let transaction;
+    try {
+      transaction = await this.snap.createTransaction(parameter);
+    } catch (error) {
+      throw new BadRequestException('Gagal membuat transaksi Midtrans: ' + error.message);
+    }
+
+    // 3. Emit Event Notifikasi (Fitur Tambahan Kamu)
+    this.eventEmitter.emit('booking.status_updated', {
+      user_id: result.newBooking.user_id,
+      booking_id: result.newBooking.id,
+      status: BookingStatus.PENDING,
+    } as BookingStatusUpdatedEvent);
+
+    return {
+      message: 'Booking dan invoice pembayaran berhasil dibuat!',
+      booking: result.newBooking,
+      schedule: result.newSchedule,
+      payment: result.newPayment,
+      midtrans_token: transaction.token,
+      midtrans_redirect_url: transaction.redirect_url,
+    };
   }
 
   async cancelBooking(
@@ -175,7 +199,7 @@ export class BookingsService {
 
       if (
         booking.payment &&
-        (booking.payment.status as string) === (PaymentStatus.PENDING as string)
+        (booking.payment.status) === (PaymentStatus.PENDING as string)
       ) {
         await tx.payments.update({
           where: { id: booking.payment.id },
@@ -183,12 +207,21 @@ export class BookingsService {
         });
       }
 
+      // 4. EMIT EVENT CANCEL
+      this.eventEmitter.emit('booking.status_updated', {
+        user_id: updatedBooking.user_id,
+        booking_id: updatedBooking.id,
+        status: BookingStatus.CANCELED,
+      } as BookingStatusUpdatedEvent);
+
       return {
         message: 'Booking berhasil dibatalkan. Kamar telah tersedia kembali.',
         booking_id: updatedBooking.id,
         booking_status: updatedBooking.status,
       };
+
     });
+
   }
 
   async findAll(
@@ -206,8 +239,14 @@ export class BookingsService {
         ...(status && { status: status as BookingStatus }),
       },
       include: {
-        users: { select: { id: true, name: true, email: true } },
-        schedules: { include: { resources: true } },
+        users: {
+          select: { id: true, name: true, email: true }, // (amanin password)
+        },
+        schedules: {
+          include: {
+            resources: true,
+          },
+        },
         payment: true,
       },
       orderBy: { created_at: 'desc' },
@@ -233,42 +272,70 @@ export class BookingsService {
   }
 
   async update(id: string, dto: UpdateBookingDto) {
-    return this.prisma.$transaction(async (tx) => {
-      const booking = await tx.bookings.findUnique({ where: { id } });
+    const booking = await this.prisma.bookings.findUnique({ where: { id } });
+    if (!booking) throw new NotFoundException('Data booking tidak ditemukan!');
 
-      if (!booking)
-        throw new NotFoundException('Data booking tidak ditemukan!');
+    // 1. BATALKAN TRANSAKSI MIDTRANS (DI LUAR DB TRANSACTION)
+    if (dto.status === BookingStatus.CANCELED || dto.status === BookingStatus.REJECTED) {
+      try {
+        // Cast ke 'any' untuk melewati isu type definition pada package midtrans-client
+        await (this.snap as any).transaction.cancel(id);
+      } catch (error: any) {
+        console.warn(
+          `[Midtrans] Gagal membatalkan transaksi ${id} (Mungkin sudah expired/batal):`,
+          error.message || error,
+        );
+      }
+    }
 
-      if (
-        (dto.status === BookingStatus.CANCELED ||
-          dto.status === BookingStatus.REJECTED) &&
-        booking.schedule_id
-      ) {
-        await tx.schedules.update({
-          where: { id: booking.schedule_id },
-          data: { status: ScheduleStatus.CANCELED },
+    const updatedBooking = await this.prisma.$transaction(async (tx) => {
+      // A. JIKA REJECTED ATAU CANCELED
+      if (dto.status === BookingStatus.CANCELED || dto.status === BookingStatus.REJECTED) {
+        // Bebaskan schedule jika ada
+        if (booking.schedule_id) {
+          await tx.schedules.update({
+            where: { id: booking.schedule_id },
+            data: { status: ScheduleStatus.CANCELED },
+          });
+        }
+
+        await tx.payments.updateMany({
+          where: { booking_id: id },
+          data: { status: PaymentStatus.CANCELED },
         });
       }
 
       if (dto.status === BookingStatus.APPROVED) {
         await tx.payments.updateMany({
           where: { booking_id: id },
-          data: { status: PaymentStatus.PAID, paid_at: new Date() },
+          data: {
+            status: PaymentStatus.PAID,
+            paid_at: new Date(),
+          },
         });
       }
 
-      const updatedBooking = await tx.bookings.update({
+      return tx.bookings.update({
         where: { id },
         data: {
           ...(dto.status && { status: dto.status }),
           ...(dto.notes && { notes: dto.notes }),
         },
       });
-
-      return {
-        message: `Booking berhasil di-update menjadi ${dto.status || booking.status}`,
-        data: updatedBooking,
-      };
     });
+
+    // 3. EMIT EVENT UPDATE STATUS
+    if (dto.status) {
+      this.eventEmitter.emit('booking.status_updated', {
+        user_id: updatedBooking.user_id,
+        booking_id: updatedBooking.id,
+        status: updatedBooking.status as BookingStatus,
+      } as BookingStatusUpdatedEvent);
+    }
+
+    return {
+      message: `Booking berhasil di-update menjadi ${dto.status || updatedBooking.status}`,
+      data: updatedBooking,
+    };
   }
 }

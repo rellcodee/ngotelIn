@@ -4,19 +4,19 @@
 # PUSAT VARIABEL SIKLUS HIDUP TRANSAKSI HOTEL (TEMPEL HASIL RESPONS DI SINI)
 # =============================================================================
 # Token di bawah ini nantikan kamu isi/salin setelah menekan Send Request di BAB 2 (Login)
-@adminToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQG5nb3RlbGluLmNvbSIsInN1YiI6Ijk0N2RiN2E0LTBiOGItNGJlNC04ZGJhLTMwYTFlZTRmNWQ1NyIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc4NTczNTUxMywiZXhwIjoxNzg1ODIxOTEzfQ.YqAcuF8acjnO1hNB5oCzvjx-l8r6s1H6TjUTrg-STHw
-@staffToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InN0YWZmQG5nb3RlbGluLmNvbSIsInN1YiI6IjIzYTgxMmY1LTcwY2MtNDcyMi1iMjI0LTQzM2FhZWRhYTA3ZiIsInJvbGUiOiJzdGFmZiIsImlhdCI6MTc4NTczNjg4NSwiZXhwIjoxNzg1ODIzMjg1fQ.QivsNbiuajfruD7y5ctmVIwSsdzKWSDFkjT001NqZnw
-@userToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im1hdEBuZ290ZWxpbi5jb20iLCJzdWIiOiIwMTgwNTNlMy03YjYxLTQ4ZjMtODlmMC1iMzQ5ZmM2OGEwMDMiLCJyb2xlIjoidXNlciIsImlhdCI6MTc4NTczNjk4OCwiZXhwIjoxNzg1ODIzMzg4fQ.PlsKwOj8_8J25QKmifwWGfsPdfohFqyJka0MJz4PmME
-
+@adminToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQG5nb3RlbGluLmNvbSIsInN1YiI6Ijk0N2RiN2E0LTBiOGItNGJlNC04ZGJhLTMwYTFlZTRmNWQ1NyIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc4NTk4NjAyNCwiZXhwIjoxNzg2MDcyNDI0fQ.5wEGSL3W7zoMtXTFlhTksVaJYDpSULlJl_PSrvfJTkc
+@staffToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InN0YWZmQG5nb3RlbGluLmNvbSIsInN1YiI6IjIzYTgxMmY1LTcwY2MtNDcyMi1iMjI0LTQzM2FhZWRhYTA3ZiIsInJvbGUiOiJzdGFmZiIsImlhdCI6MTc4NjAyODI5MSwiZXhwIjoxNzg2MTE0NjkxfQ.J11dm1g-JMedRJRNJfxII5pDuq7QKKTIcmPVnBN-VLQ
+@userToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im1hdEBuZ290ZWxpbi5jb20iLCJzdWIiOiIwMTgwNTNlMy03YjYxLTQ4ZjMtODlmMC1iMzQ5ZmM2OGEwMDMiLCJyb2xlIjoidXNlciIsImlhdCI6MTc4NTk5OTQ4OCwiZXhwIjoxNzg2MDg1ODg4fQ.QuErdQgSKtKqMzhed6fy_jD6IbPmx1ptK2OJp7X3jZE
 # ID di bawah ini disalin secara berurutan waktu menempuh babak pengetasan di bawah:
 @userId = 018053e3-7b61-48f3-89f0-b349fc68a003
 @resourceId = 0d1d024a-56c5-4631-b9a6-54be397031a4
 @resourceIdVVIP = 874da42f-e0e8-4304-b50d-44654c837ecf
 @roomImageId = 4348123d-f0aa-47ab-9a62-1acc14bf89c9
 @scheduleId = ed3331c6-9e5d-4542-898d-26d60886fa04
-@bookingId = a62d49ed-01a3-4427-92a4-69cdc42085f7
+@bookingId = cd871513-1cb1-4c35-87e2-c97ef5bea9dc
 @adminId = 947db7a4-0b8b-4be4-8dba-30a1ee4f5d57
-
+@reviewId = 1327f39d-6456-4666-8146-0a7fb395073b
+@notificationId = 321ebb6c-74a4-4fb6-980f-580f836dc417
 ### =========================================================================
 ### 🟢 BAB 1: REGISTRASI 3 AKUN UTAMA HOTEL (TANPA SEEDER & UJI KEAMANAN DTO)
 ### -> Langsung tekan Send Request berturutan untuk mencetak aktor-aktor hotelmu!
@@ -27,8 +27,8 @@ POST {{baseUrl}}/user/official
 Content-Type: application/json
 
 {
-  "name": "admin2",
-  "email": "admin2@ngotelin.com",
+  "name": "admintel",
+  "email": "admintel@ngotelin.com",
   "password": "12345678",
   "role": "admin"
 }
@@ -39,8 +39,8 @@ POST {{baseUrl}}/user/official
 Content-Type: application/json
 
 {
-  "name": "Rizqulloh",
-  "email": "rizqulloh@ngotelin.com",
+  "name": "hibban",
+  "email": "hibban@ngotelin.com",
   "password": "staffpassword123",
   "role": "staff"
 }
@@ -52,8 +52,8 @@ POST {{baseUrl}}/user
 Content-Type: application/json
 
 {
-  "name": "Riko Simanjuntak",
-  "email": "riko@ngotelin.com",
+  "name": "Andi",
+  "email": "andi@ngotelin.com",
   "password": "12345678"
 }
 # 👆 SALIN "id" dari respons di atas, tempel ke variabel @userId di atas layar!
@@ -62,6 +62,7 @@ Content-Type: application/json
 # 1.4 UJI KEAMANAN 1: Mass-Assignment Attack Protection di Rute Publik
 # -> Hacker mencoba daftar lewat rute umum tapi memaksa isian "role": "admin".
 # -> HASILNYA: Ditolak mentah 400 Bad Request
+# Sebaiknya tidak role di sini, karena api publik defaultnya adalah user, jadinya kalau butuh admin/staff harus lewat rute official
 POST {{baseUrl}}/user
 Content-Type: application/json
 
@@ -69,7 +70,6 @@ Content-Type: application/json
   "name": "Hacker Menyusup",
   "email": "hacker_iseng@ngotelin.com",
   "password": "hackedpassword123",
-  "role": "admin"
 }
 
 ###
@@ -80,8 +80,8 @@ POST {{baseUrl}}/user/official
 Content-Type: application/json
 
 {
-  "name": "Penyusup Ruang 2",
-  "email": "penyusup2@ngotelin.com",
+  "name": "Penyusup Ruang 3(izin admin)",
+  "email": "penyusup3@ngotelin.com",
   "password": "12345678",
   "role": "admin"
 }
@@ -117,7 +117,7 @@ Content-Type: application/json
 Authorization: Bearer {{userToken}}
 
 {
-  "name": "Idham Kholid SE"
+  "name": "Somaduh"
 }
 
 
@@ -171,17 +171,18 @@ POST {{baseUrl}}/auth/logout
 
 # 3.1 [RBAC: ADMIN ONLY] Admin Membuat Kamar Deluxe 101
 # -> Pasang token admin. Setelah berhasil, salin "id" kamar ke variabel @resourceId di atas!
+# Sebaiknya menggunakan Postman, Karena ada field opsional yaitu foto, dan max 5 foto
 POST {{baseUrl}}/resources
 Content-Type: application/json
 Authorization: Bearer {{adminToken}}
 
 {
-  "name": "Deluxe Baja Suite 102",
-  "type": "deluxe",
-  "location": "Lantai 3 (Pool View)",
-  "capacity": 2,
+  "name": "Maniac Room",
+  "type": "suite",
+  "location": "Lantai 3",
+  "capacity": 3,
   "price_per_night": 500000,
-  "facilities": ["King Size Bed", "Smart TV 55inc", "Bathtub", "Free WiFi", "GYM"]
+  "facilities": ["TV", "AC", "Wi-Fi", "Extra Bed"]
 }
 # 👆 SALIN ID DARI KAMAR INI KE VARIABEL @resourceId DI ATAS!
 
@@ -208,22 +209,97 @@ Authorization: Bearer {{adminToken}}
 # 👆 SALIN ID DARI KAMAR INI KE VARIABEL @resourceIdVVIP DI ATAS!
 
 ###
-# 3.3 [RBAC: ADMIN ONLY] Admin Menambah Foto Galeri untuk Kamar Deluxe
-POST {{baseUrl}}/room-images
-Content-Type: application/json
-Authorization: Bearer {{adminToken}}
-
-{
-  "resource_id": "{{resourceId}}",
-  "image_url": "./Jamil.png",
-  "is_primary": true
-}
-# 👆 SALIN ID GAMBAR KE VARIABEL @roomImageId DI ATAS!
-
-###
 # 3.4 [PUBLIC ROUTE] Tamu Awam Mengecek Katalog Seluruh Kamar Hotel
-GET {{baseUrl}}/resources?search=&location=&type=
+GET {{baseUrl}}/resources?search=&location=lantai 1&type=
 
+### Get Single Resource
+GET {{baseUrl}}/resources/{{resourceId}}
+
+
+### resource with image create (sebaiknya postman karena mengambil file local, di field opsional yaitu files)
+POST {{baseUrl}}/resources
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxk
+
+------WebKitFormBoundary7MA4YWxk
+Content-Disposition: form-data; name="name"
+
+Suite Room Mentri
+------WebKitFormBoundary7MA4YWxk
+Content-Disposition: form-data; name="type"
+
+suite
+------WebKitFormBoundary7MA4YWxk
+Content-Disposition: form-data; name="location"
+
+Lantai 3, VIP Area
+------WebKitFormBoundary7MA4YWxk
+Content-Disposition: form-data; name="capacity"
+
+2
+------WebKitFormBoundary7MA4YWxk
+Content-Disposition: form-data; name="price_per_night"
+
+1500000
+------WebKitFormBoundary7MA4YWxk
+Content-Disposition: form-data; name="facilities"
+
+Wi-Fi
+------WebKitFormBoundary7MA4YWxk
+Content-Disposition: form-data; name="facilities"
+
+AC
+------WebKitFormBoundary7MA4YWxk
+Content-Disposition: form-data; name="files"; filename="kamar1.jpeg"
+Content-Type: image/jpeg
+
+< ./test-assets/kamar1.jpeg
+
+
+------WebKitFormBoundary7MA4YWxk
+Content-Disposition: form-data; name="files"; filename="kamar2.jpeg"
+Content-Type: image/jpeg
+
+< ./test-assets/kamar2.jpeg
+
+------WebKitFormBoundary7MA4YWxk--
+
+
+# resource with image edit sebaiknya postman karena mengambil file local)
+
+PATCH http://localhost:3000/resources/042cee9c-01ce-49b4-96ed-466495d1eb6d
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxk
+
+------WebKitFormBoundary7MA4YWxk
+Content-Disposition: form-data; name="name"
+
+Suite Room Mentri (Updated)
+------WebKitFormBoundary7MA4YWxk
+Content-Disposition: form-data; name="price_per_night"
+
+1800000
+------WebKitFormBoundary7MA4YWxk
+Content-Disposition: form-data; name="facilities"
+
+Wi-Fi
+------WebKitFormBoundary7MA4YWxk
+Content-Disposition: form-data; name="facilities"
+
+AC
+------WebKitFormBoundary7MA4YWxk
+Content-Disposition: form-data; name="facilities"
+
+Smart TV
+------WebKitFormBoundary7MA4YWxk
+Content-Disposition: form-data; name="files"; filename="kamar_baru.jpeg"
+Content-Type: image/jpeg
+
+< ./test-images/kamar1.jpeg
+
+------WebKitFormBoundary7MA4YWxk--
+
+
+# NEW SCHEDULE
+# Create Schedule (Buat 1 Jadwal)
 ###
 # 3.5 [PUBLIC ROUTE] Tamu Mengecek Detail Ketersediaan Kamar by Rentang Tanggal
 GET {{baseUrl}}/resources/available?checkIn=2026-08-01&checkOut=2026-08-05
@@ -254,9 +330,9 @@ Content-Type: application/json
 Authorization: Bearer {{staffToken}}
 
 {
-  "resource_id": "{{resourceIdVVIP}}",
-  "start_time": "2026-08-05T08:00:00.000Z",
-  "end_time": "2026-08-09T16:00:00.000Z",
+  "resource_id": "{{resourceId}}",
+  "start_time": "2026-08-05T12:15:00.000Z",
+  "end_time": "2026-08-05T14:00:00.000Z",
   "status": "maintenance"
 }
 # 👆 SALIN ID JADWAL INI KE VARIABEL @scheduleId DI ATAS!
@@ -355,6 +431,16 @@ Authorization: Bearer {{staffToken}}
   "status": "approved",
   "notes": "Bukti QRIS 1.500.000 tervalidasi masuk akal. Kunci kamar 101 siap diberikan."
 }
+### Versi Tolak
+PATCH {{baseUrl}}/bookings/{{bookingId}}
+Content-Type: application/json
+Authorization: Bearer {{staffToken}}
+
+{
+  "status": "rejected",
+  "notes": "User Mencurigakan"
+}
+
 
 ###
 # 5.6 [TAMU LOGIN REQUIRED] Tamu Melihat Kuitansi Bukti Pembayaran Lunas
@@ -364,13 +450,13 @@ Authorization: Bearer {{userToken}}
 
 ###
 # 5.7 [RBAC: ADMIN & STAFF] Guest Check-Out (Selesai Menginap)
-PATCH {{baseUrl}}/bookings/{{bookingId}}
+PATCH {{baseUrl}}/bookings/b4a00fb0-d791-4224-beb7-212934984d55
 Content-Type: application/json
 Authorization: Bearer {{staffToken}}
 
 {
   "status": "completed",
-  "notes": "Tamu sudah checkout dengan rapi, kunci dikembalikan tanpa kerusakan."
+  "notes": "Tamu sudah checkout dengan tenang, kunci dikembalikan tanpa kerusakan."
 }
 
 ###
@@ -379,3 +465,120 @@ Authorization: Bearer {{staffToken}}
 # -> EFEKNYA: Status pesanan berubah jadi "canceled", invoice gugur, dan slot jadwal hotel kembali "available"!
 DELETE {{baseUrl}}/bookings/{{bookingId}}
 Authorization: Bearer {{userToken}}
+
+
+### =========================================================================
+### 🟠 BAB 6: TEST MIDTRANS PAYMENT GATEWAY
+### =========================================================================
+
+###
+# 6.1 [ADMIN] Bikin Kamar Baru Khusus Test Midtrans
+POST {{baseUrl}}/resources
+Content-Type: application/json
+Authorization: Bearer {{adminToken}}
+
+{
+  "name": "Kamar Test Midtrans",
+  "type": "standard",
+  "location": "Lantai 99",
+  "capacity": 2,
+  "price_per_night": 250000,
+  "facilities": ["AC", "WiFi", "TV", "Simulator Midtrans"]
+}
+
+###
+# 6.2 [TAMU] Bikin Booking Baru buat Kamar Test Midtrans
+# PENTING: Ganti nilai variabel ini pakai ID kamar yang lu dapet dari respon 6.1!
+@midtransRoomId = c7704a16-bd77-4b89-8a85-2f3d8b4b9c81
+
+POST {{baseUrl}}/bookings
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+
+{
+  "resource_id": "{{resourceIdVVIP}}",
+  "start_time": "2026-12-11T14:00:00.000Z",
+  "end_time": "2026-12-12T12:00:00.000Z",
+  "payment_method": "gopay",
+  "notes": "siapin kamar vip"
+}
+
+###
+GET {{baseUrl}}/bookings
+Authorization: Bearer {{userToken}}
+
+###
+# 6.3 [TAMU] Cek Status Booking & Payment Setelah Bayar di Midtrans
+# PENTING: Ganti ID di bawah sama ID Booking yang lu dapet dari respon 6.2 (kolom id)
+GET {{baseUrl}}/bookings/1546585f-fdf1-4368-8bf4-c5e056485da6
+Authorization: Bearer {{userToken}}
+
+
+# ai-bot
+###
+POST {{baseUrl}}/ai/chat
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+
+{
+  "message": "Lu Ngajak Ribut??"
+}
+
+# review
+###
+POST {{baseUrl}}/reviews
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+
+{
+  "booking_id": "b4a00fb0-d791-4224-beb7-212934984d55",
+  "rating": 5,
+  "comment": "Mantap cuy"
+}
+
+###
+GET {{baseUrl}}/reviews/resource/{{resourceId}}
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+
+###
+GET {{baseUrl}}/reviews/{{reviewId}}
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+
+###
+DELETE {{baseUrl}}/reviews/{{reviewId}}
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+
+# Notif
+###
+GET {{baseUrl}}/notifications
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+
+###
+GET {{baseUrl}}/notifications/unread-count
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+
+###
+PATCH {{baseUrl}}/notifications/read-all
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+
+### is read
+PATCH {{baseUrl}}/notifications/{{notificationId}}/read
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+
+### delete notif spesifik
+DELETE {{baseUrl}}/notifications/a446175a-75e1-4d33-a5ba-e514651a3e75
+Content-Type: application/json
+Authorization: Bearer {{adminToken}}
+
+### delete all notif
+DELETE {{baseUrl}}/notifications/user/947db7a4-0b8b-4be4-8dba-30a1ee4f5d57
+Content-Type: application/json
+Authorization: Bearer {{adminToken}}
+
