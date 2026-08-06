@@ -103,4 +103,33 @@ export class NotificationsService {
 
     return { message: 'Semua notifikasi telah ditandai sebagai dibaca.' };
   }
+
+  async deleteNotif(id: string) {
+    const notif = await this.prisma.notifications.findUnique({
+      where: { id },
+    });
+
+    if (!notif) {
+      throw new NotFoundException('Notifikasi tidak ditemukan atau bukan milik kamu!');
+    }
+
+    await this.prisma.notifications.delete({
+      where: { id }
+    })
+
+    return { message: 'Notifikasi berhasil dihapus!' }
+  }
+
+  async deleteAll(userId: string) {
+    const notifications = await this.prisma.notifications.findMany({
+      where: { user_id: userId }
+    });
+    if (!notifications) {
+      throw new NotFoundException('Notifikasi tidak ditemukan');
+    }
+    await this.prisma.notifications.deleteMany({
+      where: { user_id: userId }
+    });
+    return { message: 'Semua notifikasi berhasil dihapus!' }
+  }
 }

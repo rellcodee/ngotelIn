@@ -4,17 +4,16 @@
 # PUSAT VARIABEL SIKLUS HIDUP TRANSAKSI HOTEL (TEMPEL HASIL RESPONS DI SINI)
 # =============================================================================
 # Token di bawah ini nantikan kamu isi/salin setelah menekan Send Request di BAB 2 (Login)
-@adminToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQG5nb3RlbGluLmNvbSIsInN1YiI6Ijk0N2RiN2E0LTBiOGItNGJlNC04ZGJhLTMwYTFlZTRmNWQ1NyIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc4NTk4MzI5OSwiZXhwIjoxNzg2MDY5Njk5fQ.F2feuqGHE7UrB3fTQGgd47T64_cs8lIIvGSfi35LQFQ
-@staffToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InN0YWZmQG5nb3RlbGluLmNvbSIsInN1YiI6IjIzYTgxMmY1LTcwY2MtNDcyMi1iMjI0LTQzM2FhZWRhYTA3ZiIsInJvbGUiOiJzdGFmZiIsImlhdCI6MTc4NTg5MjkwNiwiZXhwIjoxNzg1OTc5MzA2fQ.vBTeM4MRC6YqWRCuX5z5IroJXITDIKiJS1kJhEHXOlk
-@userToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im1hdEBuZ290ZWxpbi5jb20iLCJzdWIiOiIwMTgwNTNlMy03YjYxLTQ4ZjMtODlmMC1iMzQ5ZmM2OGEwMDMiLCJyb2xlIjoidXNlciIsImlhdCI6MTc4NTk4MzA1MywiZXhwIjoxNzg2MDY5NDUzfQ.lzRAmfzu6qoTvRW_OTNRvrfHdTfAUtY7A9DZVLGkZ28
-
+@adminToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQG5nb3RlbGluLmNvbSIsInN1YiI6Ijk0N2RiN2E0LTBiOGItNGJlNC04ZGJhLTMwYTFlZTRmNWQ1NyIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc4NTk4NjAyNCwiZXhwIjoxNzg2MDcyNDI0fQ.5wEGSL3W7zoMtXTFlhTksVaJYDpSULlJl_PSrvfJTkc
+@staffToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InN0YWZmQG5nb3RlbGluLmNvbSIsInN1YiI6IjIzYTgxMmY1LTcwY2MtNDcyMi1iMjI0LTQzM2FhZWRhYTA3ZiIsInJvbGUiOiJzdGFmZiIsImlhdCI6MTc4NjAyODI5MSwiZXhwIjoxNzg2MTE0NjkxfQ.J11dm1g-JMedRJRNJfxII5pDuq7QKKTIcmPVnBN-VLQ
+@userToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im1hdEBuZ290ZWxpbi5jb20iLCJzdWIiOiIwMTgwNTNlMy03YjYxLTQ4ZjMtODlmMC1iMzQ5ZmM2OGEwMDMiLCJyb2xlIjoidXNlciIsImlhdCI6MTc4NTk5OTQ4OCwiZXhwIjoxNzg2MDg1ODg4fQ.QuErdQgSKtKqMzhed6fy_jD6IbPmx1ptK2OJp7X3jZE
 # ID di bawah ini disalin secara berurutan waktu menempuh babak pengetasan di bawah:
 @userId = 018053e3-7b61-48f3-89f0-b349fc68a003
 @resourceId = 0d1d024a-56c5-4631-b9a6-54be397031a4
 @resourceIdVVIP = 874da42f-e0e8-4304-b50d-44654c837ecf
 @roomImageId = 4348123d-f0aa-47ab-9a62-1acc14bf89c9
 @scheduleId = ed3331c6-9e5d-4542-898d-26d60886fa04
-@bookingId = a62d49ed-01a3-4427-92a4-69cdc42085f7
+@bookingId = cd871513-1cb1-4c35-87e2-c97ef5bea9dc
 @adminId = 947db7a4-0b8b-4be4-8dba-30a1ee4f5d57
 @reviewId = 1327f39d-6456-4666-8146-0a7fb395073b
 @notificationId = 321ebb6c-74a4-4fb6-980f-580f836dc417
@@ -432,6 +431,16 @@ Authorization: Bearer {{staffToken}}
   "status": "approved",
   "notes": "Bukti QRIS 1.500.000 tervalidasi masuk akal. Kunci kamar 101 siap diberikan."
 }
+### Versi Tolak
+PATCH {{baseUrl}}/bookings/{{bookingId}}
+Content-Type: application/json
+Authorization: Bearer {{staffToken}}
+
+{
+  "status": "rejected",
+  "notes": "User Mencurigakan"
+}
+
 
 ###
 # 5.6 [TAMU LOGIN REQUIRED] Tamu Melihat Kuitansi Bukti Pembayaran Lunas
@@ -441,13 +450,13 @@ Authorization: Bearer {{userToken}}
 
 ###
 # 5.7 [RBAC: ADMIN & STAFF] Guest Check-Out (Selesai Menginap)
-PATCH {{baseUrl}}/bookings/{{bookingId}}
+PATCH {{baseUrl}}/bookings/b4a00fb0-d791-4224-beb7-212934984d55
 Content-Type: application/json
 Authorization: Bearer {{staffToken}}
 
 {
   "status": "completed",
-  "notes": "Tamu sudah checkout dengan rapi, kunci dikembalikan tanpa kerusakan."
+  "notes": "Tamu sudah checkout dengan tenang, kunci dikembalikan tanpa kerusakan."
 }
 
 ###
@@ -487,11 +496,11 @@ Content-Type: application/json
 Authorization: Bearer {{userToken}}
 
 {
-  "resource_id": "{{midtransRoomId}}",
-  "start_time": "2026-12-25T14:00:00.000Z",
-  "end_time": "2026-12-26T12:00:00.000Z",
+  "resource_id": "{{resourceIdVVIP}}",
+  "start_time": "2026-12-11T14:00:00.000Z",
+  "end_time": "2026-12-12T12:00:00.000Z",
   "payment_method": "gopay",
-  "notes": "Tolong siapin simulator Midtransnya wkwk"
+  "notes": "siapin kamar vip"
 }
 
 ###
@@ -522,9 +531,9 @@ Content-Type: application/json
 Authorization: Bearer {{userToken}}
 
 {
-  "booking_id": "{{bookingId}}",
+  "booking_id": "b4a00fb0-d791-4224-beb7-212934984d55",
   "rating": 5,
-  "comment": "Mantap COOOY"
+  "comment": "Mantap cuy"
 }
 
 ###
@@ -562,3 +571,14 @@ Authorization: Bearer {{userToken}}
 PATCH {{baseUrl}}/notifications/{{notificationId}}/read
 Content-Type: application/json
 Authorization: Bearer {{userToken}}
+
+### delete notif spesifik
+DELETE {{baseUrl}}/notifications/a446175a-75e1-4d33-a5ba-e514651a3e75
+Content-Type: application/json
+Authorization: Bearer {{adminToken}}
+
+### delete all notif
+DELETE {{baseUrl}}/notifications/user/947db7a4-0b8b-4be4-8dba-30a1ee4f5d57
+Content-Type: application/json
+Authorization: Bearer {{adminToken}}
+

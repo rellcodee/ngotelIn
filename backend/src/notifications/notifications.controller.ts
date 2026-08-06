@@ -6,6 +6,7 @@ import {
   Query,
   UseGuards,
   ParseUUIDPipe,
+  Delete,
 } from '@nestjs/common';
 import { NotificationsService } from './notifications.service';
 import { QueryNotificationDto } from './dto/query-notification.dto';
@@ -39,6 +40,11 @@ export class NotificationsController {
     return this.notificationsService.markAllAsRead(userId);
   }
 
+  @Delete('user/:userId')
+  deleteAll(@Param('userId', ParseUUIDPipe) userId: string) {
+    return this.notificationsService.deleteAll(userId)
+  }
+
   // PATCH /notifications/:id/read
   @Patch(':id/read')
   async markAsRead(
@@ -46,5 +52,10 @@ export class NotificationsController {
     @CurrentUser('id') userId: string,
   ) {
     return this.notificationsService.markAsRead(id, userId);
+  }
+
+  @Delete(':id')
+  deleteNotif(@Param('id', ParseUUIDPipe) id: string) {
+    return this.notificationsService.deleteNotif(id)
   }
 }

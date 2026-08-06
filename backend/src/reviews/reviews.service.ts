@@ -26,12 +26,6 @@ export class ReviewsService {
       throw new NotFoundException('Data booking tidak ditemukan!');
     }
 
-    if (booking.user_id !== currentUser.id) {
-      throw new ForbiddenException(
-        'Akses dilarang! Anda tidak berhak memberikan ulasan untuk booking ini.',
-      );
-    }
-
     if (booking.status !== BookingStatus.COMPLETED) {
       throw new BadRequestException(
         `Gagal memberikan ulasan. Status booking saat ini '${booking.status}'. Ulasan hanya bisa diberikan jika booking sudah selesai (COMPLETED)!`
