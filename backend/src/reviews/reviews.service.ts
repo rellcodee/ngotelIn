@@ -3,17 +3,19 @@ import {
   ConflictException,
   NotFoundException,
   InternalServerErrorException,
-  BadRequestException
+  BadRequestException,
+  ForbiddenException,
 } from '@nestjs/common';
 import { CreateReviewDto } from './dto/create-review.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Prisma } from '@prisma/client';
-import { BookingStatus, ScheduleStatus } from 'src/common/enums';
+import { BookingStatus, Role } from 'src/common/enums';
+
 @Injectable()
 export class ReviewsService {
   constructor(private prisma: PrismaService) { }
 
-  async create(createReviewDto: CreateReviewDto) {
+  async create(createReviewDto: CreateReviewDto, currentUser: any) {
     const { booking_id, rating, comment } = createReviewDto;
 
     const booking = await this.prisma.bookings.findUnique({
@@ -22,6 +24,12 @@ export class ReviewsService {
 
     if (!booking) {
       throw new NotFoundException('Data booking tidak ditemukan!');
+    }
+
+    if (booking.user_id !== currentUser.id) {
+      throw new ForbiddenException(
+        'Akses dilarang! Anda tidak berhak memberikan ulasan untuk booking ini.',
+      );
     }
 
     if (booking.status !== BookingStatus.COMPLETED) {
@@ -135,13 +143,37 @@ export class ReviewsService {
     return review;
   }
 
-  // 4. HAPUS REVIEW (JIKA DIBUTUHKAN ADMIN)
-  async remove(id: string) {
+  async remove(id: string, currentUser: any) {
+    const review = await this.prisma.reviews.findUnique({
+      where: { id },
+      include: {
+        bookings: {
+          select: {
+            user_id: true,
+          },
+        },
+      },
+    });
+
+    if (!review) {
+      throw new NotFoundException('Ulasan tidak ditemukan!');
+    }
+
+    // CEK HAK AKSES: Pemilik ulasan (lewat booking.user_id) ATAU Admin
+    const isOwner = review.bookings?.user_id === currentUser.id;
+    const isAdmin = currentUser.role === Role.ADMIN;
+
+    if (!isOwner && !isAdmin) {
+      throw new ForbiddenException(
+        'Akses dilarang! Anda tidak berhak menghapus ulasan ini.',
+      );
+    }
+
     try {
       await this.prisma.reviews.delete({ where: { id } });
       return { message: 'Ulasan berhasil dihapus' };
     } catch (error) {
-      throw new NotFoundException('Ulasan tidak ditemukan atau gagal dihapus');
+      throw new InternalServerErrorException('Gagal menghapus ulasan');
     }
   }
 }

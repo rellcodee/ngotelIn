@@ -9,12 +9,11 @@ import {
 } from '@nestjs/common';
 import { NotificationsService } from './notifications.service';
 import { QueryNotificationDto } from './dto/query-notification.dto';
-// Import Guard & Decorator Auth lu, contoh:
-// import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('notifications')
-// @UseGuards(JwtAuthGuard) // Mengunci endpoint, hanya user terotentikasi yang bisa akses
+@UseGuards(AuthGuard('jwt'))
 export class NotificationsController {
   constructor(private readonly notificationsService: NotificationsService) { }
 

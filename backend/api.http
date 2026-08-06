@@ -4,9 +4,9 @@
 # PUSAT VARIABEL SIKLUS HIDUP TRANSAKSI HOTEL (TEMPEL HASIL RESPONS DI SINI)
 # =============================================================================
 # Token di bawah ini nantikan kamu isi/salin setelah menekan Send Request di BAB 2 (Login)
-@adminToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQG5nb3RlbGluLmNvbSIsInN1YiI6Ijk0N2RiN2E0LTBiOGItNGJlNC04ZGJhLTMwYTFlZTRmNWQ1NyIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc4NTg5MjgzNSwiZXhwIjoxNzg1OTc5MjM1fQ.teINEZKXKiL-ymni-cLlyEZ9JqZOeXAfXQr0S2dAWmg
+@adminToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImFkbWluQG5nb3RlbGluLmNvbSIsInN1YiI6Ijk0N2RiN2E0LTBiOGItNGJlNC04ZGJhLTMwYTFlZTRmNWQ1NyIsInJvbGUiOiJhZG1pbiIsImlhdCI6MTc4NTk4MzI5OSwiZXhwIjoxNzg2MDY5Njk5fQ.F2feuqGHE7UrB3fTQGgd47T64_cs8lIIvGSfi35LQFQ
 @staffToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InN0YWZmQG5nb3RlbGluLmNvbSIsInN1YiI6IjIzYTgxMmY1LTcwY2MtNDcyMi1iMjI0LTQzM2FhZWRhYTA3ZiIsInJvbGUiOiJzdGFmZiIsImlhdCI6MTc4NTg5MjkwNiwiZXhwIjoxNzg1OTc5MzA2fQ.vBTeM4MRC6YqWRCuX5z5IroJXITDIKiJS1kJhEHXOlk
-@userToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im1hdEBuZ290ZWxpbi5jb20iLCJzdWIiOiIwMTgwNTNlMy03YjYxLTQ4ZjMtODlmMC1iMzQ5ZmM2OGEwMDMiLCJyb2xlIjoidXNlciIsImlhdCI6MTc4NTg5Mjk1NiwiZXhwIjoxNzg1OTc5MzU2fQ.44-s9D5SqqDiN3kxeiR9bP0qGkAihuA4i-Z8gou9ufM
+@userToken = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im1hdEBuZ290ZWxpbi5jb20iLCJzdWIiOiIwMTgwNTNlMy03YjYxLTQ4ZjMtODlmMC1iMzQ5ZmM2OGEwMDMiLCJyb2xlIjoidXNlciIsImlhdCI6MTc4NTk4MzA1MywiZXhwIjoxNzg2MDY5NDUzfQ.lzRAmfzu6qoTvRW_OTNRvrfHdTfAUtY7A9DZVLGkZ28
 
 # ID di bawah ini disalin secara berurutan waktu menempuh babak pengetasan di bawah:
 @userId = 018053e3-7b61-48f3-89f0-b349fc68a003
@@ -16,7 +16,8 @@
 @scheduleId = ed3331c6-9e5d-4542-898d-26d60886fa04
 @bookingId = a62d49ed-01a3-4427-92a4-69cdc42085f7
 @adminId = 947db7a4-0b8b-4be4-8dba-30a1ee4f5d57
-
+@reviewId = 1327f39d-6456-4666-8146-0a7fb395073b
+@notificationId = 321ebb6c-74a4-4fb6-980f-580f836dc417
 ### =========================================================================
 ### 🟢 BAB 1: REGISTRASI 3 AKUN UTAMA HOTEL (TANPA SEEDER & UJI KEAMANAN DTO)
 ### -> Langsung tekan Send Request berturutan untuk mencetak aktor-aktor hotelmu!
@@ -469,7 +470,7 @@ Authorization: Bearer {{adminToken}}
 
 {
   "name": "Kamar Test Midtrans",
-  "type": "Midtrans Suite",
+  "type": "standard",
   "location": "Lantai 99",
   "capacity": 2,
   "price_per_night": 250000,
@@ -479,7 +480,7 @@ Authorization: Bearer {{adminToken}}
 ###
 # 6.2 [TAMU] Bikin Booking Baru buat Kamar Test Midtrans
 # PENTING: Ganti nilai variabel ini pakai ID kamar yang lu dapet dari respon 6.1!
-@midtransRoomId = b405a8af-210d-41de-a55e-47ddde3b9109
+@midtransRoomId = c7704a16-bd77-4b89-8a85-2f3d8b4b9c81
 
 POST {{baseUrl}}/bookings
 Content-Type: application/json
@@ -500,5 +501,64 @@ Authorization: Bearer {{userToken}}
 ###
 # 6.3 [TAMU] Cek Status Booking & Payment Setelah Bayar di Midtrans
 # PENTING: Ganti ID di bawah sama ID Booking yang lu dapet dari respon 6.2 (kolom id)
-GET {{baseUrl}}/bookings/af1d58fe-ce3d-4f22-8590-8b9b4e0506e5
+GET {{baseUrl}}/bookings/1546585f-fdf1-4368-8bf4-c5e056485da6
+Authorization: Bearer {{userToken}}
+
+
+# ai-bot
+###
+POST {{baseUrl}}/ai/chat
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+
+{
+  "message": "Lu Ngajak Ribut??"
+}
+
+# review
+###
+POST {{baseUrl}}/reviews
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+
+{
+  "booking_id": "{{bookingId}}",
+  "rating": 5,
+  "comment": "Mantap COOOY"
+}
+
+###
+GET {{baseUrl}}/reviews/resource/{{resourceId}}
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+
+###
+GET {{baseUrl}}/reviews/{{reviewId}}
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+
+###
+DELETE {{baseUrl}}/reviews/{{reviewId}}
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+
+# Notif
+###
+GET {{baseUrl}}/notifications
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+
+###
+GET {{baseUrl}}/notifications/unread-count
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+
+###
+PATCH {{baseUrl}}/notifications/read-all
+Content-Type: application/json
+Authorization: Bearer {{userToken}}
+
+### is read
+PATCH {{baseUrl}}/notifications/{{notificationId}}/read
+Content-Type: application/json
 Authorization: Bearer {{userToken}}
