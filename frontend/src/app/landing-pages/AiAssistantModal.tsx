@@ -14,9 +14,12 @@ interface Message {
 // Komponen AiAssistantModal: Widget & Popup AI Assistant dengan Validasi Keamanan Frontend
 export default function AiAssistantModal() {
   // 1. STATE DASAR MODAL CHAT
-  const [isOpen, setIsOpen] = useState(true); // State untuk melacak apakah modal chat terbuka/tertutup
+  const [isOpen, setIsOpen] = useState(false);       // Logika: apakah modal sedang "seharusnya" terbuka
+  const [isVisible, setIsVisible] = useState(false); // DOM: apakah modal masih ter-render (untuk animasi keluar)
+  const [isAnimating, setIsAnimating] = useState(false); // Sedang dalam transisi animasi buka/tutup
   const [inputText, setInputText] = useState(""); // State untuk menyimpan teks input pengguna
   const [isTyping, setIsTyping] = useState(false); // State indikator AI sedang memproses balasan (loading state)
+  const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null); // Ref timer untuk cleanup animasi tutup
 
   // State array pesan percakapan (default diawali pesan salam dari AI Assistant)
   const [messages, setMessages] = useState<Message[]>([
@@ -35,6 +38,43 @@ export default function AiAssistantModal() {
 
   // Reference ke elemen paling bawah chat untuk otomatis auto-scroll ke bawah saat pesan baru masuk
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // =========================================================================
+  // FUNGSI TOGGLE MODAL: Buka/tutup dengan animasi smooth & cegah ghost click
+  // =========================================================================
+  const handleToggle = () => {
+    if (isAnimating) return; // Blokir klik saat sedang animasi agar tidak ghost click
+
+    if (!isOpen) {
+      // --- BUKA MODAL ---
+      setIsOpen(true);
+      setIsVisible(true); // Mount modal ke DOM dulu
+      setIsAnimating(true);
+      // Tunda sedikit agar browser sempat render, lalu jalankan animasi masuk
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          setIsAnimating(false); // Selesai animasi buka
+        });
+      });
+    } else {
+      // --- TUTUP MODAL ---
+      setIsOpen(false);    // Ubah state → trigger kelas CSS animasi keluar
+      setIsAnimating(true); // Blokir klik selama animasi tutup
+      // Setelah durasi animasi selesai, baru unmount dari DOM
+      if (closeTimerRef.current) clearTimeout(closeTimerRef.current);
+      closeTimerRef.current = setTimeout(() => {
+        setIsVisible(false);   // Unmount modal dari DOM
+        setIsAnimating(false); // Selesai animasi tutup
+      }, 300); // Harus sama dengan durasi transition CSS (300ms)
+    }
+  };
+
+  // Cleanup timer saat komponen unmount
+  useEffect(() => {
+    return () => {
+      if (closeTimerRef.current) clearTimeout(closeTimerRef.current);
+    };
+  }, []);
 
   // Efek untuk mengaktifkan auto-scroll setiap kali pesan diperbarui
   useEffect(() => {
@@ -141,8 +181,9 @@ export default function AiAssistantModal() {
     <>
       {/* FLOATING ACTION BUTTON (Tombol Melayang di Pojok Kanan Bawah untuk Membuka/Menutup AI Assistant) */}
       <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-6 right-6 z-50 flex items-center gap-2.5 rounded-full bg-[#0B4F37] px-5 py-3 text-white shadow-2xl transition-all duration-300 hover:scale-105 hover:bg-[#073524] active:scale-95 border-2 border-emerald-400/40 animate-pulse-ring"
+        onClick={handleToggle}
+        disabled={isAnimating} // Blokir klik saat animasi berjalan → cegah ghost click
+        className="fixed bottom-6 right-6 z-50 flex items-center gap-2.5 rounded-full bg-[#0B4F37] px-5 py-3 text-white shadow-2xl transition-all duration-300 hover:scale-105 hover:bg-[#073524] active:scale-95 border-2 border-emerald-400/40 animate-pulse-ring disabled:pointer-events-none"
         aria-label="Toggle AI Assistant"
       >
         <div className="flex h-7 w-7 items-center justify-center rounded-full bg-emerald-500/30 text-emerald-200">
@@ -152,8 +193,15 @@ export default function AiAssistantModal() {
       </button>
 
       {/* MODAL / POPUP CHAT AI ASSISTANT */}
-      {isOpen && (
-        <div className="fixed bottom-20 right-4 z-50 w-full max-w-sm overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-2xl sm:right-6 transition-all duration-300">
+      {/* isVisible: tetap di DOM selama animasi tutup; isOpen: menentukan kelas animasi masuk/keluar */}
+      {isVisible && (
+        <div
+          className={`fixed bottom-20 right-4 z-[60] w-full max-w-sm overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-2xl sm:right-6 transition-all duration-300 ease-out ${
+            isOpen
+              ? "opacity-100 translate-y-0 scale-100 pointer-events-auto"   // State terbuka: tampil penuh
+              : "opacity-0 translate-y-4 scale-95 pointer-events-none"       // State menutup: fade + slide down
+          }`}
+        >
           
           {/* HEADER CHAT WINDOW (Warna latar putih dengan ikon AI hijau & Tombol Tutup X) */}
           <div className="flex items-center justify-between border-b border-gray-100 bg-white px-4 py-3 shadow-sm">
@@ -178,8 +226,9 @@ export default function AiAssistantModal() {
 
             {/* Tombol Tutup Window (X) */}
             <button
-              onClick={() => setIsOpen(false)}
-              className="rounded-full p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition-colors"
+              onClick={handleToggle}
+              disabled={isAnimating}
+              className="rounded-full p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition-colors disabled:pointer-events-none"
             >
               <X className="h-5 w-5" />
             </button>

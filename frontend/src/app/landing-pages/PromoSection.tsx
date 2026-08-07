@@ -1,6 +1,7 @@
 "use client"; // Client component agar interaktif saat hover/klik tombol promo
 
 import React from "react"; // Mengimpor library React
+import Link from "next/link"; // Mengimpor Link Next.js
 import { ArrowRight } from "lucide-react"; // Mengimpor ikon panah kanan dari lucide-react
 
 // Array data penawaran promo spesial agar kode bersih dan mudah dikelola
@@ -50,13 +51,13 @@ export default function PromoSection() {
             </p>
           </div>
           {/* Link Lihat Semua Promo */}
-          <a
-            href="#semua-promo"
+          <Link
+            href="/promo"
             className="group flex items-center gap-1.5 text-sm font-semibold text-[#0B4F37] hover:text-[#073524]"
           >
             <span>Lihat semua promo</span>
             <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-          </a>
+          </Link>
         </div>
 
         {/* GRID KARTU PROMO: 3 Kartu side-by-side */}
@@ -88,11 +89,12 @@ export default function PromoSection() {
 
               {/* TOMBOL PESAN SEKARANG (Solid White Pill) */}
               <div className="mt-8">
-                <button
-                  className={`w-full rounded-full bg-white py-3 px-6 text-sm font-bold ${promo.btnTextColor} shadow-md transition-all hover:bg-emerald-50 hover:shadow-lg active:scale-98`}
+                <Link
+                  href="/kamar"
+                  className={`block w-full text-center rounded-full bg-white py-3 px-6 text-sm font-bold ${promo.btnTextColor} shadow-md transition-all hover:bg-emerald-50 hover:shadow-lg active:scale-98`}
                 >
                   Pesan Sekarang
-                </button>
+                </Link>
               </div>
 
             </div>

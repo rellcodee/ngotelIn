@@ -11,7 +11,7 @@ import AboutSection from "./landing-pages/AboutSection"; // Mengimpor komponen P
 import TestimonialSection from "./landing-pages/TestimonialSection"; // Mengimpor komponen Testimoni Tamu
 import FaqSection from "./landing-pages/FaqSection"; // Mengimpor komponen FAQ Pertanyaan Populer
 import Footer from "./landing-pages/Footer"; // Mengimpor komponen Footer & Newsletter
-import AiAssistantModal from "./landing-pages/AiAssistantModal"; // Mengimpor komponen AI Assistant Floating Widget
+
 
 // Komponen Home: Entry point utama halaman beranda website
 export default function Home() {
@@ -49,8 +49,6 @@ export default function Home() {
       {/* 8. Catatan Kaki Footer di bagian bawah */}
       <Footer />
 
-      {/* 9. Floating Widget AI Assistant (Tampilan Sesuai Gambar Design Screenshot 2) */}
-      <AiAssistantModal />
 
     </div>
   );

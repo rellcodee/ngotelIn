@@ -2,6 +2,7 @@
 
 import React, { useState } from "react"; // Mengimpor React dan useState
 import Image from "next/image"; // Mengimpor komponen Image dari Next.js
+import Link from "next/link"; // Mengimpor Link Next.js
 import { Check, Play, X } from "lucide-react"; // Mengimpor ikon centang, play, dan tutup modal video
 
 // Komponen AboutSection: Blok informasi utama tentang SiniBook Hotel (Profil, Keunggulan & Video Tour)
@@ -32,9 +33,9 @@ export default function AboutSection() {
 
             {/* Tombol Selengkapnya (Solid White Pill style) */}
             <div className="mt-6">
-              <button className="rounded-full bg-white px-6 py-2.5 text-sm font-bold text-[#0B4F37] shadow transition-all hover:bg-emerald-50 hover:shadow-lg">
+              <Link href="/about" className="inline-block rounded-full bg-white px-6 py-2.5 text-sm font-bold text-[#0B4F37] shadow transition-all hover:bg-emerald-50 hover:shadow-lg">
                 Selengkapnya
-              </button>
+              </Link>
             </div>
 
             {/* GRID 4 POIN KEUNGGULAN (2x2 Grid) */}

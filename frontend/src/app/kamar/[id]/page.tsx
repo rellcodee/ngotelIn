@@ -29,7 +29,7 @@ import {
 // Mengimpor komponen layout utama (Header, Footer, dan Widget Chatbot AI)
 import Header from "../../landing-pages/Header";
 import Footer from "../../landing-pages/Footer";
-import AiAssistantModal from "../../landing-pages/AiAssistantModal";
+
 
 // Data Detail Lengkap 8 Pilihan Kamar dalam Bahasa Indonesia
 const ROOM_DETAILS_MAP: Record<
@@ -431,7 +431,7 @@ export default function DetailKamarPage() {
         </main>
 
         <Footer />
-        <AiAssistantModal />
+
       </div>
     );
   }
@@ -790,15 +790,12 @@ export default function DetailKamarPage() {
             </p>
 
             <div className="mt-6 flex flex-col gap-2.5">
-              <button
-                onClick={() => {
-                  alert("Fitur Form Login & Register akan dibuat pada tahap berikutnya!");
-                  setIsLoginModalOpen(false);
-                }}
-                className="w-full rounded-xl bg-[#0B4F37] py-3 text-sm font-bold text-white shadow-md transition-all hover:bg-[#073524] active:scale-95"
+              <Link
+                href="/login"
+                className="block w-full text-center rounded-xl bg-[#0B4F37] py-3 text-sm font-bold text-white shadow-md transition-all hover:bg-[#073524] active:scale-95"
               >
                 Masuk / Login Sekarang
-              </button>
+              </Link>
 
               <button
                 onClick={() => setIsLoginModalOpen(false)}
@@ -820,7 +817,7 @@ export default function DetailKamarPage() {
       )}
 
       <Footer />
-      <AiAssistantModal />
+
 
     </div>
   );

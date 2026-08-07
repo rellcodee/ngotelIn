@@ -25,7 +25,7 @@ import {
 // Mengimpor komponen layout utama (Header, Footer, dan Widget Chatbot AI)
 import Header from "../landing-pages/Header";
 import Footer from "../landing-pages/Footer";
-import AiAssistantModal from "../landing-pages/AiAssistantModal";
+
 
 // Interface / tipe data typescript untuk struktur kartu kamar
 interface RoomSpec {
@@ -296,7 +296,7 @@ export default function KamarPage() {
   return (
     // Pembungkus utama layout halaman web dengan warna dasar latar putih dan font sans
     <div className="min-h-screen bg-slate-50 font-sans text-gray-900 selection:bg-[#0B4F37] selection:text-white">
-      
+
       {/* 1. Navigasi Header Bagian Teratas */}
       <Header activePage="kamar" />
 
@@ -336,7 +336,7 @@ export default function KamarPage() {
         {/* ========================================================================= */}
         <section className="w-full bg-white border-b border-gray-200/80 py-6 sticky top-16 z-30 shadow-sm">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-            
+
             {/* Search Input Bar */}
             <div className="relative w-full md:w-80">
               <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
@@ -367,11 +367,10 @@ export default function KamarPage() {
                 <button
                   key={category}
                   onClick={() => setSelectedCategory(category)}
-                  className={`rounded-full px-3.5 py-1.5 text-xs font-medium transition-all shrink-0 ${
-                    selectedCategory === category
-                      ? "bg-[#0B4F37] text-white shadow-sm font-bold"
-                      : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-                  }`}
+                  className={`rounded-full px-3.5 py-1.5 text-xs font-medium transition-all shrink-0 ${selectedCategory === category
+                    ? "bg-[#0B4F37] text-white shadow-sm font-bold"
+                    : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                    }`}
                 >
                   {category}
                 </button>
@@ -386,7 +385,7 @@ export default function KamarPage() {
         {/* ========================================================================= */}
         <section className="w-full py-12 sm:py-16 md:py-20 bg-slate-50">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            
+
             {/* JIKA KAMAR TIDAK DITEMUKAN PADA HASIL PENCARIAN */}
             {filteredRooms.length === 0 ? (
               <div className="rounded-3xl bg-white p-12 text-center shadow-sm border border-gray-200/80 max-w-lg mx-auto">
@@ -429,15 +428,14 @@ export default function KamarPage() {
                         <button
                           onClick={() => toggleFavorite(room.id, room.title)}
                           aria-label="Simpan ke Favorit"
-                          className={`absolute top-4 left-4 z-10 flex h-9 w-9 items-center justify-center rounded-full shadow-md backdrop-blur-md transition-all hover:scale-110 active:scale-95 ${
-                            isFav
-                              ? "bg-rose-500 text-white"
-                              : "bg-white/80 text-gray-600 hover:bg-white hover:text-rose-500"
-                          }`}
+                          className={`absolute top-4 left-4 z-10 flex h-9 w-9 items-center justify-center rounded-full shadow-md backdrop-blur-md transition-all hover:scale-110 active:scale-95 ${isFav
+                            ? "bg-rose-500 text-white"
+                            : "bg-white/80 text-gray-600 hover:bg-white hover:text-rose-500"
+                            }`}
                         >
                           <Heart className={`h-5 w-5 ${isFav ? "fill-current" : ""}`} />
                         </button>
-                        
+
                         {/* BADGE STOK TERBATAS / HIGHLIGHT */}
                         {room.stockBadge && (
                           <div className="absolute bottom-4 left-4 z-10">
@@ -499,7 +497,7 @@ export default function KamarPage() {
                             <span className="block text-[10px] font-bold tracking-wider text-gray-400 uppercase">
                               MULAI DARI
                             </span>
-                            
+
                             <div className="mt-0.5 flex items-center gap-2">
                               <span className="text-xs text-gray-400 line-through">
                                 {room.originalPrice}
@@ -554,7 +552,7 @@ export default function KamarPage() {
         <section className="w-full bg-slate-100/80 py-12 sm:py-16 border-t border-gray-200/60">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between rounded-3xl bg-white p-8 sm:p-10 shadow-sm border border-gray-200/80">
-              
+
               <div>
                 <h3 className="text-xl sm:text-2xl font-bold tracking-tight text-gray-900">
                   Butuh Bantuan Memilih Kamar?
@@ -607,8 +605,7 @@ export default function KamarPage() {
       {/* Footer Utama */}
       <Footer />
 
-      {/* Floating Widget AI Assistant */}
-      <AiAssistantModal />
+
 
     </div>
   );
