@@ -69,8 +69,8 @@ export default function Footer() {
             <ul className="mt-4 flex flex-col gap-2.5 text-xs text-emerald-100/80">
               <li><Link href="/" className="hover:text-white transition-colors">Beranda</Link></li>
               <li><Link href="/kamar" className="hover:text-white transition-colors">Kamar</Link></li>
-              <li><Link href="/fasilitas" className="hover:text-white transition-colors">Fasilitas</Link></li>
-              <li><Link href="/about" className="hover:text-white transition-colors">Tentang Kami</Link></li>
+              <li><Link href="/#fasilitas" className="hover:text-white transition-colors">Fasilitas</Link></li>
+              <li><Link href="/#tentang-kami" className="hover:text-white transition-colors">Tentang Kami</Link></li>
               <li><a href="/#faq" className="hover:text-white transition-colors">FAQ</a></li>
               <li><a href="/#kontak" className="hover:text-white transition-colors">Kontak</a></li>
             </ul>

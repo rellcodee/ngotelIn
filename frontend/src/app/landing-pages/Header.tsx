@@ -5,13 +5,61 @@ import Link from "next/link"; // Mengimpor komponen Link dari Next.js untuk navi
 import { Building2, Menu, X, User } from "lucide-react"; // Mengimpor ikon logo, hamburger menu, tombol tutup, dan user dari lucide-react
 
 interface HeaderProps {
-  activePage?: "home" | "kamar" | string; // Prop opsional untuk menentukan halaman mana yang sedang aktif
+  activePage?: "home" | "kamar" | "fasilitas" | "tentang-kami" | "kontak" | string; // Prop opsional untuk menentukan halaman/section mana yang sedang aktif
 }
 
 // Komponen Header: Menampilkan navigasi utama di bagian teratas halaman website SiniBook Hotel
 export default function Header({ activePage = "home" }: HeaderProps) {
   // State untuk melacak apakah menu navigasi versi mobile sedang terbuka atau tertutup
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  // State untuk melacak section mana yang sedang aktif saat di-scroll
+  const [currentActive, setCurrentActive] = useState<string>(activePage);
+
+  // Sync state jika prop activePage berubah
+  useEffect(() => {
+    setCurrentActive(activePage);
+  }, [activePage]);
+
+  // ScrollSpy Effect: Otomatis mendeteksi section mana yang terlihat di viewport layar
+  useEffect(() => {
+    const sectionIds = ["kamar", "fasilitas", "tentang-kami", "kontak"];
+
+    const handleScroll = () => {
+      // 1. Jika sudah di paling bawah halaman (Footer/Kontak)
+      const isAtBottom =
+        window.innerHeight + window.scrollY >=
+        document.documentElement.scrollHeight - 80;
+
+      if (isAtBottom) {
+        setCurrentActive("kontak");
+        return;
+      }
+
+      // 2. Deteksi posisi section menggunakan getBoundingClientRect()
+      let current = "home";
+
+      for (const id of sectionIds) {
+        const el = document.getElementById(id);
+        if (el) {
+          const rect = el.getBoundingClientRect();
+          // Aktif jika bagian atas section kurang dari 250px dari top viewport & bagian bawahnya masih terlihat
+          if (rect.top <= 250 && rect.bottom >= 100) {
+            current = id;
+          }
+        }
+      }
+
+      setCurrentActive(current);
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll(); // Panggil pertama kali saat komponen dirender
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   // State untuk melacak data login user
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -74,57 +122,53 @@ export default function Header({ activePage = "home" }: HeaderProps) {
           {/* Link Beranda */}
           <Link
             href="/"
-            className={`text-sm font-medium transition-colors hover:text-emerald-200 relative py-1 ${activePage === "home"
+            className={`text-sm font-medium transition-colors hover:text-emerald-200 relative py-1 ${currentActive === "home"
                 ? "text-white font-bold after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-emerald-400 after:rounded-full"
-                : "text-emerald-100/90"
+                : "text-emerald-100/90 hover:text-white"
               }`}
           >
             Beranda
           </Link>
           {/* Link Kamar */}
           <Link
-            href="/kamar"
-            className={`text-sm font-medium transition-colors hover:text-emerald-200 relative py-1 ${activePage === "kamar"
+            href="/#kamar"
+            className={`text-sm font-medium transition-colors hover:text-emerald-200 relative py-1 ${currentActive === "kamar"
                 ? "text-white font-bold after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-emerald-400 after:rounded-full"
-                : "text-emerald-100/90"
+                : "text-emerald-100/90 hover:text-white"
               }`}
           >
             Kamar
           </Link>
           {/* Link Fasilitas */}
           <Link
-            href="/fasilitas"
-            className={`text-sm font-medium transition-colors hover:text-emerald-200 relative py-1 ${activePage === "fasilitas"
+            href="/#fasilitas"
+            className={`text-sm font-medium transition-colors hover:text-emerald-200 relative py-1 ${currentActive === "fasilitas"
                 ? "text-white font-bold after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-emerald-400 after:rounded-full"
-                : "text-emerald-100/90"
+                : "text-emerald-100/90 hover:text-white"
               }`}
           >
             Fasilitas
           </Link>
           {/* Link Tentang Hotel */}
           <Link
-            href="/about"
-            className={`text-sm font-medium transition-colors hover:text-emerald-200 relative py-1 ${activePage === "about"
+            href="/#tentang-kami"
+            className={`text-sm font-medium transition-colors hover:text-emerald-200 relative py-1 ${currentActive === "tentang-kami"
                 ? "text-white font-bold after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-emerald-400 after:rounded-full"
-                : "text-emerald-100/90"
+                : "text-emerald-100/90 hover:text-white"
               }`}
           >
             Tentang Hotel
           </Link>
-          {/* Link Promo */}
+          {/* Link Kontak */}
           <Link
-            href="/promo"
-            className={`text-sm font-medium transition-colors hover:text-emerald-200 relative py-1 ${activePage === "promo"
+            href="/#kontak"
+            className={`text-sm font-medium transition-colors hover:text-emerald-200 relative py-1 ${currentActive === "kontak"
                 ? "text-white font-bold after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-emerald-400 after:rounded-full"
-                : "text-emerald-100/90"
+                : "text-emerald-100/90 hover:text-white"
               }`}
           >
-            Promo
-          </Link>
-          {/* Link Kontak */}
-          <a href="/#kontak" className="text-sm font-medium text-emerald-100/90 transition-colors hover:text-white">
             Kontak
-          </a>
+          </Link>
         </nav>
 
         {/* SECTION TOMBOL AKSI (DESKTOP): Tombol Masuk & Daftar / Profil & Keluar */}
@@ -176,12 +220,11 @@ export default function Header({ activePage = "home" }: HeaderProps) {
         <div className="border-t border-emerald-800 bg-[#073524] px-4 pt-3 pb-6 md:hidden">
           <div className="flex flex-col gap-3">
             {/* Link Navigasi versi mobile */}
-            <Link href="/" className={`rounded-md px-3 py-2 text-base font-medium ${activePage === "home" ? "bg-[#0B4F37] text-white font-bold" : "text-emerald-100 hover:bg-[#0B4F37]"}`} onClick={() => setIsMobileMenuOpen(false)}>Beranda</Link>
-            <Link href="/kamar" className={`rounded-md px-3 py-2 text-base font-medium ${activePage === "kamar" ? "bg-[#0B4F37] text-white font-bold" : "text-emerald-100 hover:bg-[#0B4F37]"}`} onClick={() => setIsMobileMenuOpen(false)}>Kamar</Link>
-            <Link href="/fasilitas" className={`rounded-md px-3 py-2 text-base font-medium ${activePage === "fasilitas" ? "bg-[#0B4F37] text-white font-bold" : "text-emerald-100 hover:bg-[#0B4F37]"}`} onClick={() => setIsMobileMenuOpen(false)}>Fasilitas</Link>
-            <Link href="/about" className={`rounded-md px-3 py-2 text-base font-medium ${activePage === "about" ? "bg-[#0B4F37] text-white font-bold" : "text-emerald-100 hover:bg-[#0B4F37]"}`} onClick={() => setIsMobileMenuOpen(false)}>Tentang Hotel</Link>
-            <Link href="/promo" className={`rounded-md px-3 py-2 text-base font-medium ${activePage === "promo" ? "bg-[#0B4F37] text-white font-bold" : "text-emerald-100 hover:bg-[#0B4F37]"}`} onClick={() => setIsMobileMenuOpen(false)}>Promo</Link>
-            <a href="/#kontak" className="rounded-md px-3 py-2 text-base font-medium text-emerald-100 hover:bg-[#0B4F37]" onClick={() => setIsMobileMenuOpen(false)}>Kontak</a>
+            <Link href="/" className={`rounded-md px-3 py-2 text-base font-medium ${currentActive === "home" ? "bg-[#0B4F37] text-white font-bold" : "text-emerald-100 hover:bg-[#0B4F37]"}`} onClick={() => setIsMobileMenuOpen(false)}>Beranda</Link>
+            <Link href="/#kamar" className={`rounded-md px-3 py-2 text-base font-medium ${currentActive === "kamar" ? "bg-[#0B4F37] text-white font-bold" : "text-emerald-100 hover:bg-[#0B4F37]"}`} onClick={() => setIsMobileMenuOpen(false)}>Kamar</Link>
+            <Link href="/#fasilitas" className={`rounded-md px-3 py-2 text-base font-medium ${currentActive === "fasilitas" ? "bg-[#0B4F37] text-white font-bold" : "text-emerald-100 hover:bg-[#0B4F37]"}`} onClick={() => setIsMobileMenuOpen(false)}>Fasilitas</Link>
+            <Link href="/#tentang-kami" className={`rounded-md px-3 py-2 text-base font-medium ${currentActive === "tentang-kami" ? "bg-[#0B4F37] text-white font-bold" : "text-emerald-100 hover:bg-[#0B4F37]"}`} onClick={() => setIsMobileMenuOpen(false)}>Tentang Hotel</Link>
+            <Link href="/#kontak" className={`rounded-md px-3 py-2 text-base font-medium ${currentActive === "kontak" ? "bg-[#0B4F37] text-white font-bold" : "text-emerald-100 hover:bg-[#0B4F37]"}`} onClick={() => setIsMobileMenuOpen(false)}>Kontak</Link>
 
             {/* Tombol aksi versi mobile */}
             <div className="mt-4 flex flex-col gap-2 pt-2 border-t border-emerald-800/60">
