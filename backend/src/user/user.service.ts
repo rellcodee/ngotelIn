@@ -13,7 +13,7 @@ import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UserService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
 
   async create(createUserDto: CreateUserDto) {
     const { password, ...userData } = createUserDto;
@@ -35,6 +35,25 @@ export class UserService {
       }
       throw error;
     }
+  }
+
+  // Tambahkan fungsi ini di bawah fungsi create() yang udah lu punya
+  async findOrCreateGoogleUser(googlePayload: { email: string; name?: string }) {
+    let user = await this.findByEmail(googlePayload.email);
+
+    if (!user) {
+      // Auto-register kalau email Google ini belum ada di DB
+      user = await this.prisma.users.create({
+        data: {
+          email: googlePayload.email,
+          name: googlePayload.name || googlePayload.email.split('@')[0],
+          password_hash: null, // Kosongin karena login via Google
+          role: Role.USER,        // Kunci mati rolenya sebagai tamu/user
+        },
+      });
+    }
+    const { password_hash: _, ...result } = user;
+    return result;
   }
 
   async createOfficial(createOfficialDto: CreateOfficialDto) {

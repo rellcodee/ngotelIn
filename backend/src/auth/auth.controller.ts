@@ -1,11 +1,11 @@
-import { Controller, Post, UseGuards, Request, Res } from '@nestjs/common';
+import { Controller, Post, UseGuards, Request, Res, Body, UnauthorizedException } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthGuard } from '@nestjs/passport';
 import type { Response } from 'express';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(private readonly authService: AuthService) { }
 
   @UseGuards(AuthGuard('local'))
   @Post('login')
@@ -26,6 +26,14 @@ export class AuthController {
       user: req.user,
       access_token,
     };
+  }
+
+  @Post('google')
+  async googleLogin(@Body('id_token') idToken: string) {
+    if (!idToken) {
+      throw new UnauthorizedException('ID Token tidak ditemukan');
+    }
+    return this.authService.loginWithGoogle(idToken);
   }
 
   @Post('logout')

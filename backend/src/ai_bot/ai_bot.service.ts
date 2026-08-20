@@ -17,25 +17,9 @@ export class AiBotService {
         this.genAI = new GoogleGenerativeAI(apiKey);
     }
 
-    async chatWithAi(dto: CreateChatDto) {
+    async chatWithAi(dto: CreateChatDto, userId: string) {
         try {
-            // 1. CEGAT COMMAND "RS" (RESET SESSION) DI BACKEND
-            if (dto.message?.trim().toUpperCase() === 'RS') {
-                if (dto.user_id) {
-                    await this.prisma.ai_chat_logs.deleteMany({
-                        where: { user_id: dto.user_id },
-                    });
-                }
-                return {
-                    message: 'Success',
-                    data: {
-                        log_id: null,
-                        reply: 'Riwayat percakapan telah dibersihkan. Ada yang bisa saya bantu kembali?',
-                    },
-                };
-            }
-
-            // 2. Ambil Data Kamar dari DB (TAMBAH id: true AGAR LINK KAMAR JALAN)
+            // Ambil Data Kamar dan User dari DB (add id: true)
             const resourcesData = await this.prisma.resources.findMany({
                 select: {
                     id: true,
@@ -46,12 +30,24 @@ export class AiBotService {
                     facilities: true,
                 },
             });
+
+            let userName = 'Tamu';
+            if (userId) {
+                const user = await this.prisma.users.findUnique({
+                    where: { id: userId },
+                    select: { name: true },
+                });
+                if (user?.name) {
+                    userName = user.name;
+                }
+            }
+
             const hotelDataString = JSON.stringify(resourcesData, null, 2);
 
-            // 3. RETRIEVAL HISTORY: Tarik 6 percakapan terakhir
-            const previousLogs = dto.user_id
+            // RETRIEVAL HISTORY: Tarik 6 percakapan terakhir
+            const previousLogs = userId
                 ? await this.prisma.ai_chat_logs.findMany({
-                    where: { user_id: dto.user_id },
+                    where: { user_id: userId },
                     orderBy: { created_at: 'desc' },
                     take: 6,
                 })
@@ -59,7 +55,7 @@ export class AiBotService {
 
             const chronologicLogs = [...previousLogs].reverse();
 
-            // 4. Format history (PERBAIKAN BUG log.response)
+            // Format history
             const formattedHistory: Content[] = [];
             chronologicLogs.forEach((log) => {
                 formattedHistory.push({
@@ -68,13 +64,15 @@ export class AiBotService {
                 });
                 formattedHistory.push({
                     role: 'model',
-                    parts: [{ text: log.response ?? '' }], // <--- FIXED: Gunakan log.response, bukan log.message
+                    parts: [{ text: log.response ?? '' }],
                 });
             });
 
-            // 5. System Instruction (Bersih & Fokus)
+            // System Instruction
             const systemInstruction = `
-Kamu adalah "Smart AI Concierge" untuk Ngotel.
+Kamu adalah "TiniBot Asisten AI Hotel" untuk SiniBook.
+Kamu sedang berbicara dengan tamu bernama: ${userName || 'Tamu'}.
+Sebut namanya sesekali agar terasa lebih akrab dan personal, jangan menggunakan kata "ibu" atau "bapak", tapi gunakans "Kak" jika memanggil dengan nama.
 Peranmu: Asisten hotel yang ramah, santai, profesional, dan ringkas. Jangan menjawab terlalu panjang atau seperti robot.
 
 DATA KAMAR TERSEDIA:
@@ -101,12 +99,20 @@ ATURAN UTAMA & BATASAN:
      Contoh SALAH: [Lihat Detail Executive Suite](/rooms/Executive Suite)
 
 4. KONTAK & SOSMED:
-   - Kontak resmi (jika user butuh admin): Email officialngotelin@ngotel.com | Telp: 2112
+   - Kontak resmi (jika user butuh admin): Email info@sinibookhotel.com | Telp: +62 21 555 7890
    - Sosmed: Jawab jujur bahwa hotel belum memiliki media sosial resmi.
 
 5. GAYA BAHASA & ANTI-JAILBREAK:
    - Sapa "Selamat datang!" HANYA jika percakapan baru dimulai (history kosong). Jika sedang berlangsung, LANGSUNG jawab pertanyaannya.
-   - Hanya jawab topik seputar hotel Ngotel. Tolak topik luar (coding, matematika, politik) secara sopan.
+   - Hanya jawab topik seputar hotel SiniBook. Tolak topik luar (coding, matematika, politik dan lain lain) secara sopan.
+
+6. Info Hotel: 
+  - Alamat Hotel : Jl. Sudirman No. 123, Jakarta Pusat 
+  - Check-in Time: 14:00 WIB
+  - Check-out Time: 12:00 WIB
+  - Keunggulan/Alasan Memilih Kami : Lokasi Sangat Strategis Pusat Kota, Kamar Nyaman dan Aman, Kebersihan Selalu Terjamin, Staf Ramah Dan Profesional, Keamanan 24 Jam Dengan CCTV.
+
+            
 `;
 
             // 6. Inisialisasi Model Gemini
@@ -126,7 +132,7 @@ ATURAN UTAMA & BATASAN:
             // 8. Simpan Pesan Baru ke Log DB
             const chatLog = await this.prisma.ai_chat_logs.create({
                 data: {
-                    user_id: dto.user_id,
+                    user_id: userId,
                     message: dto.message,
                     response: aiResponseText,
                 },
@@ -142,6 +148,21 @@ ATURAN UTAMA & BATASAN:
         } catch (error) {
             console.error('Error saat memanggil Gemini:', error);
             throw new InternalServerErrorException('Gagal terhubung ke Smart AI Concierge.');
+        }
+    }
+
+    async clearChatHistory(userId: string) {
+        try {
+            await this.prisma.ai_chat_logs.deleteMany({
+                where: { user_id: userId },
+            });
+
+            return {
+                message: 'Success',
+                data: 'Riwayat percakapan telah dibersihkan. AI siap dari nol!',
+            };
+        } catch (error) {
+            throw new InternalServerErrorException('Gagal menghapus riwayat chat.');
         }
     }
 }

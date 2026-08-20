@@ -1,11 +1,10 @@
-import { IsNotEmpty, IsString, IsOptional, IsUUID } from 'class-validator';
+import { IsNotEmpty, IsString, MaxLength } from 'class-validator';
+import { Transform } from 'class-transformer';
 
 export class CreateChatDto {
-    @IsUUID()
-    @IsOptional()
-    user_id?: string; // Sementara opsional sebelum lu pasang JWT Auth Guard
-
+    @IsNotEmpty({ message: 'Pesan tidak boleh kosong.' })
+    @MaxLength(300, { message: 'Pesan tidak boleh lebih dari 300 karakter.' })
+    @Transform(({ value }) => (typeof value === 'string' ? value.trim() : value))
     @IsString()
-    @IsNotEmpty()
-    message: string; // Pertanyaan dari calon tamu (misal: "Ada kamar kosong besok?")
+    message: string;
 }

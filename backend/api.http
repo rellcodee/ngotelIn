@@ -1,4 +1,4 @@
-@baseUrl = http://localhost:3000
+@baseUrl = http://localhost:3001
 
 # =============================================================================
 # PUSAT VARIABEL SIKLUS HIDUP TRANSAKSI HOTEL (TEMPEL HASIL RESPONS DI SINI)
@@ -69,7 +69,7 @@ Content-Type: application/json
 {
   "name": "Hacker Menyusup",
   "email": "hacker_iseng@ngotelin.com",
-  "password": "hackedpassword123",
+  "password": "hackedpassword123"
 }
 
 ###
@@ -80,8 +80,8 @@ POST {{baseUrl}}/user/official
 Content-Type: application/json
 
 {
-  "name": "Penyusup Ruang 3(izin admin)",
-  "email": "penyusup3@ngotelin.com",
+  "name": "Penyusup Ruang 3(token login admin)",
+  "email": "penyusup3jir@ngotelin.com",
   "password": "12345678",
   "role": "admin"
 }
@@ -155,7 +155,7 @@ POST {{baseUrl}}/auth/login
 Content-Type: application/json
 
 {
-  "email": "mat@ngotelin.com",
+  "email": "riko@ngotelin.com",
   "password": "12345678"
 }
 
@@ -515,13 +515,14 @@ Authorization: Bearer {{userToken}}
 
 
 # ai-bot
+@userId2 = 0fc1d6b1-9e0a-4474-9645-57aea99239de
 ###
 POST {{baseUrl}}/ai/chat
 Content-Type: application/json
 Authorization: Bearer {{userToken}}
 
 {
-  "message": "Lu Ngajak Ribut??"
+  "message": "gua butuh betiga bro, gue ajak istri dan anak gue"
 }
 
 # review
