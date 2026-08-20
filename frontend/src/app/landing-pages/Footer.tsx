@@ -71,8 +71,8 @@ export default function Footer() {
               <li><Link href="/kamar" className="hover:text-white transition-colors">Kamar</Link></li>
               <li><Link href="/#fasilitas" className="hover:text-white transition-colors">Fasilitas</Link></li>
               <li><Link href="/#tentang-kami" className="hover:text-white transition-colors">Tentang Kami</Link></li>
-              <li><a href="/#faq" className="hover:text-white transition-colors">FAQ</a></li>
-              <li><a href="/#kontak" className="hover:text-white transition-colors">Kontak</a></li>
+              <li><Link href="/#faq" className="hover:text-white transition-colors">FAQ</Link></li>
+              <li><Link href="/#kontak" className="hover:text-white transition-colors">Kontak</Link></li>
             </ul>
           </div>
 
@@ -82,10 +82,10 @@ export default function Footer() {
               Bantuan
             </h3>
             <ul className="mt-4 flex flex-col gap-2.5 text-xs text-emerald-100/80">
-              <li><a href="#faq" className="hover:text-white transition-colors">FAQ</a></li>
-              <li><a href="#privasi" className="hover:text-white transition-colors">Kebijakan Privasi</a></li>
-              <li><a href="#syarat" className="hover:text-white transition-colors">Syarat & Ketentuan</a></li>
-              <li><a href="#bantuan" className="hover:text-white transition-colors">Pusat Bantuan</a></li>
+              <li><Link href="/#faq" className="hover:text-white transition-colors">FAQ</Link></li>
+              <li><Link href="/#privasi" className="hover:text-white transition-colors">Kebijakan Privasi</Link></li>
+              <li><Link href="/#syarat" className="hover:text-white transition-colors">Syarat & Ketentuan</Link></li>
+              <li><Link href="/#bantuan" className="hover:text-white transition-colors">Pusat Bantuan</Link></li>
             </ul>
           </div>
 
@@ -144,11 +144,7 @@ export default function Footer() {
 
         </div>
 
-        {/* COPYRIGHT BOTTOM BAR */}
-        <div className="mt-8 flex flex-col items-center justify-between gap-4 text-xs text-emerald-200/60 sm:flex-row">
-          <p>© 2024 SiniBook Hotel. All rights reserved.</p>
-          <p>Didesain untuk Kenyamanan Menginap Terbaik Anda.</p>
-        </div>
+
 
       </div>
     </footer>

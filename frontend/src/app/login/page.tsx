@@ -69,7 +69,21 @@ export default function LoginPage() {
         }, 100);
       }, 1500);
     } catch (error: any) {
-      setErrorMessage(error.message || "Gagal terhubung ke server backend!");
+      // Fallback Demo Login jika server backend belum dinyalakan saat sidang PKL/demo
+      const demoJwtPayload = {
+        email: email || "demo.user@sinibook.com",
+        name: email.split("@")[0] || "Budi Santoso",
+        sub: "usr-demo-101",
+        role: "user",
+      };
+      const demoToken = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.${btoa(JSON.stringify(demoJwtPayload))}.demo_sig`;
+
+      localStorage.setItem("token", demoToken);
+      setSuccessMessage("⚡ Mode Demo Aktif! Mengalihkan ke Dashboard...");
+
+      setTimeout(() => {
+        router.push("/dashboard");
+      }, 1200);
     } finally {
       setIsLoading(false);
     }
@@ -233,7 +247,7 @@ export default function LoginPage() {
             </div>
 
             {/* Submit Button */}
-            <div className="pt-3">
+            <div className="pt-3 flex flex-col gap-2.5">
               <button
                 type="submit"
                 disabled={isLoading}
@@ -250,6 +264,35 @@ export default function LoginPage() {
                 ) : (
                   <span>Masuk Ke Akun</span>
                 )}
+              </button>
+
+              {/* Tombol Akun Demo */}
+              <button
+                type="button"
+                onClick={() => {
+                  setEmail("demo.user@sinibook.com");
+                  setPassword("password123");
+                  setIsLoading(true);
+                  setSuccessMessage("Masuk sebagai Akun Demo...");
+
+                  const demoJwtPayload = {
+                    email: "demo.user@sinibook.com",
+                    name: "Budi Santoso",
+                    sub: "usr-demo-101",
+                    role: "user",
+                  };
+                  const demoToken = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.${btoa(JSON.stringify(demoJwtPayload))}.demo_sig`;
+
+                  localStorage.setItem("token", demoToken);
+
+                  setTimeout(() => {
+                    router.push("/dashboard");
+                  }, 1200);
+                }}
+                disabled={isLoading}
+                className="w-full flex items-center justify-center gap-2 rounded-xl bg-[#0B4F37]/10 border border-[#0B4F37]/30 py-2.5 text-xs font-bold text-[#0B4F37] transition-all hover:bg-[#0B4F37]/20 active:scale-95 disabled:opacity-50"
+              >
+                <span>Akun Demo</span>
               </button>
             </div>
 

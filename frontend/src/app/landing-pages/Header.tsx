@@ -174,12 +174,15 @@ export default function Header({ activePage = "home" }: HeaderProps) {
         {/* SECTION TOMBOL AKSI (DESKTOP): Tombol Masuk & Daftar / Profil & Keluar */}
         <div className="hidden items-center gap-3 md:flex">
           {isLoggedIn ? (
-            <div className="flex items-center gap-4">
-              {/* Profil Indicator */}
-              <div className="flex items-center gap-2 rounded-full bg-emerald-800/50 border border-emerald-700/50 px-3.5 py-1 text-xs font-semibold text-emerald-100">
-                <User className="h-3.5 w-3.5 text-emerald-400" />
-                <span className="max-w-[120px] truncate">{userEmail}</span>
-              </div>
+            <div className="flex items-center gap-3">
+              {/* Link ke Dashboard User */}
+              <Link
+                href="/dashboard"
+                className="flex items-center gap-2 rounded-full bg-[#126E4E] border border-emerald-400/40 px-3.5 py-1.5 text-xs font-bold text-white transition-all hover:bg-emerald-600 hover:shadow"
+              >
+                <User className="h-3.5 w-3.5 text-emerald-200" />
+                <span>Dashboard Saya</span>
+              </Link>
               {/* Tombol Logout */}
               <button
                 onClick={handleLogout}
@@ -230,10 +233,14 @@ export default function Header({ activePage = "home" }: HeaderProps) {
             <div className="mt-4 flex flex-col gap-2 pt-2 border-t border-emerald-800/60">
               {isLoggedIn ? (
                 <>
-                  <div className="flex items-center gap-2 rounded-xl bg-emerald-950 px-4 py-2.5 text-sm text-emerald-100">
+                  <Link
+                    href="/dashboard"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="flex items-center gap-2 rounded-xl bg-[#0B4F37] px-4 py-2.5 text-sm font-bold text-white shadow"
+                  >
                     <User className="h-4 w-4 text-emerald-400" />
-                    <span className="truncate">{userEmail}</span>
-                  </div>
+                    <span>Dashboard Saya ({userEmail})</span>
+                  </Link>
                   <button
                     onClick={() => {
                       setIsMobileMenuOpen(false);

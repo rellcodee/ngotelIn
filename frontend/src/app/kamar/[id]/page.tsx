@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import {
   Users,
   MapPin,
@@ -237,10 +237,11 @@ export default function DetailKamarPage() {
 
   const [isFavorite, setIsFavorite] = useState(false);
   const [favoriteToast, setFavoriteToast] = useState<string | null>(null);
+  const router = useRouter();
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
 
-  const [checkInDate, setCheckInDate] = useState("2026-08-10");
-  const [checkOutDate, setCheckOutDate] = useState("2026-08-12");
+  const [checkInDate, setCheckInDate] = useState("2026-08-25");
+  const [checkOutDate, setCheckOutDate] = useState("2026-08-27");
   const [guestCount, setGuestCount] = useState("2");
 
   const handleToggleFavorite = () => {
@@ -255,7 +256,12 @@ export default function DetailKamarPage() {
 
   const handleBookingAttempt = (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoginModalOpen(true);
+    const token = localStorage.getItem("token");
+    if (token) {
+      router.push("/checkout");
+    } else {
+      setIsLoginModalOpen(true);
+    }
   };
 
   if (!room) {
