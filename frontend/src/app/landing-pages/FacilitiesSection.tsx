@@ -1,110 +1,110 @@
-"use client"; // Client Component Next.js
+"use client";
 
-import React from "react"; // Mengimpor React
-import Image from "next/image"; // Mengimpor komponen Image dari Next.js untuk optimasi gambar
-import { ArrowRight } from "lucide-react"; // Mengimpor ikon panah kanan
+import React from "react";
+import {
+  Wifi,
+  Waves,
+  Utensils,
+  Dumbbell,
+  Sparkles,
+  Clock,
+  Briefcase,
+  Car,
+  Building2,
+  ShieldCheck,
+} from "lucide-react";
 
-// Array data 6 fasilitas hotel lengkap dengan gambar dan deskripsi
-const facilitiesData = [
+// Daftar fasilitas hotel (Sesuai dengan struktur data String[] pada Prisma Schema: facilities String[])
+const facilitiesList = [
   {
-    id: 1,
-    title: "Kolam Renang",
-    description: "Kolam renang outdoor dengan pemandangan kota yang menakjubkan.",
-    image: "/images/pool.png", // Menggunakan gambar hasil generate rooftop pool
+    name: "Kolam Renang",
+    icon: Waves,
+    description: "Kolam renang outdoor dengan pemandangan lanskap kota.",
   },
   {
-    id: 2,
-    title: "Restoran",
-    description: "Menu kuliner khas nusantara dan hidangan internasional.",
-    image: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=800&q=80",
+    name: "Restoran & Bar",
+    icon: Utensils,
+    description: "Sajian kuliner nusantara dan mancanegara kelas dunia.",
   },
   {
-    id: 3,
-    title: "Fitness Center",
-    description: "Peralatan gym modern dan lengkap untuk aktivitas olahraga harian.",
-    image: "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?auto=format&fit=crop&w=800&q=80",
+    name: "Fitness Center",
+    icon: Dumbbell,
+    description: "Peralatan gym modern dan area latihan terpadu.",
   },
   {
-    id: 4,
-    title: "Wi-Fi Kencang",
-    description: "Akses internet berkecepatan tinggi gratis di seluruh area hotel.",
-    image: "https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&w=800&q=80",
+    name: "Wi-Fi Kencang",
+    icon: Wifi,
+    description: "Koneksi internet berkecepatan tinggi gratis di seluruh area.",
   },
   {
-    id: 5,
-    title: "Spa & Massage",
-    description: "Layanan pijat relaksasi dan perawatan tubuh oleh terapis berpengalaman.",
-    image: "https://images.unsplash.com/photo-1544161515-4ab6ce6db874?auto=format&fit=crop&w=800&q=80",
+    name: "Spa & Massage",
+    icon: Sparkles,
+    description: "Perawatan tubuh relaksasi oleh terapis profesional.",
   },
   {
-    id: 6,
-    title: "Ruang Rapat",
-    description: "Ruang meeting modern dan terfasilitasi lengkap untuk bisnis Anda.",
-    image: "https://images.unsplash.com/photo-1517502884422-41eaead166d4?auto=format&fit=crop&w=800&q=80",
+    name: "Layanan 24 Jam",
+    icon: Clock,
+    description: "Layanan kamar dan resepsionis siaga penuh 24 jam.",
+  },
+  {
+    name: "Ruang Rapat",
+    icon: Briefcase,
+    description: "Ruang meeting dan fasilitas konvensi bisnis lengkap.",
+  },
+  {
+    name: "Parkir Gratis",
+    icon: Car,
+    description: "Area parkir luas dan aman dengan fasilitas valet.",
   },
 ];
 
-// Komponen FacilitiesSection: Menampilkan 6 kartu fasilitas hotel mewah
 export default function FacilitiesSection() {
   return (
-    // Section utama fasilitas hotel dengan latar belakang putih netral
     <section className="w-full bg-white py-16 sm:py-20" id="fasilitas">
-      {/* Wrapper pembatas lebar konten */}
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        
-        {/* HEADER SECTION: Judul di kiri dan Link 'Lihat semua fasilitas' di kanan */}
-        <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between mb-10">
-          <div>
-            <h2 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl lg:text-4xl">
-              Fasilitas Hotel
-            </h2>
-            <p className="mt-1 text-sm text-gray-500">
-              Nikmati fasilitas unggulan yang kami sediakan untuk kenyamanan menginap Anda.
-            </p>
-          </div>
-          {/* Link Lihat Semua Fasilitas */}
-          <a
-            href="#semua-fasilitas"
-            className="group flex items-center gap-1.5 text-sm font-semibold text-[#0B4F37] hover:text-[#073524]"
-          >
-            <span>Lihat semua fasilitas</span>
-            <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-          </a>
+        {/* HEADER SECTION */}
+        <div className="mb-12 text-center max-w-3xl mx-auto">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-3.5 py-1 text-xs font-semibold text-[#0B4F37] border border-emerald-200/80 mb-3">
+            <Building2 className="h-3.5 w-3.5 text-[#0B4F37]" />
+            <span>Fasilitas Hotel</span>
+          </span>
+          <h2 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl lg:text-4xl">
+            Fasilitas Unggulan SiniBook
+          </h2>
+          <p className="mt-2 text-sm text-gray-500">
+            Fasilitas terintegrasi yang tersedia secara langsung dalam layanan kamar dan area hotel.
+          </p>
         </div>
 
-        {/* GRID KARTU FASILITAS: 6 Kartu Fasilitas (2 baris x 3 kolom di desktop) */}
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {facilitiesData.map((item) => (
-            <div
-              key={item.id}
-              className="group relative h-64 overflow-hidden rounded-2xl bg-gray-900 shadow-md transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
-            >
-              {/* GAMBAR BACKGROUND KARTU FASILITAS */}
-              <Image
-                src={item.image}
-                alt={item.title}
-                fill
-                className="object-cover transition-transform duration-500 group-hover:scale-105"
-              />
+        {/* GRID KARTU FASILITAS (Kartu Ikon Modern tanpa ketergantungan URL Gambar individual) */}
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          {facilitiesList.map((item, index) => {
+            const Icon = item.icon;
+            return (
+              <div
+                key={index}
+                className="group relative flex flex-col justify-between rounded-2xl border border-gray-200/70 bg-emerald-50/30 p-6 transition-all duration-300 hover:border-emerald-300 hover:bg-white hover:shadow-xl hover:-translate-y-1"
+              >
+                <div>
+                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#0B4F37] text-white shadow-md transition-transform group-hover:scale-110">
+                    <Icon className="h-6 w-6" />
+                  </div>
+                  <h3 className="mt-4 text-lg font-bold text-gray-900 group-hover:text-[#0B4F37] transition-colors">
+                    {item.name}
+                  </h3>
+                  <p className="mt-1.5 text-xs text-gray-500 leading-relaxed">
+                    {item.description}
+                  </p>
+                </div>
 
-              {/* OVERLAY GRADIENT DARK: Agar teks judul dan penjelasan terlihat jelas */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
-
-              {/* TEKS INFORMASI FASILITAS DIBAGIAN BAWAH KARTU */}
-              <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
-                {/* Judul Fasilitas */}
-                <h3 className="text-xl font-bold tracking-tight group-hover:text-emerald-300 transition-colors">
-                  {item.title}
-                </h3>
-                {/* Penjelasan Ringkas Fasilitas */}
-                <p className="mt-1 text-xs text-gray-200 line-clamp-2 font-light">
-                  {item.description}
-                </p>
+                <div className="mt-5 flex items-center gap-1.5 text-[11px] font-semibold text-emerald-700 pt-3 border-t border-gray-100">
+                  <ShieldCheck className="h-3.5 w-3.5 text-emerald-600" />
+                  <span>Tersedia untuk Tamu</span>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
-
       </div>
     </section>
   );

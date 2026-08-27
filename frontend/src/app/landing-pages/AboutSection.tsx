@@ -30,12 +30,7 @@ export default function AboutSection() {
               SiniBook Hotel merupakan hotel bintang 4 yang berlokasi di pusat kota Jakarta. Kami berkomitmen memberikan pengalaman menginap terbaik dengan fasilitas modern dan kenyamanan maksimal bagi para tamu.
             </p>
 
-            {/* Tombol Selengkapnya (Solid White Pill style) */}
-            <div className="mt-6">
-              <button className="rounded-full bg-white px-6 py-2.5 text-sm font-bold text-[#0B4F37] shadow transition-all hover:bg-emerald-50 hover:shadow-lg">
-                Selengkapnya
-              </button>
-            </div>
+
 
             {/* GRID 4 POIN KEUNGGULAN (2x2 Grid) */}
             <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2">

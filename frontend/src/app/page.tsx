@@ -4,21 +4,21 @@
 import React from "react"; // Mengimpor React
 import Header from "./landing-pages/Header"; // Mengimpor komponen Navigasi Header
 import HeroSection from "./landing-pages/HeroSection"; // Mengimpor komponen Banner Hero & Form Pencarian
-import PromoSection from "./landing-pages/PromoSection"; // Mengimpor komponen Kartu Promo Spesial
+import RecommendedRoomsSection from "./landing-pages/RecommendedRoomsSection"; // Mengimpor komponen Kamar Rekomendasi / Best Seller
 import WhyUsSection from "./landing-pages/WhyUsSection"; // Mengimpor komponen 5 Keunggulan Hotel
 import FacilitiesSection from "./landing-pages/FacilitiesSection"; // Mengimpor komponen Fasilitas Hotel
 import AboutSection from "./landing-pages/AboutSection"; // Mengimpor komponen Profil Tentang Kami & Video Tour
 import TestimonialSection from "./landing-pages/TestimonialSection"; // Mengimpor komponen Testimoni Tamu
 import FaqSection from "./landing-pages/FaqSection"; // Mengimpor komponen FAQ Pertanyaan Populer
 import Footer from "./landing-pages/Footer"; // Mengimpor komponen Footer & Newsletter
-import AiAssistantModal from "./landing-pages/AiAssistantModal"; // Mengimpor komponen AI Assistant Floating Widget
+
 
 // Komponen Home: Entry point utama halaman beranda website
 export default function Home() {
   return (
     // Pembungkus utama layout halaman web
     <div className="min-h-screen bg-white font-sans text-gray-900 selection:bg-[#0B4F37] selection:text-white">
-      
+
       {/* 1. Navigasi Header bagian paling atas */}
       <Header />
 
@@ -27,8 +27,8 @@ export default function Home() {
         {/* 2. Banner Utama Hero & Form Pencarian Tanggal/Kamar */}
         <HeroSection />
 
-        {/* 3. Section Promo Spesial (3 Kartu Promo) */}
-        <PromoSection />
+        {/* 4. Section Kamar Rekomendasi / Best Seller */}
+        <RecommendedRoomsSection />
 
         {/* 4. Section Mengapa Memilih SiniBook Hotel (5 Keunggulan) */}
         <WhyUsSection />
@@ -49,8 +49,6 @@ export default function Home() {
       {/* 8. Catatan Kaki Footer di bagian bawah */}
       <Footer />
 
-      {/* 9. Floating Widget AI Assistant (Tampilan Sesuai Gambar Design Screenshot 2) */}
-      <AiAssistantModal />
 
     </div>
   );
