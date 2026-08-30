@@ -31,107 +31,56 @@ interface RoomItem {
   image: string; // Dari relation room_images
 }
 
-// Data Katalog 8 Pilihan Kamar (Sesuai persis dengan kolom Prisma Schema model `resources`)
-const ROOMS_DATA: RoomItem[] = [
-  {
-    id: "standard-room",
-    name: "Standard Room",
-    type: "Standard",
-    location: "Gedung Utama - Lantai 2",
-    capacity: 1,
-    price_per_night: 520000,
-    facilities: ["Wi-Fi Gratis", "AC", "Single Bed", "Shower Air Hangat"],
-    image:
-      "https://images.unsplash.com/photo-1566665797739-1674de7a421a?auto=format&fit=crop&w=800&q=80",
-  },
-  {
-    id: "superior-room",
-    name: "Superior Room",
-    type: "Superior",
-    location: "Gedung Utama - Lantai 3",
-    capacity: 2,
-    price_per_night: 680000,
-    facilities: ["Wi-Fi Kencang", "Queen Bed", "AC", "Smart TV", "Meja Kerja"],
-    image:
-      "https://images.unsplash.com/photo-1611892440504-42a792e24d32?auto=format&fit=crop&w=800&q=80",
-  },
-  {
-    id: "deluxe-room",
-    name: "Deluxe Room",
-    type: "Deluxe",
-    location: "Gedung Utama - Lantai 5",
-    capacity: 2,
-    price_per_night: 935000,
-    facilities: ["Free Wi-Fi", "King Bed", "Balkon Laut", "Bathtub", "Sarapan"],
-    image:
-      "https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=800&q=80",
-  },
-  {
-    id: "executive-room",
-    name: "Executive Room",
-    type: "Executive",
-    location: "Wing Barat - Lantai 7",
-    capacity: 2,
-    price_per_night: 1350000,
-    facilities: ["Akses Lounge", "Mesin Kopi", "King Bed", "Smart TV", "Bathtub"],
-    image:
-      "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=800&q=80",
-  },
-  {
-    id: "family-suite",
-    name: "Family Suite",
-    type: "Suite",
-    location: "Wing Timur - Lantai 4",
-    capacity: 4,
-    price_per_night: 1785000,
-    facilities: ["2 Queen Bed", "Wi-Fi Kencang", "Sarapan 4 Pax", "Ruang Keluarga"],
-    image:
-      "https://images.unsplash.com/photo-1598928506311-c55ded91a20c?auto=format&fit=crop&w=800&q=80",
-  },
-  {
-    id: "honeymoon-suite",
-    name: "Honeymoon Suite",
-    type: "Suite",
-    location: "Gedung Utama - Lantai 9",
-    capacity: 2,
-    price_per_night: 1955000,
-    facilities: ["Bathtub Aromaterapi", "King Bed", "Gratis Wine", "View Kota"],
-    image:
-      "https://images.unsplash.com/photo-1578683010236-d716f9a3f461?auto=format&fit=crop&w=800&q=80",
-  },
-  {
-    id: "suite-room",
-    name: "Suite Room",
-    type: "Suite",
-    location: "Wing Barat - Lantai 10",
-    capacity: 3,
-    price_per_night: 2125000,
-    facilities: ["Jacuzzi", "Ruang Tamu Terpisah", "Butler 24 Jam", "King Bed"],
-    image:
-      "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?auto=format&fit=crop&w=800&q=80",
-  },
-  {
-    id: "presidential-suite",
-    name: "Presidential Suite",
-    type: "Presidential",
-    location: "Penthouse - Lantai 12",
-    capacity: 5,
-    price_per_night: 3825000,
-    facilities: ["Kolam Renang Privat", "Lift VIP", "Dapur Mini", "Jacuzzi"],
-    image:
-      "https://images.unsplash.com/photo-1591088398332-8a7791972843?auto=format&fit=crop&w=800&q=80",
-  },
-];
+// Placeholder image jika kamar dari DB belum punya foto
+const FALLBACK_IMAGE = "https://images.unsplash.com/photo-1566665797739-1674de7a421a?auto=format&fit=crop&w=800&q=80";
 
-// Daftar Kategori Filter Berdasarkan `type` pada Prisma Schema
-const CATEGORIES = ["Semua", "Standard", "Superior", "Deluxe", "Executive", "Suite", "Presidential"];
-
+import { useEffect, useMemo } from "react";
 export default function KamarPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("Semua");
   const [favoriteIds, setFavoriteIds] = useState<string[]>([]);
   const [favoriteToast, setFavoriteToast] = useState<string | null>(null);
   const [showContactToast, setShowContactToast] = useState(false);
+  const [roomsData, setRoomsData] = useState<RoomItem[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Derive unique categories from fetched rooms
+  const dynamicCategories = useMemo(() => {
+    const types = new Set(roomsData.map((room) => room.type));
+    return ["Semua", ...Array.from(types)];
+  }, [roomsData]);
+
+  useEffect(() => {
+    const fetchRooms = async () => {
+      try {
+        const response = await fetch("http://localhost:3001/resources");
+        const json = await response.json();
+        
+        if (response.ok) {
+          const dataArray = Array.isArray(json) ? json : json.data || [];
+          const formattedRooms: RoomItem[] = dataArray.map((room: any) => ({
+            id: room.id,
+            name: room.name,
+            type: room.type,
+            location: room.location,
+            capacity: room.capacity,
+            price_per_night: room.price_per_night,
+            facilities: room.facilities || [],
+            image: room.room_images && room.room_images.length > 0 
+                    ? room.room_images[0].image_url 
+                    : FALLBACK_IMAGE,
+          }));
+          setRoomsData(formattedRooms);
+        }
+      } catch (error) {
+        console.error("Gagal mengambil data kamar", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchRooms();
+  }, []);
 
   const toggleFavorite = (roomId: string, roomName: string) => {
     if (favoriteIds.includes(roomId)) {
@@ -149,7 +98,7 @@ export default function KamarPage() {
     setTimeout(() => setShowContactToast(false), 4000);
   };
 
-  const filteredRooms = ROOMS_DATA.filter((room) => {
+  const filteredRooms = roomsData.filter((room) => {
     const matchesSearch =
       room.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       room.location.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -223,7 +172,7 @@ export default function KamarPage() {
 
             <div className="flex items-center gap-2 overflow-x-auto pb-1 md:pb-0 scrollbar-none">
               <SlidersHorizontal className="h-4 w-4 text-gray-400 shrink-0 mr-1" />
-              {CATEGORIES.map((cat) => (
+              {dynamicCategories.map((cat) => (
                 <button
                   key={cat}
                   onClick={() => setSelectedCategory(cat)}
@@ -243,7 +192,11 @@ export default function KamarPage() {
         {/* GRID KATALOG KAMAR */}
         <section className="w-full py-12 sm:py-16 md:py-20 bg-slate-50">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            {filteredRooms.length === 0 ? (
+            {isLoading ? (
+              <div className="flex justify-center items-center py-20">
+                 <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#0B4F37]"></div>
+              </div>
+            ) : filteredRooms.length === 0 ? (
               <div className="rounded-3xl bg-white p-12 text-center shadow-sm border border-gray-200/80 max-w-lg mx-auto">
                 <Search className="mx-auto h-12 w-12 text-gray-300 mb-3" />
                 <h3 className="text-lg font-bold text-gray-900">Kamar Tidak Ditemukan</h3>
@@ -272,7 +225,7 @@ export default function KamarPage() {
                       {/* FOTO KAMAR & BADGE TIPE */}
                       <div className="relative h-64 sm:h-72 w-full overflow-hidden bg-gray-100">
                         <Image
-                          src={room.image}
+                          src={room.image.startsWith('http') ? room.image : `http://localhost:3001${room.image}`}
                           alt={room.name}
                           fill
                           className="object-cover transition-transform duration-500 group-hover:scale-105"

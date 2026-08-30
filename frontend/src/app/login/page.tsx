@@ -46,6 +46,15 @@ export default function LoginPage() {
             const { access_token, user } = resData;
             localStorage.setItem('token', access_token);
             localStorage.setItem('userName', user?.name || 'Customer');
+            localStorage.setItem('userRole', user?.role || 'user');
+            
+            let redirectUrl = '/';
+            if (user?.role === 'admin') {
+                redirectUrl = '/admin';
+            } else if (user?.role === 'staff') {
+                redirectUrl = '/staff';
+            }
+
             setModal({
                 isOpen: true,
                 type: 'success',
@@ -53,7 +62,7 @@ export default function LoginPage() {
                 message: `Selamat datang kembali, ${user.name || 'Customer'}!`,
                 onClose: () => {
                     setModal(prev => ({ ...prev, isOpen: false }));
-                    router.push('/');
+                    router.push(redirectUrl);
                 }
             });
 
@@ -95,6 +104,15 @@ export default function LoginPage() {
             const { access_token, user } = resData;
             localStorage.setItem('token', access_token);
             localStorage.setItem('userName', user?.name || 'Customer');
+            localStorage.setItem('userRole', user?.role || 'user');
+
+            let redirectUrl = '/';
+            if (user?.role === 'admin') {
+                redirectUrl = '/admin';
+            } else if (user?.role === 'staff') {
+                redirectUrl = '/staff';
+            }
+
             setModal({
                 isOpen: true,
                 type: 'success',
@@ -102,7 +120,7 @@ export default function LoginPage() {
                 message: `Selamat datang kembali, ${user?.name || 'Customer'}!`,
                 onClose: () => {
                     setModal(prev => ({ ...prev, isOpen: false }));
-                    router.push('/');
+                    router.push(redirectUrl);
                 }
             });
         } catch (error: any) {

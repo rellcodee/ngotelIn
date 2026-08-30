@@ -230,10 +230,14 @@ const ROOM_DETAILS_MAP: Record<string, RoomDetail> = {
   },
 };
 
+import { useEffect } from "react";
+
 export default function DetailKamarPage() {
   const params = useParams();
   const roomId = (params?.id as string) || "";
-  const room = ROOM_DETAILS_MAP[roomId];
+  
+  const [room, setRoom] = useState<RoomDetail | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   const [isFavorite, setIsFavorite] = useState(false);
   const [favoriteToast, setFavoriteToast] = useState<string | null>(null);
@@ -243,6 +247,48 @@ export default function DetailKamarPage() {
   const [checkInDate, setCheckInDate] = useState("2026-08-25");
   const [checkOutDate, setCheckOutDate] = useState("2026-08-27");
   const [guestCount, setGuestCount] = useState("2");
+
+  useEffect(() => {
+    if (!roomId) return;
+    const fetchRoomDetail = async () => {
+      try {
+        const res = await fetch(`http://localhost:3001/resources/${roomId}`);
+        const json = await res.json();
+        const data = Array.isArray(json) ? json[0] : json.data || json;
+
+        if (res.ok && data && data.id) {
+          const roomImages = data.room_images || [];
+          const hero = roomImages.length > 0 
+            ? roomImages[0].image_url 
+            : "https://images.unsplash.com/photo-1566665797739-1674de7a421a?auto=format&fit=crop&w=1200&q=80";
+          
+          const gallery = roomImages.length > 1 
+            ? roomImages.slice(1).map((img: any) => img.image_url)
+            : [
+                "https://images.unsplash.com/photo-1611892440504-42a792e24d32?auto=format&fit=crop&w=600&q=80",
+                "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=600&q=80"
+              ];
+
+          setRoom({
+            id: data.id,
+            name: data.name,
+            type: data.type || "Standard",
+            location: data.location || "-",
+            capacity: data.capacity || 2,
+            price_per_night: data.price_per_night,
+            facilities: data.facilities || [],
+            heroImage: hero.startsWith('http') ? hero : `http://localhost:3001${hero}`,
+            gallery: gallery.map((g: string) => g.startsWith('http') ? g : `http://localhost:3001${g}`),
+          });
+        }
+      } catch (err) {
+        console.error("Gagal load detail kamar:", err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchRoomDetail();
+  }, [roomId]);
 
   const handleToggleFavorite = () => {
     setIsFavorite(!isFavorite);
@@ -263,6 +309,21 @@ export default function DetailKamarPage() {
       setIsLoginModalOpen(true);
     }
   };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-slate-50 flex flex-col font-sans text-gray-900">
+        <Header activePage="kamar" />
+        <main className="flex-1 flex items-center justify-center">
+          <div className="flex flex-col items-center gap-3">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#0B4F37]"></div>
+            <p className="text-gray-500 text-sm font-medium">Memuat detail kamar...</p>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
 
   if (!room) {
     return (

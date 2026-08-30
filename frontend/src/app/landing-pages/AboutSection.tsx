@@ -117,7 +117,7 @@ export default function AboutSection() {
             <div className="aspect-video w-full">
               <iframe
                 className="h-full w-full"
-                src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1"
+                src="https://www.youtube.com/embed/UJEUwEJ6gH4?si=Dm_7bO7lEkqq_XpO?autoplay=1"
                 title="SiniBook Hotel Video Tour"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen

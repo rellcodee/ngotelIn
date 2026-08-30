@@ -4,6 +4,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { Bot, X, Send, User, AlertCircle, RefreshCcw } from "lucide-react";
 import RoomCard from "./components/RoomCard";
 import ReactMarkdown from "react-markdown";
+import { usePathname } from "next/navigation";
 
 interface Message {
   id: number;
@@ -13,7 +14,7 @@ interface Message {
 }
 
 export default function AiAssistantModal() {
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
   const [inputText, setInputText] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -21,6 +22,8 @@ export default function AiAssistantModal() {
   const [isCooldown, setIsCooldown] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const MAX_INPUT_LENGTH = 300;
+  
+  const pathname = usePathname();
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -37,10 +40,17 @@ export default function AiAssistantModal() {
 
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      setIsLoggedIn(true);
-    }
+    const checkLoginStatus = () => {
+      const token = localStorage.getItem("token");
+      setIsLoggedIn(!!token);
+    };
+    
+    checkLoginStatus(); // Pengecekan pertama kali
+    
+    // Polling setiap 1 detik untuk mengecek apakah user baru saja login/logout
+    const intervalId = setInterval(checkLoginStatus, 1000);
+    
+    return () => clearInterval(intervalId); // Cleanup saat unmount
   }, []);
 
   // FUNGSI UTAMA: Mengirim Pesan dengan Validasi Keamanan Berlapis (FE Validation)
@@ -149,6 +159,15 @@ export default function AiAssistantModal() {
     "Fasilitas hotel",
     "Lokasi & akses",
   ];
+
+  const closeBot = () => {
+    setIsOpen(false);
+  };
+
+  // Sembunyikan bot jika berada di halaman admin atau staff
+  if (pathname?.startsWith("/admin") || pathname?.startsWith("/staff")) {
+    return null;
+  }
 
   return (
     <>

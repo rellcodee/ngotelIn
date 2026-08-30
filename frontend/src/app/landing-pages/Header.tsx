@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react"; // Mengimpor React, useState, dan useEffect
 import Link from "next/link"; // Mengimpor komponen Link dari Next.js untuk navigasi antar halaman tanpa reload
-import { Building2, Menu, X } from "lucide-react"; // Mengimpor ikon logo, hamburger menu, dan tombol tutup dari lucide-react
+import { Building2, Menu, X, LayoutDashboard } from "lucide-react"; // Mengimpor ikon logo, hamburger menu, dan tombol tutup dari lucide-react
 import Image from "next/image"; // Mengimpor komponen Image dari Next.js untuk optimasi gambar
 import CustomModal from "@/components/CustomModal";
 
@@ -106,10 +106,6 @@ export default function Header({ activePage = "home" }: HeaderProps) {
           <a href="/#tentang-kami" className="text-sm font-medium text-emerald-100/90 transition-colors hover:text-white cursor-pointer">
             Tentang Hotel
           </a>
-          {/* Link Promo */}
-          <a href="/#promo" className="text-sm font-medium text-emerald-100/90 transition-colors hover:text-white">
-            Promo
-          </a>
           {/* Link Kontak */}
           <a href="/#kontak" className="text-sm font-medium text-emerald-100/90 transition-colors hover:text-white">
             Kontak
@@ -119,18 +115,30 @@ export default function Header({ activePage = "home" }: HeaderProps) {
         {/* SECTION TOMBOL AKSI (DESKTOP): Tombol Masuk & Daftar / User Profile & Logout */}
         <div className="hidden items-center gap-3 md:flex">
           {isLoggedIn ? (
-            <div className="flex items-center gap-4">
-              <div className="flex items-center gap-2 rounded-full bg-emerald-950/40 border border-emerald-500/30 px-3.5 py-1.5">
-                <div className="flex h-6 w-6 items-center justify-center rounded-full bg-emerald-400 text-[#0B4F37] font-bold text-xs uppercase shadow-inner">
+            <div className="flex items-center gap-3">
+              <Link 
+                href="/dashboard"
+                className="group relative flex items-center gap-2.5 rounded-full bg-emerald-900/30 border border-emerald-500/30 px-3 py-1.5 transition-all duration-300 hover:bg-emerald-800/50 hover:border-emerald-400 hover:shadow-md cursor-pointer"
+                title="Masuk ke Dashboard"
+              >
+                <div className="flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-br from-emerald-400 to-emerald-500 text-[#073524] font-bold text-sm uppercase shadow-sm transition-transform duration-300 group-hover:scale-105">
                   {userName ? userName.charAt(0) : "U"}
                 </div>
-                <span className="text-sm font-medium text-emerald-100 max-w-[120px] truncate">
-                  {userName}
-                </span>
-              </div>
+                <div className="flex flex-col">
+                  <span className="text-xs font-medium text-emerald-300/80 leading-none mb-0.5 group-hover:text-emerald-200 transition-colors">
+                    Dashboard
+                  </span>
+                  <span className="text-sm font-semibold text-white max-w-[100px] truncate leading-none">
+                    {userName}
+                  </span>
+                </div>
+                <div className="ml-1 flex h-6 w-6 items-center justify-center rounded-full bg-white/5 opacity-0 group-hover:opacity-100 transition-all duration-300 -translate-x-2 group-hover:translate-x-0">
+                  <LayoutDashboard className="h-3.5 w-3.5 text-emerald-300" />
+                </div>
+              </Link>
               <button
                 onClick={handleLogoutClick}
-                className="rounded-full border border-rose-400/40 px-5 py-1.5 text-sm font-semibold text-rose-300 transition-all hover:bg-rose-500/10 hover:border-rose-400 hover:text-white"
+                className="rounded-full border border-rose-400/40 px-4 py-1.5 text-sm font-semibold text-rose-300 transition-all hover:bg-rose-500/10 hover:border-rose-400 hover:text-white"
               >
                 Keluar
               </button>
@@ -150,7 +158,21 @@ export default function Header({ activePage = "home" }: HeaderProps) {
         </div>
 
         {/* TOMBOL MENU MOBILE: Tombol hamburger untuk membuka/menutup menu di layar smartphone */}
-        <div className="flex md:hidden">
+        <div className="flex items-center gap-2 md:hidden">
+          {isLoggedIn && (
+            <Link 
+              href="/dashboard"
+              className="group flex items-center gap-2 rounded-full bg-white/10 border border-white/20 backdrop-blur-md pl-1.5 pr-3 py-1.5 active:scale-95 transition-all hover:bg-white/20 shadow-sm"
+            >
+              <div className="relative flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-tr from-emerald-400 to-emerald-300 text-[#073524] font-bold text-xs uppercase shadow-[0_0_10px_rgba(52,211,153,0.4)]">
+                {userName ? userName.charAt(0) : "U"}
+              </div>
+              <div className="flex items-center gap-1">
+                <span className="text-xs font-bold text-white tracking-wide">Dashboard</span>
+                <LayoutDashboard className="w-3.5 h-3.5 text-emerald-200 opacity-90" />
+              </div>
+            </Link>
+          )}
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} // Mengubah status buka/tutup menu mobile
             className="rounded-lg p-2 text-white hover:bg-white/10"
@@ -178,15 +200,25 @@ export default function Header({ activePage = "home" }: HeaderProps) {
             <div className="mt-4 flex flex-col gap-2 pt-2 border-t border-emerald-800/60">
               {isLoggedIn ? (
                 <>
-                  <div className="flex items-center gap-3 px-3 py-2 text-emerald-100 font-medium">
-                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-emerald-400 text-[#0B4F37] font-bold text-sm uppercase">
-                      {userName ? userName.charAt(0) : "U"}
+                  <Link 
+                    href="/dashboard"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="group flex items-center justify-between rounded-xl bg-emerald-900/40 border border-emerald-700/50 p-3 transition-all hover:bg-emerald-800/60"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-emerald-400 to-emerald-500 text-[#073524] font-bold text-lg uppercase shadow-sm">
+                        {userName ? userName.charAt(0) : "U"}
+                      </div>
+                      <div className="flex flex-col text-left">
+                        <span className="text-sm font-medium text-emerald-300/80">Ke Dashboard</span>
+                        <span className="text-base font-semibold text-white truncate max-w-[150px]">{userName}</span>
+                      </div>
                     </div>
-                    <span>{userName}</span>
-                  </div>
+                    <LayoutDashboard className="h-5 w-5 text-emerald-400/70 group-hover:text-emerald-300 transition-colors" />
+                  </Link>
                   <button
                     onClick={handleLogoutClick}
-                    className="w-full rounded-full border border-rose-400/40 py-2.5 text-center font-semibold text-rose-300 hover:bg-rose-500/10 hover:text-white"
+                    className="mt-1 w-full rounded-full border border-rose-400/40 py-2.5 text-center font-semibold text-rose-300 hover:bg-rose-500/10 hover:text-white"
                   >
                     Keluar
                   </button>
