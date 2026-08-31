@@ -24,11 +24,11 @@ File ini dibuat untuk melacak (tracking) progress implementasi UI di frontend. B
 - [x] Implementasi notifikasi sukses/error menggunakan `CustomModal`.
 
 ### B. Kelola Kamar & Galeri (`/admin/kamar`)
-- [ ] Buat fungsi fetch `GET /resources`.
-- [ ] Render UI Grid/Tabel daftar kamar beserta foto utamanya.
-- [ ] Buat Modal Form Tambah Kamar (`POST /resources`). Pastikan menggunakan `FormData` untuk mengirim input teks sekaligus array `files` (gambar) maksimal 5 gambar.
-- [ ] Buat form Edit Kamar (`PATCH /resources/:id`). Form ini harus menangani input teks, array `files` baru, `delete_image_ids` (array ID gambar yang mau dihapus), dan `primary_image_id`.
-- [ ] Buat fungsi hapus kamar (`DELETE /resources/:id`).
+- [x] Buat fungsi fetch `GET /resources`.
+- [x] Render UI Grid/Tabel daftar kamar beserta foto utamanya.
+- [x] Buat Modal Form Tambah Kamar (`POST /resources`). Pastikan menggunakan `FormData` untuk mengirim input teks sekaligus array `files` (gambar) maksimal 5 gambar.
+- [x] Buat form Edit Kamar (`PATCH /resources/:id`). Form ini harus menangani input teks, array `files` baru, `delete_image_ids` (array ID gambar yang mau dihapus), dan `primary_image_id`.
+- [x] Buat fungsi hapus kamar (`DELETE /resources/:id`).
 
 ### C. Daftar Reservasi & Jadwal (`/admin/reservasi`)
 - [ ] **Tab Reservasi:** Fetch `GET /bookings`. Render tabel reservasi (Nama Tamu, Kamar, Tanggal Check-in/out, Status, Status Bayar).
