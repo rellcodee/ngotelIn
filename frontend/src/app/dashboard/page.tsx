@@ -274,6 +274,16 @@ export default function UserDashboardPage() {
       );
       const payload = JSON.parse(jsonPayload);
 
+      // Validasi: Jika Admin/Staff mencoba akses dashboard user, lempar ke panel masing-masing
+      if (payload.role === "admin") {
+        router.replace("/admin");
+        return;
+      }
+      if (payload.role === "staff") {
+        router.replace("/staff");
+        return;
+      }
+
       const loadedUser: UserProfile = {
         id: payload.sub || "usr-101",
         name: payload.name || payload.email?.split("@")[0] || "Tamu SiniBook",
