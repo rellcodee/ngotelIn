@@ -178,12 +178,12 @@ export default function RecommendedRoomsSection() {
                       </div>
                     </div>
 
-                    {/* Tombol Pesan */}
+                    {/* Tombol Detail */}
                     <Link
-                      href={`/kamar`}
+                      href={`/kamar/${room.id}`}
                       className="rounded-xl bg-[#0B4F37] px-4 py-2.5 text-xs font-semibold text-white transition-all hover:bg-[#073524] hover:shadow-md active:scale-95"
                     >
-                      Pesan Kamar
+                      Detail Kamar
                     </Link>
                   </div>
                 </div>

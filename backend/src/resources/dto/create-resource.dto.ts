@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsInt, IsString, Min, IsArray, IsEnum } from 'class-validator';
+import { IsNotEmpty, IsInt, IsString, Min, IsArray, IsEnum, IsOptional } from 'class-validator';
 import { Type } from 'class-transformer';
 import { RoomType } from 'src/common/enums';
 
@@ -14,6 +14,10 @@ export class CreateResourceDto {
     @IsString({ message: 'Location must be a string' })
     @IsNotEmpty({ message: 'Location is required' })
     location: string;
+
+    @IsString()
+    @IsOptional()
+    description?: string;
 
     @Type(() => Number) //  Otomatis convert string "1" dari form-data ke integer 1
     @IsInt({ message: 'Capacity must be a number' })

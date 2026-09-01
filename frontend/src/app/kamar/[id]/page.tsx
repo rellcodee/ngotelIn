@@ -27,6 +27,7 @@ interface RoomDetail {
   name: string;
   type: string;
   location: string;
+  description?: string;
   capacity: number;
   price_per_night: number;
   facilities: string[];
@@ -34,208 +35,13 @@ interface RoomDetail {
   gallery: string[];
 }
 
-// Data Detail Lengkap 8 Pilihan Kamar Sesuai Prisma Schema (model resources)
-const ROOM_DETAILS_MAP: Record<string, RoomDetail> = {
-  "standard-room": {
-    id: "standard-room",
-    name: "Standard Room",
-    type: "Standard",
-    location: "Gedung Utama - Lantai 2",
-    capacity: 1,
-    price_per_night: 520000,
-    facilities: [
-      "Wi-Fi Gratis",
-      "Penyejuk Udara (AC)",
-      "Single Bed",
-      "Kamar Mandi Shower Air Hangat",
-      "Smart TV 43 Inci",
-      "Brankas Pribadi",
-      "Air Mineral Kemasan Gratis",
-      "Handuk & Perlengkapan Mandi",
-    ],
-    heroImage:
-      "https://images.unsplash.com/photo-1566665797739-1674de7a421a?auto=format&fit=crop&w=1200&q=80",
-    gallery: [
-      "https://images.unsplash.com/photo-1611892440504-42a792e24d32?auto=format&fit=crop&w=600&q=80",
-      "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=600&q=80",
-      "https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=600&q=80",
-    ],
-  },
-  "superior-room": {
-    id: "superior-room",
-    name: "Superior Room",
-    type: "Superior",
-    location: "Gedung Utama - Lantai 3",
-    capacity: 2,
-    price_per_night: 680000,
-    facilities: [
-      "Wi-Fi Kencang 100 Mbps",
-      "Queen Size Bed",
-      "Penyejuk Udara (AC)",
-      "Smart TV 50 Inci",
-      "Meja Kerja Ergonomis",
-      "Sarapan Gratis untuk 2 Orang",
-      "Pembuat Kopi & Teh",
-      "Brankas Pribadi",
-    ],
-    heroImage:
-      "https://images.unsplash.com/photo-1611892440504-42a792e24d32?auto=format&fit=crop&w=1200&q=80",
-    gallery: [
-      "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=600&q=80",
-      "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=600&q=80",
-      "https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=600&q=80",
-    ],
-  },
-  "deluxe-room": {
-    id: "deluxe-room",
-    name: "Deluxe Room",
-    type: "Deluxe",
-    location: "Gedung Utama - Lantai 5",
-    capacity: 2,
-    price_per_night: 935000,
-    facilities: [
-      "Free Wi-Fi",
-      "King Size Bed",
-      "Pemandangan Kota (City View)",
-      "Balkon Privasi",
-      "Bathtub Mewah",
-      "Sarapan Gratis 2 Pax",
-      "Kulkas Mini",
-      "Smart TV 55 Inci",
-    ],
-    heroImage:
-      "https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=1200&q=80",
-    gallery: [
-      "https://images.unsplash.com/photo-1611892440504-42a792e24d32?auto=format&fit=crop&w=600&q=80",
-      "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=600&q=80",
-      "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?auto=format&fit=crop&w=600&q=80",
-    ],
-  },
-  "executive-room": {
-    id: "executive-room",
-    name: "Executive Room",
-    type: "Executive",
-    location: "Wing Barat - Lantai 7",
-    capacity: 2,
-    price_per_night: 1350000,
-    facilities: [
-      "Akses Executive Lounge",
-      "Mesin Kopi Nespresso",
-      "King Bed Premium",
-      "Bathtub Aromaterapi",
-      "Layanan Kamar 24 Jam",
-      "High Speed Wi-Fi",
-      "Sarapan Buffet Gratis",
-    ],
-    heroImage:
-      "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=1200&q=80",
-    gallery: [
-      "https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=600&q=80",
-      "https://images.unsplash.com/photo-1611892440504-42a792e24d32?auto=format&fit=crop&w=600&q=80",
-      "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?auto=format&fit=crop&w=600&q=80",
-    ],
-  },
-  "family-suite": {
-    id: "family-suite",
-    name: "Family Suite",
-    type: "Suite",
-    location: "Wing Timur - Lantai 4",
-    capacity: 4,
-    price_per_night: 1785000,
-    facilities: [
-      "2 Queen Size Bed",
-      "Sarapan Gratis 4 Pax",
-      "Area Ruang Keluarga",
-      "Wi-Fi Kencang",
-      "Kulkas Mini & Microwave",
-      "2 Kamar Mandi",
-      "Smart TV 55 Inci",
-    ],
-    heroImage:
-      "https://images.unsplash.com/photo-1598928506311-c55ded91a20c?auto=format&fit=crop&w=1200&q=80",
-    gallery: [
-      "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=600&q=80",
-      "https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=600&q=80",
-      "https://images.unsplash.com/photo-1611892440504-42a792e24d32?auto=format&fit=crop&w=600&q=80",
-    ],
-  },
-  "honeymoon-suite": {
-    id: "honeymoon-suite",
-    name: "Honeymoon Suite",
-    type: "Suite",
-    location: "Gedung Utama - Lantai 9",
-    capacity: 2,
-    price_per_night: 1955000,
-    facilities: [
-      "Bathtub Jacuzzi Private",
-      "King Size Bed",
-      "Gratis Wine & Bunga",
-      "Pemandangan Malam Kota",
-      "Paket Spa Pasangan",
-      "Layanan Butler",
-    ],
-    heroImage:
-      "https://images.unsplash.com/photo-1578683010236-d716f9a3f461?auto=format&fit=crop&w=1200&q=80",
-    gallery: [
-      "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?auto=format&fit=crop&w=600&q=80",
-      "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=600&q=80",
-      "https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=600&q=80",
-    ],
-  },
-  "suite-room": {
-    id: "suite-room",
-    name: "Suite Room",
-    type: "Suite",
-    location: "Wing Barat - Lantai 10",
-    capacity: 3,
-    price_per_night: 2125000,
-    facilities: [
-      "Ruang Tamu Terpisah",
-      "Jacuzzi Pribadi",
-      "Butler 24 Jam",
-      "Akses Executive Lounge",
-      "King Size Bed",
-      "Smart TV 65 Inci",
-    ],
-    heroImage:
-      "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?auto=format&fit=crop&w=1200&q=80",
-    gallery: [
-      "https://images.unsplash.com/photo-1578683010236-d716f9a3f461?auto=format&fit=crop&w=600&q=80",
-      "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=600&q=80",
-      "https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=600&q=80",
-    ],
-  },
-  "presidential-suite": {
-    id: "presidential-suite",
-    name: "Presidential Suite",
-    type: "Presidential",
-    location: "Penthouse - Lantai 12",
-    capacity: 5,
-    price_per_night: 3825000,
-    facilities: [
-      "Kolam Renang Privat Rooftop",
-      "Lift Privat VIP",
-      "Dapur Mini Lengkap",
-      "Ruang Rapat VIP",
-      "Layanan Chef & Butler 24 Jam",
-      "Jacuzzi Pribadi",
-    ],
-    heroImage:
-      "https://images.unsplash.com/photo-1591088398332-8a7791972843?auto=format&fit=crop&w=1200&q=80",
-    gallery: [
-      "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?auto=format&fit=crop&w=600&q=80",
-      "https://images.unsplash.com/photo-1578683010236-d716f9a3f461?auto=format&fit=crop&w=600&q=80",
-      "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=600&q=80",
-    ],
-  },
-};
 
 import { useEffect } from "react";
 
 export default function DetailKamarPage() {
   const params = useParams();
   const roomId = (params?.id as string) || "";
-  
+
   const [room, setRoom] = useState<RoomDetail | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -258,27 +64,34 @@ export default function DetailKamarPage() {
 
         if (res.ok && data && data.id) {
           const roomImages = data.room_images || [];
-          const hero = roomImages.length > 0 
-            ? roomImages[0].image_url 
-            : "https://images.unsplash.com/photo-1566665797739-1674de7a421a?auto=format&fit=crop&w=1200&q=80";
-          
-          const gallery = roomImages.length > 1 
-            ? roomImages.slice(1).map((img: any) => img.image_url)
-            : [
-                "https://images.unsplash.com/photo-1611892440504-42a792e24d32?auto=format&fit=crop&w=600&q=80",
-                "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=600&q=80"
-              ];
+          const hero =
+            roomImages.length > 0
+              ? roomImages[0].image_url
+              : "https://images.unsplash.com/photo-1566665797739-1674de7a421a?auto=format&fit=crop&w=1200&q=80";
+
+          const gallery =
+            roomImages.length > 1
+              ? roomImages.slice(1).map((img: any) => img.image_url)
+              : [
+                  "https://images.unsplash.com/photo-1611892440504-42a792e24d32?auto=format&fit=crop&w=600&q=80",
+                  "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=600&q=80",
+                ];
 
           setRoom({
             id: data.id,
             name: data.name,
             type: data.type || "Standard",
             location: data.location || "-",
+            description: data.description,
             capacity: data.capacity || 2,
             price_per_night: data.price_per_night,
             facilities: data.facilities || [],
-            heroImage: hero.startsWith('http') ? hero : `http://localhost:3001${hero}`,
-            gallery: gallery.map((g: string) => g.startsWith('http') ? g : `http://localhost:3001${g}`),
+            heroImage: hero.startsWith("http")
+              ? hero
+              : `http://localhost:3001${hero}`,
+            gallery: gallery.map((g: string) =>
+              g.startsWith("http") ? g : `http://localhost:3001${g}`,
+            ),
           });
         }
       } catch (err) {
@@ -295,7 +108,7 @@ export default function DetailKamarPage() {
     setFavoriteToast(
       !isFavorite
         ? `❤️ Ditambahkan ke Kamar Favorit`
-        : `Dihapus dari Kamar Favorit`
+        : `Dihapus dari Kamar Favorit`,
     );
     setTimeout(() => setFavoriteToast(null), 3000);
   };
@@ -317,7 +130,9 @@ export default function DetailKamarPage() {
         <main className="flex-1 flex items-center justify-center">
           <div className="flex flex-col items-center gap-3">
             <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#0B4F37]"></div>
-            <p className="text-gray-500 text-sm font-medium">Memuat detail kamar...</p>
+            <p className="text-gray-500 text-sm font-medium">
+              Memuat detail kamar...
+            </p>
           </div>
         </main>
         <Footer />
@@ -329,15 +144,21 @@ export default function DetailKamarPage() {
     return (
       <div className="min-h-screen bg-slate-50 font-sans text-gray-900 flex flex-col">
         <Header activePage="kamar" />
-        
+
         <main className="flex-1 flex items-center justify-center p-6">
           <div className="rounded-3xl bg-white p-10 sm:p-12 text-center shadow-xl border border-gray-200/80 max-w-lg w-full">
             <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-rose-100 text-rose-600 mb-4 shadow-inner">
               <SearchX className="h-8 w-8" />
             </div>
-            <h1 className="text-2xl font-bold text-gray-900">Maaf, Tipe Kamar Tidak Ditemukan</h1>
+            <h1 className="text-2xl font-bold text-gray-900">
+              Maaf, Tipe Kamar Tidak Ditemukan
+            </h1>
             <p className="mt-2 text-xs sm:text-sm text-gray-500 leading-relaxed">
-              Tipe kamar dengan ID <code className="bg-gray-100 px-2 py-0.5 rounded text-rose-600 font-semibold">{roomId}</code> tidak tersedia.
+              Tipe kamar dengan ID{" "}
+              <code className="bg-gray-100 px-2 py-0.5 rounded text-rose-600 font-semibold">
+                {roomId}
+              </code>{" "}
+              tidak tersedia.
             </p>
             <Link
               href="/kamar"
@@ -377,9 +198,13 @@ export default function DetailKamarPage() {
             </Link>
 
             <div className="hidden sm:flex items-center gap-2 text-xs text-gray-500 font-medium">
-              <Link href="/" className="hover:text-gray-900">Beranda</Link>
+              <Link href="/" className="hover:text-gray-900">
+                Beranda
+              </Link>
               <span>/</span>
-              <Link href="/kamar" className="hover:text-gray-900">Kamar</Link>
+              <Link href="/kamar" className="hover:text-gray-900">
+                Kamar
+              </Link>
               <span>/</span>
               <span className="text-[#0B4F37] font-bold">{room.name}</span>
             </div>
@@ -405,7 +230,7 @@ export default function DetailKamarPage() {
                 <h1 className="text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl">
                   {room.name}
                 </h1>
-                
+
                 <button
                   onClick={handleToggleFavorite}
                   className={`flex h-9 w-9 items-center justify-center rounded-full border transition-all ${
@@ -415,7 +240,9 @@ export default function DetailKamarPage() {
                   }`}
                   aria-label="Simpan ke Favorit"
                 >
-                  <Heart className={`h-5 w-5 ${isFavorite ? "fill-current" : ""}`} />
+                  <Heart
+                    className={`h-5 w-5 ${isFavorite ? "fill-current" : ""}`}
+                  />
                 </button>
               </div>
             </div>
@@ -447,7 +274,10 @@ export default function DetailKamarPage() {
 
             <div className="grid grid-cols-2 gap-4 lg:grid-cols-1">
               {room.gallery.slice(0, 2).map((img, idx) => (
-                <div key={idx} className="relative h-40 sm:h-44 overflow-hidden rounded-2xl bg-gray-100 shadow-sm">
+                <div
+                  key={idx}
+                  className="relative h-40 sm:h-44 overflow-hidden rounded-2xl bg-gray-100 shadow-sm"
+                >
                   <Image
                     src={img}
                     alt={`${room.name} gallery ${idx + 1}`}
@@ -473,19 +303,39 @@ export default function DetailKamarPage() {
                   <div className="flex items-center gap-2.5 rounded-xl bg-slate-50 p-3">
                     <Users className="h-5 w-5 text-emerald-600" />
                     <div>
-                      <span className="block text-gray-400 text-[10px]">Kapasitas Maksimal</span>
-                      <span className="font-bold text-gray-900">{room.capacity} Tamu</span>
+                      <span className="block text-gray-400 text-[10px]">
+                        Kapasitas Maksimal
+                      </span>
+                      <span className="font-bold text-gray-900">
+                        {room.capacity} Tamu
+                      </span>
                     </div>
                   </div>
                   <div className="flex items-center gap-2.5 rounded-xl bg-slate-50 p-3">
                     <MapPin className="h-5 w-5 text-emerald-600" />
                     <div>
-                      <span className="block text-gray-400 text-[10px]">Lokasi Kamar</span>
-                      <span className="font-bold text-gray-900">{room.location}</span>
+                      <span className="block text-gray-400 text-[10px]">
+                        Lokasi Kamar
+                      </span>
+                      <span className="font-bold text-gray-900">
+                        {room.location}
+                      </span>
                     </div>
                   </div>
                 </div>
               </div>
+
+              {/* DESKRIPSI KAMAR */}
+              {room.description && (
+                <div className="rounded-2xl border border-gray-200/80 bg-white p-6 shadow-sm">
+                  <h2 className="text-base font-bold text-gray-900 mb-4 flex items-center gap-2">
+                    <span>Tentang Kamar Ini</span>
+                  </h2>
+                  <p className="text-sm text-gray-600 leading-relaxed whitespace-pre-line">
+                    {room.description}
+                  </p>
+                </div>
+              )}
 
               {/* DAFTAR FASILITAS TERSEDIA (Field `facilities String[]` di Prisma) */}
               <div className="rounded-2xl border border-gray-200/80 bg-white p-6 shadow-sm">
@@ -496,7 +346,10 @@ export default function DetailKamarPage() {
 
                 <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                   {room.facilities.map((facility, idx) => (
-                    <div key={idx} className="flex items-center gap-2.5 text-xs text-gray-700">
+                    <div
+                      key={idx}
+                      className="flex items-center gap-2.5 text-xs text-gray-700"
+                    >
                       <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0" />
                       <span>{facility}</span>
                     </div>
@@ -509,7 +362,9 @@ export default function DetailKamarPage() {
             <div className="lg:col-span-1">
               <div className="sticky top-24 rounded-3xl border border-gray-200/90 bg-white p-6 shadow-xl">
                 <div className="border-b border-gray-100 pb-4 mb-5">
-                  <span className="text-xs text-gray-400 font-medium">Harga Per Malam</span>
+                  <span className="text-xs text-gray-400 font-medium">
+                    Harga Per Malam
+                  </span>
                   <div className="flex items-baseline gap-1 mt-0.5">
                     <span className="text-2xl font-extrabold text-[#0B4F37]">
                       Rp {room.price_per_night.toLocaleString("id-ID")}
@@ -591,9 +446,13 @@ export default function DetailKamarPage() {
               <Lock className="h-7 w-7" />
             </div>
 
-            <h3 className="text-xl font-bold text-gray-900">Silakan Masuk Terlebih Dahulu</h3>
+            <h3 className="text-xl font-bold text-gray-900">
+              Silakan Masuk Terlebih Dahulu
+            </h3>
             <p className="mt-2 text-xs sm:text-sm text-gray-600 leading-relaxed font-normal">
-              Untuk melakukan pemesanan kamar <strong className="text-gray-900">{room.name}</strong>, Anda harus masuk ke akun SiniBook Anda.
+              Untuk melakukan pemesanan kamar{" "}
+              <strong className="text-gray-900">{room.name}</strong>, Anda harus
+              masuk ke akun SiniBook Anda.
             </p>
 
             <div className="mt-6 flex flex-col gap-2.5">

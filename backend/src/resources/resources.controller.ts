@@ -55,6 +55,13 @@ export class ResourcesController {
     return this.resourcesService.findAvailableRooms(checkIn, checkOut);
   }
 
+  @UseGuards(AuthGuard('jwt'), RolesGuard)
+  @Roles(Role.ADMIN, Role.STAFF)
+  @Get('live-status')
+  getLiveStatus(@Query() query: { search?: string; type?: string }) {
+    return this.resourcesService.getLiveStatus(query);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.resourcesService.findOne(id);

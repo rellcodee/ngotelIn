@@ -23,8 +23,9 @@ model resources {
   id        String      @id @default(uuid()) @db.Uuid
   name      String      @unique @db.VarChar(150)
   type      String?     @db.VarChar(50)
-  location  String?     @db.VarChar(150)
-  capacity  Int?
+  location    String?     @db.VarChar(150)
+  description String?     @db.Text
+  capacity    Int?
   
   price_per_night Int           @default(0) 
   facilities      String[]      @default([]) 

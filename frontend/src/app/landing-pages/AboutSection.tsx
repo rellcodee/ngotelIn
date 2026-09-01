@@ -4,7 +4,7 @@ import React, { useState } from "react"; // Mengimpor React dan useState
 import Image from "next/image"; // Mengimpor komponen Image dari Next.js
 import { Check, Play, X } from "lucide-react"; // Mengimpor ikon centang, play, dan tutup modal video
 
-// Komponen AboutSection: Blok informasi utama tentang SiniBook Hotel (Profil, Keunggulan & Video Tour)
+// Komponen AboutSection: Blok informasi utama tentang NgotelIn (Profil, Keunggulan & Video Tour)
 export default function AboutSection() {
   // State untuk melacak apakah modal video promo sedang diputar
   const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
@@ -18,16 +18,16 @@ export default function AboutSection() {
         {/* Grid 2 kolom: Kiri Teks Informasi, Kanan Video Preview */}
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-2 lg:items-center">
           
-          {/* KOLOM KIRI: TEKS INFORMASI TENTANG SINIBOOK HOTEL */}
+          {/* KOLOM KIRI: TEKS INFORMASI TENTANG NGOTELIN */}
           <div>
-            {/* Judul Utama Section Tentang SiniBook Hotel */}
+            {/* Judul Utama Section Tentang NgotelIn */}
             <h2 className="text-2xl font-bold tracking-tight sm:text-3xl lg:text-4xl text-white">
-              Tentang SiniBook Hotel
+              Tentang NgotelIn
             </h2>
 
             {/* Paragraf Penjelasan Profil Hotel */}
             <p className="mt-4 text-sm sm:text-base text-emerald-100/90 leading-relaxed font-light">
-              SiniBook Hotel merupakan hotel bintang 4 yang berlokasi di pusat kota Jakarta. Kami berkomitmen memberikan pengalaman menginap terbaik dengan fasilitas modern dan kenyamanan maksimal bagi para tamu.
+              NgotelIn merupakan hotel bintang 4 yang berlokasi di pusat kota Jakarta. Kami berkomitmen memberikan pengalaman menginap terbaik dengan fasilitas modern dan kenyamanan maksimal bagi para tamu.
             </p>
 
 
@@ -75,7 +75,7 @@ export default function AboutSection() {
               {/* Gambar thumbnail interior lobi hotel */}
               <Image
                 src="https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1000&q=80"
-                alt="SiniBook Hotel Video Preview"
+                alt="NgotelIn Video Preview"
                 fill
                 className="object-cover"
               />
@@ -118,7 +118,7 @@ export default function AboutSection() {
               <iframe
                 className="h-full w-full"
                 src="https://www.youtube.com/embed/UJEUwEJ6gH4?si=Dm_7bO7lEkqq_XpO?autoplay=1"
-                title="SiniBook Hotel Video Tour"
+                title="NgotelIn Video Tour"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen
               />

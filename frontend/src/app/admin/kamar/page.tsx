@@ -28,6 +28,7 @@ interface RoomData {
   price_per_night: number;
   facilities: string[];
   room_images: RoomImage[];
+  current_status?: string;
 }
 
 export default function KamarPage() {
@@ -60,6 +61,7 @@ export default function KamarPage() {
     name: "",
     type: "standard",
     location: "",
+    description: "",
     capacity: 2,
     price_per_night: 0,
     facilities: "",
@@ -77,7 +79,10 @@ export default function KamarPage() {
   const fetchRooms = async () => {
     setIsLoading(true);
     try {
-      const res = await fetch("http://localhost:3001/resources");
+      const token = localStorage.getItem("token");
+      const res = await fetch("http://localhost:3001/resources/live-status", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       if (!res.ok) throw new Error("Gagal mengambil data kamar");
 
       const data = await res.json();
@@ -109,6 +114,31 @@ export default function KamarPage() {
     const imageUrl = primary ? primary.image_url : images[0].image_url;
     if (imageUrl.startsWith("http")) return imageUrl;
     return `http://localhost:3001${imageUrl}`;
+  };
+
+  const getStatusBadge = (status?: string) => {
+    switch (status) {
+      case "available":
+        return (
+          <div className="absolute top-3 right-3 bg-emerald-500 text-white px-2.5 py-1 rounded-lg text-xs font-bold shadow-md uppercase tracking-wide z-10">
+            Tersedia
+          </div>
+        );
+      case "booked":
+        return (
+          <div className="absolute top-3 right-3 bg-blue-500 text-white px-2.5 py-1 rounded-lg text-xs font-bold shadow-md uppercase tracking-wide z-10">
+            Terisi (Booked)
+          </div>
+        );
+      case "maintenance":
+        return (
+          <div className="absolute top-3 right-3 bg-rose-500 text-white px-2.5 py-1 rounded-lg text-xs font-bold shadow-md uppercase tracking-wide z-10">
+            Maintenance
+          </div>
+        );
+      default:
+        return null;
+    }
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -149,7 +179,7 @@ export default function KamarPage() {
 
     if (e.dataTransfer.files) {
       const filesArray = Array.from(e.dataTransfer.files).filter((file) =>
-        file.type.match(/\/(jpg|jpeg|png|webp)$/)
+        file.type.match(/\/(jpg|jpeg|png|webp)$/),
       );
       const remainingOld = isEditModalOpen
         ? oldImages.length - deletedImageIds.length
@@ -249,6 +279,7 @@ export default function KamarPage() {
       data.append("name", formData.name);
       data.append("type", formData.type);
       data.append("location", formData.location);
+      data.append("description", formData.description);
       data.append("capacity", formData.capacity.toString());
       data.append("price_per_night", formData.price_per_night.toString());
 
@@ -257,7 +288,7 @@ export default function KamarPage() {
         .map((f) => f.trim())
         .filter((f) => f);
       facilitiesArray.forEach((f) => data.append("facilities[]", f));
-      
+
       const reorderedFiles = [...selectedFiles];
       if (newPrimaryIndex > 0 && newPrimaryIndex < reorderedFiles.length) {
         const cover = reorderedFiles.splice(newPrimaryIndex, 1)[0];
@@ -279,6 +310,7 @@ export default function KamarPage() {
         name: "",
         type: "Deluxe",
         location: "",
+        description: "",
         capacity: 2,
         price_per_night: 0,
         facilities: "",
@@ -314,6 +346,7 @@ export default function KamarPage() {
       name: room.name,
       type: room.type,
       location: room.location,
+      description: room.description || "",
       capacity: room.capacity,
       price_per_night: room.price_per_night,
       facilities: room.facilities.join(", "),
@@ -348,6 +381,7 @@ export default function KamarPage() {
       data.append("name", formData.name);
       data.append("type", formData.type);
       data.append("location", formData.location);
+      data.append("description", formData.description);
       data.append("capacity", formData.capacity.toString());
       data.append("price_per_night", formData.price_per_night.toString());
 
@@ -356,9 +390,13 @@ export default function KamarPage() {
         .map((f) => f.trim())
         .filter((f) => f);
       facilitiesArray.forEach((f) => data.append("facilities[]", f));
-      
+
       const reorderedFiles = [...selectedFiles];
-      if (primaryImageId === "" && newPrimaryIndex > 0 && newPrimaryIndex < reorderedFiles.length) {
+      if (
+        primaryImageId === "" &&
+        newPrimaryIndex > 0 &&
+        newPrimaryIndex < reorderedFiles.length
+      ) {
         const cover = reorderedFiles.splice(newPrimaryIndex, 1)[0];
         reorderedFiles.unshift(cover);
       }
@@ -422,6 +460,7 @@ export default function KamarPage() {
               name: "",
               type: "standard",
               location: "",
+              description: "",
               capacity: 2,
               price_per_night: 0,
               facilities: "",
@@ -469,8 +508,11 @@ export default function KamarPage() {
                       "https://placehold.co/600x400?text=Image+Not+Found";
                   }}
                 />
-                <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm px-2.5 py-1 rounded-lg text-xs font-bold text-emerald-700 shadow-sm uppercase tracking-wide">
-                  {room.type}
+
+                {getStatusBadge(room.current_status)}
+
+                <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-sm px-2.5 py-1 rounded-lg text-xs font-bold text-emerald-700 shadow-sm uppercase tracking-wide">
+                  {room.type.replace("_", " ")}
                 </div>
               </div>
               <div className="p-5 flex-1 flex flex-col">
@@ -576,7 +618,9 @@ export default function KamarPage() {
                       >
                         <option value="standard">Standard</option>
                         <option value="suite">Suite</option>
-                        <option value="presidential_suite">Presidential Suite</option>
+                        <option value="presidential_suite">
+                          Presidential Suite
+                        </option>
                       </select>
                     </div>
                     <div className="grid grid-cols-2 gap-4">
@@ -629,6 +673,23 @@ export default function KamarPage() {
                         }
                         className="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none"
                       />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                        Deskripsi Kamar
+                      </label>
+                      <textarea
+                        rows={3}
+                        value={formData.description}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            description: e.target.value,
+                          })
+                        }
+                        className="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none resize-none"
+                        placeholder="Tuliskan deskripsi menarik tentang kamar ini..."
+                      ></textarea>
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1.5">
@@ -750,51 +811,56 @@ export default function KamarPage() {
 
                       {/* Tampilkan Foto BARU yang baru dipilih */}
                       {selectedFiles.map((file, idx) => {
-                        const isPrimaryNew = (!isEditModalOpen && newPrimaryIndex === idx) || (isEditModalOpen && primaryImageId === "" && newPrimaryIndex === idx);
-                        
+                        const isPrimaryNew =
+                          (!isEditModalOpen && newPrimaryIndex === idx) ||
+                          (isEditModalOpen &&
+                            primaryImageId === "" &&
+                            newPrimaryIndex === idx);
+
                         return (
-                        <div
-                          key={idx}
-                          className={`relative aspect-video rounded-xl overflow-hidden border-2 group ${isPrimaryNew ? 'border-amber-400' : 'border-emerald-400'}`}
-                        >
-                          <img
-                            src={URL.createObjectURL(file)}
-                            alt="new"
-                            className="w-full h-full object-cover"
-                          />
-                          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 hover:opacity-100 flex items-end p-2 gap-1 transition-opacity">
-                            {!isPrimaryNew && (
+                          <div
+                            key={idx}
+                            className={`relative aspect-video rounded-xl overflow-hidden border-2 group ${isPrimaryNew ? "border-amber-400" : "border-emerald-400"}`}
+                          >
+                            <img
+                              src={URL.createObjectURL(file)}
+                              alt="new"
+                              className="w-full h-full object-cover"
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 hover:opacity-100 flex items-end p-2 gap-1 transition-opacity">
+                              {!isPrimaryNew && (
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    setNewPrimaryIndex(idx);
+                                    if (isEditModalOpen) setPrimaryImageId("");
+                                  }}
+                                  className="bg-amber-500 text-white p-1 rounded hover:bg-amber-600"
+                                  title="Jadikan Cover"
+                                >
+                                  <Star className="w-3.5 h-3.5 fill-current" />
+                                </button>
+                              )}
                               <button
                                 type="button"
-                                onClick={() => {
-                                  setNewPrimaryIndex(idx);
-                                  if (isEditModalOpen) setPrimaryImageId("");
-                                }}
-                                className="bg-amber-500 text-white p-1 rounded hover:bg-amber-600"
-                                title="Jadikan Cover"
+                                onClick={() => removeNewFile(idx)}
+                                className="bg-rose-500 text-white p-1 rounded hover:bg-rose-600 ml-auto"
                               >
-                                <Star className="w-3.5 h-3.5 fill-current" />
+                                <Trash2 className="w-3.5 h-3.5" />
                               </button>
-                            )}
-                            <button
-                              type="button"
-                              onClick={() => removeNewFile(idx)}
-                              className="bg-rose-500 text-white p-1 rounded hover:bg-rose-600 ml-auto"
-                            >
-                              <Trash2 className="w-3.5 h-3.5" />
-                            </button>
-                          </div>
-                          
-                          <div className="absolute top-1 right-1 bg-emerald-500 text-white text-[9px] px-1.5 py-0.5 rounded-sm font-bold shadow-sm">
-                            BARU
-                          </div>
-                          {isPrimaryNew && (
-                            <div className="absolute top-1 left-1 bg-amber-400 text-black text-[9px] px-1.5 py-0.5 rounded-sm font-bold shadow-sm">
-                              COVER
                             </div>
-                          )}
-                        </div>
-                      )})}
+
+                            <div className="absolute top-1 right-1 bg-emerald-500 text-white text-[9px] px-1.5 py-0.5 rounded-sm font-bold shadow-sm">
+                              BARU
+                            </div>
+                            {isPrimaryNew && (
+                              <div className="absolute top-1 left-1 bg-amber-400 text-black text-[9px] px-1.5 py-0.5 rounded-sm font-bold shadow-sm">
+                                COVER
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })}
                     </div>
                   </div>
                 </div>

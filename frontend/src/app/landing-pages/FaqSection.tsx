@@ -7,13 +7,13 @@ import { ChevronDown, HelpCircle } from "lucide-react"; // Mengimpor ikon panah 
 const faqData = [
   {
     id: 1,
-    question: "Jam berapa waktu check-in dan check-out di SiniBook Hotel?",
+    question: "Jam berapa waktu check-in dan check-out di NgotelIn?",
     answer: "Waktu check-in resmi mulai pukul 14:00 WIB dan check-out maksimal pukul 12:00 WIB. Resepsionis kami beroperasi 24 jam untuk melayani kedatangan Anda kapan pun.",
   },
   {
     id: 2,
     question: "Apakah seluruh pemesanan kamar sudah termasuk sarapan gratis?",
-    answer: "Ya, seluruh reservasi kamar di SiniBook Hotel sudah termasuk prasmanan sarapan gratis untuk 2 orang tamu di Restoran Utama kami.",
+    answer: "Ya, seluruh reservasi kamar di NgotelIn sudah termasuk prasmanan sarapan gratis untuk 2 orang tamu di Restoran Utama kami.",
   },
   {
     id: 3,
@@ -60,7 +60,7 @@ export default function FaqSection() {
           </h2>
           {/* Subtitle */}
           <p className="mt-2 text-sm text-gray-500 sm:text-base max-w-xl mx-auto font-light">
-            Temukan jawaban cepat mengenai layanan, fasilitas, dan prosedur menginap di SiniBook Hotel.
+            Temukan jawaban cepat mengenai layanan, fasilitas, dan prosedur menginap di NgotelIn.
           </p>
         </div>
 

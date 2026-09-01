@@ -140,6 +140,7 @@ export default function KamarPage() {
               src="https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1920&q=80"
               alt="SiniBook Luxury Hotel Outer View"
               fill
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 100vw, 100vw"
               priority
               className="object-cover opacity-30"
             />
@@ -228,6 +229,7 @@ export default function KamarPage() {
                           src={room.image.startsWith('http') ? room.image : `http://localhost:3001${room.image}`}
                           alt={room.name}
                           fill
+                          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                           className="object-cover transition-transform duration-500 group-hover:scale-105"
                         />
 

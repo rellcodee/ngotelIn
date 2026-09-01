@@ -20,6 +20,7 @@ export class ResourcesService {
           name: createResourceDto.name,
           type: createResourceDto.type,
           location: createResourceDto.location,
+          description: createResourceDto.description,
           capacity: createResourceDto.capacity ? Number(createResourceDto.capacity) : null,
           price_per_night: Number(createResourceDto.price_per_night),
           facilities: createResourceDto.facilities || [],
@@ -203,6 +204,7 @@ export class ResourcesService {
           name: updateDto.name,
           type: updateDto.type,
           location: updateDto.location,
+          description: updateDto.description,
           capacity: updateDto.capacity ? Number(updateDto.capacity) : undefined,
           price_per_night: updateDto.price_per_night ? Number(updateDto.price_per_night) : undefined,
           facilities: updateDto.facilities,
@@ -255,6 +257,51 @@ export class ResourcesService {
     } catch (error) {
       throw new InternalServerErrorException('Gagal menghapus kamar beserta gambarnya');
     }
+  }
+
+  async getLiveStatus(query?: { search?: string; type?: string }) {
+    const { search, type } = query || {};
+    const whereCondition: Prisma.resourcesWhereInput = {};
+
+    if (search) {
+      whereCondition.name = { contains: search, mode: 'insensitive' };
+    }
+    
+    if (type && type !== 'all') {
+      whereCondition.type = type;
+    }
+
+    const allResources = await this.prisma.resources.findMany({
+      where: whereCondition,
+      include: { room_images: { where: { is_primary: true } } }
+    });
+
+    const now = new Date();
+
+    // Cari jadwal yang aktif detik ini juga
+    const activeSchedules = await this.prisma.schedules.findMany({
+      where: {
+        start_time: { lte: now },
+        end_time: { gte: now },
+        status: { in: ['booked', 'maintenance'] },
+      },
+      select: {
+        resource_id: true,
+        status: true,
+      }
+    });
+
+    const statusMap = new Map<string, string>();
+    activeSchedules.forEach(schedule => {
+      if (schedule.resource_id && schedule.status) {
+        statusMap.set(schedule.resource_id, schedule.status);
+      }
+    });
+
+    return allResources.map(res => ({
+      ...res,
+      current_status: statusMap.get(res.id) || 'available'
+    }));
   }
 
   async findAvailableRooms(checkIn: string, checkOut: string) {

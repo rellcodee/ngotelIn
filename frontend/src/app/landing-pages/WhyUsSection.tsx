@@ -3,7 +3,7 @@
 import React from "react"; // Mengimpor library React
 import { MapPin, BedDouble, ShieldCheck, UserCheck, Lock, Building } from "lucide-react"; // Mengimpor ikon keunggulan dari lucide-react
 
-// Array data 5 keunggulan utama SiniBook Hotel
+// Array data 5 keunggulan utama NgotelIn
 const whyUsData = [
   {
     id: 1,
@@ -37,7 +37,7 @@ const whyUsData = [
   },
 ];
 
-// Komponen WhyUsSection: Menampilkan keunggulan hotel SiniBook dengan 5 kolom ikon & penjelasan
+// Komponen WhyUsSection: Menampilkan keunggulan hotel NgotelIn dengan 5 kolom ikon & penjelasan
 export default function WhyUsSection() {
   return (
     // Section pembungkus utama dengan warna latar belakang soft green tint (#F4F8F5)
@@ -48,9 +48,9 @@ export default function WhyUsSection() {
         {/* HEADER SECTION: Judul, Subtitle, dan Badge Ikon di Pojok Kanan */}
         <div className="flex items-center justify-between mb-12">
           <div className="max-w-2xl">
-            {/* Judul Utama Section Mengapa Memilih SiniBook Hotel */}
+            {/* Judul Utama Section Mengapa Memilih NgotelIn */}
             <h2 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl lg:text-4xl">
-              Mengapa Memilih SiniBook Hotel?
+              Mengapa Memilih NgotelIn?
             </h2>
             {/* Subtitle Penjelasan */}
             <p className="mt-2 text-sm text-gray-600 sm:text-base">
