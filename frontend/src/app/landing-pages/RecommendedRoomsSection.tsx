@@ -38,7 +38,7 @@ export default function RecommendedRoomsSection() {
         // Solusi "ga ribet": Ambil semua kamar, potong 3 teratas di frontend!
         const response = await fetch("http://localhost:3001/resources");
         const json = await response.json();
-        
+
         if (response.ok) {
           // Format data dari API (Backend) agar sesuai dengan UI kita
           const dataArray = Array.isArray(json) ? json : json.data || [];
@@ -50,9 +50,9 @@ export default function RecommendedRoomsSection() {
             capacity: room.capacity,
             price_per_night: room.price_per_night,
             facilities: room.facilities || [],
-            image: room.room_images && room.room_images.length > 0 
-                    ? room.room_images[0].image_url 
-                    : FALLBACK_IMAGE,
+            image: room.room_images && room.room_images.length > 0
+              ? room.room_images[0].image_url
+              : FALLBACK_IMAGE,
           }));
           setRecommendedRooms(formattedRooms);
         }
@@ -86,7 +86,7 @@ export default function RecommendedRoomsSection() {
           {/* Tombol Lihat Semua Kamar */}
           <Link
             href="/kamar"
-            className="inline-flex items-center gap-2 rounded-full bg-[#0B4F37] px-5 py-2.5 text-sm font-semibold text-white transition-all hover:bg-[#073524] hover:shadow-md self-start sm:self-auto"
+            className="inline-flex items-center gap-2 rounded-full bg-[#1D4ED8] px-5 py-2.5 text-sm font-semibold text-white transition-all hover:bg-[#1E3A8A] hover:shadow-md self-start sm:self-auto"
           >
             <span>Lihat Semua Kamar</span>
             <ArrowRight className="h-4 w-4" />
@@ -121,7 +121,7 @@ export default function RecommendedRoomsSection() {
 
                   {/* Badge Tipe Kamar (Field `type` di Prisma) */}
                   <div className="absolute top-3.5 left-3.5 flex items-center gap-1.5">
-                    <span className="rounded-full bg-[#0B4F37] px-3 py-1 text-xs font-bold text-white shadow-md">
+                    <span className="rounded-full bg-[#1D4ED8] px-3 py-1 text-xs font-bold text-white shadow-md">
                       {room.type}
                     </span>
                   </div>
@@ -143,7 +143,7 @@ export default function RecommendedRoomsSection() {
                     </div>
 
                     {/* Nama Kamar (Field `name` di Prisma) */}
-                    <h3 className="text-lg font-bold text-gray-900 group-hover:text-[#0B4F37] transition-colors">
+                    <h3 className="text-lg font-bold text-gray-900 group-hover:text-[#1D4ED8] transition-colors">
                       {room.name}
                     </h3>
 
@@ -158,9 +158,9 @@ export default function RecommendedRoomsSection() {
                         </span>
                       ))}
                       {room.facilities.length > 4 && (
-                         <span className="rounded-md bg-gray-100 px-2 py-0.5 text-[11px] font-medium text-gray-500">
-                           +{room.facilities.length - 4}
-                         </span>
+                        <span className="rounded-md bg-gray-100 px-2 py-0.5 text-[11px] font-medium text-gray-500">
+                          +{room.facilities.length - 4}
+                        </span>
                       )}
                     </div>
                   </div>
@@ -172,7 +172,7 @@ export default function RecommendedRoomsSection() {
                         Harga / Malam
                       </span>
                       <div className="flex items-baseline gap-1">
-                        <span className="text-lg font-extrabold text-[#0B4F37]">
+                        <span className="text-lg font-extrabold text-[#1D4ED8]">
                           Rp {room.price_per_night.toLocaleString("id-ID")}
                         </span>
                       </div>
@@ -181,7 +181,7 @@ export default function RecommendedRoomsSection() {
                     {/* Tombol Detail */}
                     <Link
                       href={`/kamar/${room.id}`}
-                      className="rounded-xl bg-[#0B4F37] px-4 py-2.5 text-xs font-semibold text-white transition-all hover:bg-[#073524] hover:shadow-md active:scale-95"
+                      className="rounded-xl bg-[#1D4ED8] px-4 py-2.5 text-xs font-semibold text-white transition-all hover:bg-[#1E3A8A] hover:shadow-md active:scale-95"
                     >
                       Detail Kamar
                     </Link>

@@ -47,7 +47,7 @@ export default function TestimonialSection() {
     <section className="w-full bg-white py-16 sm:py-20">
       {/* Wrapper pembatas lebar konten */}
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        
+
         {/* HEADER SECTION: Judul di kiri dan Link 'Lihat semua ulasan' di kanan */}
         <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between mb-10">
           <div>
@@ -61,7 +61,7 @@ export default function TestimonialSection() {
           {/* Link Lihat Semua Ulasan */}
           <a
             href="#semua-ulasan"
-            className="group flex items-center gap-1.5 text-sm font-semibold text-[#0B4F37] hover:text-[#073524]"
+            className="group flex items-center gap-1.5 text-sm font-semibold text-[#1D4ED8] hover:text-[#1E3A8A]"
           >
             <span>Lihat semua ulasan</span>
             <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
@@ -78,7 +78,7 @@ export default function TestimonialSection() {
               <div>
                 {/* PROFIL TAMU: Foto Avatar & Nama Tamu */}
                 <div className="flex items-center gap-3">
-                  <div className="relative h-12 w-12 overflow-hidden rounded-full border-2 border-[#0B4F37]/20">
+                  <div className="relative h-12 w-12 overflow-hidden rounded-full border-2 border-[#1D4ED8]/20">
                     <Image
                       src={item.avatar}
                       alt={item.name}

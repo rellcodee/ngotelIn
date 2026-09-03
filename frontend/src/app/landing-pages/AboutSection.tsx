@@ -10,14 +10,14 @@ export default function AboutSection() {
   const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
 
   return (
-    // Section utama tentang kami dengan latar belakang container warna Hijau Tua (#0B4F37)
-    <section className="w-full bg-[#0B4F37] py-16 sm:py-20 text-white" id="tentang-kami">
+    // Section utama tentang kami dengan latar belakang container warna Hijau Tua (#1D4ED8)
+    <section className="w-full bg-[#1D4ED8] py-16 sm:py-20 text-white" id="tentang-kami">
       {/* Wrapper pembatas lebar konten */}
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        
+
         {/* Grid 2 kolom: Kiri Teks Informasi, Kanan Video Preview */}
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-2 lg:items-center">
-          
+
           {/* KOLOM KIRI: TEKS INFORMASI TENTANG NGOTELIN */}
           <div>
             {/* Judul Utama Section Tentang NgotelIn */}
@@ -87,7 +87,7 @@ export default function AboutSection() {
               <div className="absolute inset-0 flex items-center justify-center">
                 <button
                   onClick={() => setIsVideoModalOpen(true)} // Membuka modal video saat diklik
-                  className="group flex h-20 w-20 items-center justify-center rounded-full bg-white/90 text-[#0B4F37] shadow-2xl transition-all duration-300 hover:scale-110 hover:bg-white active:scale-95"
+                  className="group flex h-20 w-20 items-center justify-center rounded-full bg-white/90 text-[#1D4ED8] shadow-2xl transition-all duration-300 hover:scale-110 hover:bg-white active:scale-95"
                   aria-label="Putar Video Hotel"
                 >
                   {/* Ikon Play dengan sedikit margin offset agar center secara visual */}

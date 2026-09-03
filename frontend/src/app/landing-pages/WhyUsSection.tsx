@@ -44,7 +44,7 @@ export default function WhyUsSection() {
     <section className="w-full bg-[#F4F8F5] py-16 sm:py-20">
       {/* Wrapper pembatas lebar konten */}
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        
+
         {/* HEADER SECTION: Judul, Subtitle, dan Badge Ikon di Pojok Kanan */}
         <div className="flex items-center justify-between mb-12">
           <div className="max-w-2xl">
@@ -59,7 +59,7 @@ export default function WhyUsSection() {
           </div>
 
           {/* BADGE IKON MELAYANG (Right Top Badge): Sesuai dengan elemen hijau bulat di desain */}
-          <div className="hidden sm:flex h-12 w-12 items-center justify-center rounded-2xl bg-[#0B4F37] text-white shadow-lg">
+          <div className="hidden sm:flex h-12 w-12 items-center justify-center rounded-2xl bg-[#1D4ED8] text-white shadow-lg">
             <Building className="h-6 w-6" />
           </div>
         </div>
@@ -71,10 +71,10 @@ export default function WhyUsSection() {
             return (
               <div
                 key={item.id}
-                className="group flex flex-col items-center text-center rounded-2xl bg-white p-6 shadow-sm border border-emerald-100/60 transition-all hover:border-[#0B4F37] hover:shadow-md hover:-translate-y-1"
+                className="group flex flex-col items-center text-center rounded-2xl bg-white p-6 shadow-sm border border-emerald-100/60 transition-all hover:border-[#1D4ED8] hover:shadow-md hover:-translate-y-1"
               >
                 {/* Latar Belakang Bulat Ikon Keunggulan */}
-                <div className="flex h-14 w-14 items-center justify-center rounded-full bg-emerald-50 text-[#0B4F37] transition-colors group-hover:bg-[#0B4F37] group-hover:text-white">
+                <div className="flex h-14 w-14 items-center justify-center rounded-full bg-emerald-50 text-[#1D4ED8] transition-colors group-hover:bg-[#1D4ED8] group-hover:text-white">
                   <IconComponent className="h-7 w-7" />
                 </div>
 

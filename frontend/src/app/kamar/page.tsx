@@ -55,7 +55,7 @@ export default function KamarPage() {
       try {
         const response = await fetch("http://localhost:3001/resources");
         const json = await response.json();
-        
+
         if (response.ok) {
           const dataArray = Array.isArray(json) ? json : json.data || [];
           const formattedRooms: RoomItem[] = dataArray.map((room: any) => ({
@@ -66,9 +66,9 @@ export default function KamarPage() {
             capacity: room.capacity,
             price_per_night: room.price_per_night,
             facilities: room.facilities || [],
-            image: room.room_images && room.room_images.length > 0 
-                    ? room.room_images[0].image_url 
-                    : FALLBACK_IMAGE,
+            image: room.room_images && room.room_images.length > 0
+              ? room.room_images[0].image_url
+              : FALLBACK_IMAGE,
           }));
           setRoomsData(formattedRooms);
         }
@@ -109,7 +109,7 @@ export default function KamarPage() {
   });
 
   return (
-    <div className="min-h-screen bg-slate-50 font-sans text-gray-900 selection:bg-[#0B4F37] selection:text-white">
+    <div className="min-h-screen bg-slate-50 font-sans text-gray-900 selection:bg-[#1D4ED8] selection:text-white">
       {/* 1. Header */}
       <Header activePage="kamar" />
 
@@ -122,7 +122,7 @@ export default function KamarPage() {
 
       {/* Toast Kontak Resepsionis */}
       {showContactToast && (
-        <div className="fixed top-20 right-6 z-50 flex items-center gap-3 rounded-2xl bg-[#0B4F37] px-5 py-3.5 text-sm font-medium text-white shadow-2xl backdrop-blur-md">
+        <div className="fixed top-20 right-6 z-50 flex items-center gap-3 rounded-2xl bg-[#1D4ED8] px-5 py-3.5 text-sm font-medium text-white shadow-2xl backdrop-blur-md">
           <PhoneCall className="h-5 w-5 text-emerald-300" />
           <span>Resepsionis Siaga: <strong>+62 21 555 7890</strong></span>
           <button onClick={() => setShowContactToast(false)} className="ml-2 text-white/70 hover:text-white">
@@ -134,7 +134,7 @@ export default function KamarPage() {
       {/* Main Content */}
       <main className="w-full flex-1">
         {/* HERO SECTION */}
-        <section className="relative w-full bg-[#073524] py-20 lg:py-24 text-white overflow-hidden">
+        <section className="relative w-full bg-[#1E3A8A] py-20 lg:py-24 text-white overflow-hidden">
           <div className="absolute inset-0 z-0">
             <Image
               src="https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1920&q=80"
@@ -144,7 +144,7 @@ export default function KamarPage() {
               priority
               className="object-cover opacity-30"
             />
-            <div className="absolute inset-0 bg-gradient-to-b from-[#0B4F37]/30 via-[#073524]/60 to-[#073524]" />
+            <div className="absolute inset-0 bg-gradient-to-b from-[#1D4ED8]/30 via-[#1E3A8A]/60 to-[#1E3A8A]" />
           </div>
 
           <div className="relative z-10 mx-auto max-w-4xl px-4 text-center sm:px-6 lg:px-8">
@@ -167,7 +167,7 @@ export default function KamarPage() {
                 placeholder="Cari kamar atau fasilitas..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full rounded-full border border-gray-300 bg-gray-50 pl-10 pr-4 py-2.5 text-xs text-gray-900 transition-all focus:border-[#0B4F37] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#0B4F37]/20"
+                className="w-full rounded-full border border-gray-300 bg-gray-50 pl-10 pr-4 py-2.5 text-xs text-gray-900 transition-all focus:border-[#1D4ED8] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#1D4ED8]/20"
               />
             </div>
 
@@ -177,11 +177,10 @@ export default function KamarPage() {
                 <button
                   key={cat}
                   onClick={() => setSelectedCategory(cat)}
-                  className={`rounded-full px-4 py-1.5 text-xs font-semibold whitespace-nowrap transition-all ${
-                    selectedCategory === cat
-                      ? "bg-[#0B4F37] text-white shadow-sm"
-                      : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-                  }`}
+                  className={`rounded-full px-4 py-1.5 text-xs font-semibold whitespace-nowrap transition-all ${selectedCategory === cat
+                    ? "bg-[#1D4ED8] text-white shadow-sm"
+                    : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                    }`}
                 >
                   {cat}
                 </button>
@@ -195,7 +194,7 @@ export default function KamarPage() {
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             {isLoading ? (
               <div className="flex justify-center items-center py-20">
-                 <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#0B4F37]"></div>
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#1D4ED8]"></div>
               </div>
             ) : filteredRooms.length === 0 ? (
               <div className="rounded-3xl bg-white p-12 text-center shadow-sm border border-gray-200/80 max-w-lg mx-auto">
@@ -209,7 +208,7 @@ export default function KamarPage() {
                     setSearchQuery("");
                     setSelectedCategory("Semua");
                   }}
-                  className="mt-5 rounded-full bg-[#0B4F37] px-5 py-2 text-xs font-bold text-white shadow hover:bg-[#073524]"
+                  className="mt-5 rounded-full bg-[#1D4ED8] px-5 py-2 text-xs font-bold text-white shadow hover:bg-[#1E3A8A]"
                 >
                   Reset Filter Pencarian
                 </button>
@@ -237,18 +236,17 @@ export default function KamarPage() {
                         <button
                           onClick={() => toggleFavorite(room.id, room.name)}
                           aria-label="Simpan ke Favorit"
-                          className={`absolute top-4 left-4 z-10 flex h-9 w-9 items-center justify-center rounded-full shadow-md backdrop-blur-md transition-all hover:scale-110 active:scale-95 ${
-                            isFav
-                              ? "bg-rose-500 text-white"
-                              : "bg-white/80 text-gray-600 hover:bg-white hover:text-rose-500"
-                          }`}
+                          className={`absolute top-4 left-4 z-10 flex h-9 w-9 items-center justify-center rounded-full shadow-md backdrop-blur-md transition-all hover:scale-110 active:scale-95 ${isFav
+                            ? "bg-rose-500 text-white"
+                            : "bg-white/80 text-gray-600 hover:bg-white hover:text-rose-500"
+                            }`}
                         >
                           <Heart className={`h-5 w-5 ${isFav ? "fill-current" : ""}`} />
                         </button>
 
                         {/* BADGE TIPE KAMAR (Field `type` di Prisma) */}
                         <div className="absolute top-4 right-4 z-10">
-                          <span className="rounded-full bg-[#0B4F37]/90 px-3.5 py-1 text-xs font-semibold text-white shadow-md backdrop-blur-md border border-white/20">
+                          <span className="rounded-full bg-[#1D4ED8]/90 px-3.5 py-1 text-xs font-semibold text-white shadow-md backdrop-blur-md border border-white/20">
                             {room.type}
                           </span>
                         </div>
@@ -259,10 +257,10 @@ export default function KamarPage() {
                         <div>
                           {/* Nama Kamar & Kapasitas */}
                           <div className="flex items-center justify-between gap-2">
-                            <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-gray-900 group-hover:text-[#0B4F37] transition-colors">
+                            <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-gray-900 group-hover:text-[#1D4ED8] transition-colors">
                               {room.name}
                             </h2>
-                            <div className="flex items-center gap-1 bg-emerald-50 px-2.5 py-1 rounded text-xs font-semibold text-[#0B4F37] shrink-0 border border-emerald-100">
+                            <div className="flex items-center gap-1 bg-emerald-50 px-2.5 py-1 rounded text-xs font-semibold text-[#1D4ED8] shrink-0 border border-emerald-100">
                               <Users className="h-3.5 w-3.5 text-emerald-600" />
                               <span>{room.capacity} Tamu</span>
                             </div>
@@ -294,7 +292,7 @@ export default function KamarPage() {
                               HARGA / MALAM
                             </span>
                             <div className="flex items-baseline gap-1 mt-0.5">
-                              <span className="text-xl sm:text-2xl font-extrabold text-[#0B4F37]">
+                              <span className="text-xl sm:text-2xl font-extrabold text-[#1D4ED8]">
                                 Rp {room.price_per_night.toLocaleString("id-ID")}
                               </span>
                             </div>
@@ -302,7 +300,7 @@ export default function KamarPage() {
 
                           <Link
                             href={`/kamar/${room.id}`}
-                            className="rounded-full bg-[#0B4F37] px-6 py-2.5 text-xs font-bold text-white shadow transition-all hover:bg-[#073524] hover:shadow-md"
+                            className="rounded-full bg-[#1D4ED8] px-6 py-2.5 text-xs font-bold text-white shadow transition-all hover:bg-[#1E3A8A] hover:shadow-md"
                           >
                             Detail Kamar
                           </Link>

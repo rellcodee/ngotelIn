@@ -44,7 +44,7 @@ export default function CustomModal({
     let Icon = Info;
     let iconColor = 'text-blue-500';
     let iconBg = 'bg-blue-50 border border-blue-100';
-    let primaryButtonBg = 'bg-[#0B4F37] hover:bg-[#073524] text-white focus:ring-[#0B4F37]';
+    let primaryButtonBg = 'bg-[#1D4ED8] hover:bg-[#1E3A8A] text-white focus:ring-[#1D4ED8]';
 
     switch (type) {
         case 'success':
@@ -67,23 +67,23 @@ export default function CustomModal({
             break;
         case 'confirm':
             Icon = AlertCircle;
-            iconColor = 'text-[#0B4F37]';
+            iconColor = 'text-[#1D4ED8]';
             iconBg = 'bg-emerald-50 border border-emerald-100';
-            primaryButtonBg = 'bg-[#0B4F37] hover:bg-[#073524] text-white focus:ring-[#0B4F37]';
+            primaryButtonBg = 'bg-[#1D4ED8] hover:bg-[#1E3A8A] text-white focus:ring-[#1D4ED8]';
             break;
     }
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
             {/* Backdrop with backdrop-blur */}
-            <div 
+            <div
                 className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity duration-300 animate-fade-in"
                 onClick={type !== 'confirm' && !isLoading ? onClose : undefined}
             />
 
             {/* Modal Container */}
             <div className="relative w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 shadow-2xl transition-all duration-300 scale-95 animate-scale-in border border-gray-100">
-                
+
                 {/* Close Button (only for non-confirm and non-loading modals) */}
                 {type !== 'confirm' && !isLoading && (
                     <button

@@ -47,7 +47,7 @@ export default function LoginPage() {
             localStorage.setItem('token', access_token);
             localStorage.setItem('userName', user?.name || 'Customer');
             localStorage.setItem('userRole', user?.role || 'user');
-            
+
             let redirectUrl = '/';
             if (user?.role === 'admin') {
                 redirectUrl = '/admin';
@@ -132,9 +132,9 @@ export default function LoginPage() {
     };
 
     return (
-        <div className="flex min-h-screen bg-slate-50 font-sans selection:bg-[#0B4F37] selection:text-white">
+        <div className="flex min-h-screen bg-slate-50 font-sans selection:bg-[#1D4ED8] selection:text-white">
             {/* LEFT PANEL: Brand Showcase (Hidden on Mobile) */}
-            <div className="relative hidden w-1/2 flex-col justify-between bg-gradient-to-br from-[#0B4F37] to-[#073524] p-12 text-white lg:flex overflow-hidden">
+            <div className="relative hidden w-1/2 flex-col justify-between bg-gradient-to-br from-[#1D4ED8] to-[#1E3A8A] p-12 text-white lg:flex overflow-hidden">
                 {/* Decorative background shapes */}
                 <div className="absolute -bottom-24 -left-24 h-96 w-96 rounded-full bg-emerald-800/20 blur-3xl" />
                 <div className="absolute -top-24 -right-24 h-96 w-96 rounded-full bg-emerald-500/10 blur-3xl" />
@@ -181,7 +181,7 @@ export default function LoginPage() {
             <div className="relative flex w-full flex-col justify-center bg-[#F4F8F5]/30 px-6 py-12 sm:px-12 lg:w-1/2 lg:px-20">
                 {/* Back to Home Link */}
                 <div className="absolute top-6 left-6">
-                    <Link href="/" className="group flex items-center gap-2 text-sm font-semibold text-gray-600 transition-colors hover:text-[#0B4F37]">
+                    <Link href="/" className="group flex items-center gap-2 text-sm font-semibold text-gray-600 transition-colors hover:text-[#1D4ED8]">
                         <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
                         <span>Kembali ke Beranda</span>
                     </Link>
@@ -231,7 +231,7 @@ export default function LoginPage() {
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
                                     placeholder="Contoh: budi@gmail.com"
-                                    className="block w-full rounded-xl border border-gray-300 bg-white py-3 pl-10 pr-3 text-sm placeholder-gray-400 focus:border-[#0B4F37] focus:ring-1 focus:ring-[#0B4F37] outline-none transition-all"
+                                    className="block w-full rounded-xl border border-gray-300 bg-white py-3 pl-10 pr-3 text-sm placeholder-gray-400 focus:border-[#1D4ED8] focus:ring-1 focus:ring-[#1D4ED8] outline-none transition-all"
                                 />
                             </div>
                         </div>
@@ -253,7 +253,7 @@ export default function LoginPage() {
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
                                     placeholder="Masukkan password Anda"
-                                    className="block w-full rounded-xl border border-gray-300 bg-white py-3 pl-10 pr-10 text-sm placeholder-gray-400 focus:border-[#0B4F37] focus:ring-1 focus:ring-[#0B4F37] outline-none transition-all"
+                                    className="block w-full rounded-xl border border-gray-300 bg-white py-3 pl-10 pr-10 text-sm placeholder-gray-400 focus:border-[#1D4ED8] focus:ring-1 focus:ring-[#1D4ED8] outline-none transition-all"
                                 />
                                 <button
                                     type="button"
@@ -272,14 +272,14 @@ export default function LoginPage() {
                                     id="remember-me"
                                     name="remember-me"
                                     type="checkbox"
-                                    className="h-4 w-4 rounded border-gray-300 text-[#0B4F37] focus:ring-[#0B4F37]"
+                                    className="h-4 w-4 rounded border-gray-300 text-[#1D4ED8] focus:ring-[#1D4ED8]"
                                 />
                                 <label htmlFor="remember-me" className="ml-2 block text-xs text-gray-600">
                                     Ingat saya
                                 </label>
                             </div>
                             <div className="text-xs">
-                                <a href="#" className="font-semibold text-[#0B4F37] hover:text-[#073524]">
+                                <a href="#" className="font-semibold text-[#1D4ED8] hover:text-[#1E3A8A]">
                                     Lupa password?
                                 </a>
                             </div>
@@ -289,7 +289,7 @@ export default function LoginPage() {
                         <button
                             type="submit"
                             disabled={isLoading}
-                            className="w-full rounded-xl bg-[#0B4F37] py-3 text-sm font-bold text-white shadow-md hover:bg-[#073524] hover:shadow-lg transition-all active:scale-[0.98] disabled:bg-[#0B4F37]/50 disabled:cursor-not-allowed flex justify-center items-center gap-2"
+                            className="w-full rounded-xl bg-[#1D4ED8] py-3 text-sm font-bold text-white shadow-md hover:bg-[#1E3A8A] hover:shadow-lg transition-all active:scale-[0.98] disabled:bg-[#1D4ED8]/50 disabled:cursor-not-allowed flex justify-center items-center gap-2"
                         >
                             {isLoading ? (
                                 <>
@@ -329,7 +329,7 @@ export default function LoginPage() {
                     {/* Redirect to Register */}
                     <div className="mt-8 text-center text-sm text-gray-600">
                         Belum memiliki akun?{' '}
-                        <Link href="/register" className="font-bold text-[#0B4F37] hover:text-[#073524] transition-colors">
+                        <Link href="/register" className="font-bold text-[#1D4ED8] hover:text-[#1E3A8A] transition-colors">
                             Daftar Sekarang
                         </Link>
                     </div>

@@ -23,7 +23,7 @@ export default function Header({ activePage = "home" }: HeaderProps) {
     title: "",
     message: "",
     onConfirm: undefined as (() => void) | undefined,
-    onClose: () => {},
+    onClose: () => { },
   });
 
   useEffect(() => {
@@ -65,8 +65,8 @@ export default function Header({ activePage = "home" }: HeaderProps) {
   };
 
   return (
-    // Container utama Navbar dengan warna background Hijau Tua (#0B4F37) khas SiniBook Hotel
-    <header className="sticky top-0 z-50 w-full bg-[#0B4F37] text-white shadow-md">
+    // Container utama Navbar dengan warna background Hijau Tua (#1D4ED8) khas SiniBook Hotel
+    <header className="sticky top-0 z-50 w-full bg-[#1D4ED8] text-white shadow-md">
       {/* Wrapper pembatas lebar konten dengan padding horizontal */}
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
 
@@ -116,12 +116,12 @@ export default function Header({ activePage = "home" }: HeaderProps) {
         <div className="hidden items-center gap-3 md:flex">
           {isLoggedIn ? (
             <div className="flex items-center gap-3">
-              <Link 
+              <Link
                 href="/dashboard"
                 className="group relative flex items-center gap-2.5 rounded-full bg-emerald-900/30 border border-emerald-500/30 px-3 py-1.5 transition-all duration-300 hover:bg-emerald-800/50 hover:border-emerald-400 hover:shadow-md cursor-pointer"
                 title="Masuk ke Dashboard"
               >
-                <div className="flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-br from-emerald-400 to-emerald-500 text-[#073524] font-bold text-sm uppercase shadow-sm transition-transform duration-300 group-hover:scale-105">
+                <div className="flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-br from-emerald-400 to-emerald-500 text-[#1E3A8A] font-bold text-sm uppercase shadow-sm transition-transform duration-300 group-hover:scale-105">
                   {userName ? userName.charAt(0) : "U"}
                 </div>
                 <div className="flex flex-col">
@@ -150,7 +150,7 @@ export default function Header({ activePage = "home" }: HeaderProps) {
                 <Link href="/login">Masuk</Link>
               </button>
               {/* Tombol Daftar (Solid White Pill style dengan teks hijau tua) */}
-              <button className="rounded-full bg-white px-5 py-1.5 text-sm font-bold text-[#0B4F37] shadow transition-all hover:bg-emerald-50 hover:shadow-md">
+              <button className="rounded-full bg-white px-5 py-1.5 text-sm font-bold text-[#1D4ED8] shadow transition-all hover:bg-emerald-50 hover:shadow-md">
                 <Link href="/register">Daftar</Link>
               </button>
             </>
@@ -160,11 +160,11 @@ export default function Header({ activePage = "home" }: HeaderProps) {
         {/* TOMBOL MENU MOBILE: Tombol hamburger untuk membuka/menutup menu di layar smartphone */}
         <div className="flex items-center gap-2 md:hidden">
           {isLoggedIn && (
-            <Link 
+            <Link
               href="/dashboard"
               className="group flex items-center gap-2 rounded-full bg-white/10 border border-white/20 backdrop-blur-md pl-1.5 pr-3 py-1.5 active:scale-95 transition-all hover:bg-white/20 shadow-sm"
             >
-              <div className="relative flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-tr from-emerald-400 to-emerald-300 text-[#073524] font-bold text-xs uppercase shadow-[0_0_10px_rgba(52,211,153,0.4)]">
+              <div className="relative flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-tr from-emerald-400 to-emerald-300 text-[#1E3A8A] font-bold text-xs uppercase shadow-[0_0_10px_rgba(52,211,153,0.4)]">
                 {userName ? userName.charAt(0) : "U"}
               </div>
               <div className="flex items-center gap-1">
@@ -186,27 +186,27 @@ export default function Header({ activePage = "home" }: HeaderProps) {
 
       {/* NAVIGASI MOBILE (POPUP MENU): Tampil hanya ketika ikon hamburger di-klik pada layar kecil */}
       {isMobileMenuOpen && (
-        <div className="border-t border-emerald-800 bg-[#073524] px-4 pt-3 pb-6 md:hidden">
+        <div className="border-t border-emerald-800 bg-[#1E3A8A] px-4 pt-3 pb-6 md:hidden">
           <div className="flex flex-col gap-3">
             {/* Link Navigasi versi mobile */}
-            <Link href="/" className={`rounded-md px-3 py-2 text-base font-medium ${activePage === "home" ? "bg-[#0B4F37] text-white font-bold" : "text-emerald-100 hover:bg-[#0B4F37]"}`} onClick={() => setIsMobileMenuOpen(false)}>Beranda</Link>
-            <Link href="/kamar" className={`rounded-md px-3 py-2 text-base font-medium ${activePage === "kamar" ? "bg-[#0B4F37] text-white font-bold" : "text-emerald-100 hover:bg-[#0B4F37]"}`} onClick={() => setIsMobileMenuOpen(false)}>Kamar</Link>
-            <a href="/#fasilitas" className="rounded-md px-3 py-2 text-base font-medium text-emerald-100 hover:bg-[#0B4F37]" onClick={() => setIsMobileMenuOpen(false)}>Fasilitas</a>
-            <a href="/#tentang-kami" className="rounded-md px-3 py-2 text-base font-medium text-emerald-100 hover:bg-[#0B4F37]" onClick={() => setIsMobileMenuOpen(false)}>Tentang Hotel</a>
-            <a href="/#promo" className="rounded-md px-3 py-2 text-base font-medium text-emerald-100 hover:bg-[#0B4F37]" onClick={() => setIsMobileMenuOpen(false)}>Promo</a>
-            <a href="/#kontak" className="rounded-md px-3 py-2 text-base font-medium text-emerald-100 hover:bg-[#0B4F37]" onClick={() => setIsMobileMenuOpen(false)}>Kontak</a>
+            <Link href="/" className={`rounded-md px-3 py-2 text-base font-medium ${activePage === "home" ? "bg-[#1D4ED8] text-white font-bold" : "text-emerald-100 hover:bg-[#1D4ED8]"}`} onClick={() => setIsMobileMenuOpen(false)}>Beranda</Link>
+            <Link href="/kamar" className={`rounded-md px-3 py-2 text-base font-medium ${activePage === "kamar" ? "bg-[#1D4ED8] text-white font-bold" : "text-emerald-100 hover:bg-[#1D4ED8]"}`} onClick={() => setIsMobileMenuOpen(false)}>Kamar</Link>
+            <a href="/#fasilitas" className="rounded-md px-3 py-2 text-base font-medium text-emerald-100 hover:bg-[#1D4ED8]" onClick={() => setIsMobileMenuOpen(false)}>Fasilitas</a>
+            <a href="/#tentang-kami" className="rounded-md px-3 py-2 text-base font-medium text-emerald-100 hover:bg-[#1D4ED8]" onClick={() => setIsMobileMenuOpen(false)}>Tentang Hotel</a>
+            <a href="/#promo" className="rounded-md px-3 py-2 text-base font-medium text-emerald-100 hover:bg-[#1D4ED8]" onClick={() => setIsMobileMenuOpen(false)}>Promo</a>
+            <a href="/#kontak" className="rounded-md px-3 py-2 text-base font-medium text-emerald-100 hover:bg-[#1D4ED8]" onClick={() => setIsMobileMenuOpen(false)}>Kontak</a>
 
-             {/* Tombol aksi versi mobile */}
+            {/* Tombol aksi versi mobile */}
             <div className="mt-4 flex flex-col gap-2 pt-2 border-t border-emerald-800/60">
               {isLoggedIn ? (
                 <>
-                  <Link 
+                  <Link
                     href="/dashboard"
                     onClick={() => setIsMobileMenuOpen(false)}
                     className="group flex items-center justify-between rounded-xl bg-emerald-900/40 border border-emerald-700/50 p-3 transition-all hover:bg-emerald-800/60"
                   >
                     <div className="flex items-center gap-3">
-                      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-emerald-400 to-emerald-500 text-[#073524] font-bold text-lg uppercase shadow-sm">
+                      <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-emerald-400 to-emerald-500 text-[#1E3A8A] font-bold text-lg uppercase shadow-sm">
                         {userName ? userName.charAt(0) : "U"}
                       </div>
                       <div className="flex flex-col text-left">
@@ -228,7 +228,7 @@ export default function Header({ activePage = "home" }: HeaderProps) {
                   <button className="w-full rounded-full border border-white/40 py-2.5 text-center font-medium text-white hover:bg-white/10">
                     <Link href="/login" className="block w-full h-full py-1">Masuk</Link>
                   </button>
-                  <button className="w-full rounded-full bg-white py-2.5 text-center font-semibold text-[#0B4F37] hover:bg-emerald-50">
+                  <button className="w-full rounded-full bg-white py-2.5 text-center font-semibold text-[#1D4ED8] hover:bg-emerald-50">
                     <Link href="/register" className="block w-full h-full py-1">Daftar</Link>
                   </button>
                 </>

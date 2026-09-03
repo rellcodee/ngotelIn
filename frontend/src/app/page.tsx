@@ -17,7 +17,7 @@ import Footer from "./landing-pages/Footer"; // Mengimpor komponen Footer & News
 export default function Home() {
   return (
     // Pembungkus utama layout halaman web
-    <div className="min-h-screen bg-white font-sans text-gray-900 selection:bg-[#0B4F37] selection:text-white">
+    <div className="min-h-screen bg-white font-sans text-gray-900 selection:bg-[#1D4ED8] selection:text-white">
 
       {/* 1. Navigasi Header bagian paling atas */}
       <Header />

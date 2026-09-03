@@ -160,7 +160,7 @@ export default function CheckoutPage() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 font-sans text-gray-900 selection:bg-[#0B4F37] selection:text-white flex flex-col">
+    <div className="min-h-screen bg-slate-50 font-sans text-gray-900 selection:bg-[#1D4ED8] selection:text-white flex flex-col">
       <Header activePage="checkout" />
 
       <main className="flex-1 w-full pb-20">
@@ -169,7 +169,7 @@ export default function CheckoutPage() {
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex items-center justify-between">
             <Link
               href="/kamar"
-              className="inline-flex items-center gap-2 text-xs sm:text-sm font-semibold text-[#0B4F37] hover:underline"
+              className="inline-flex items-center gap-2 text-xs sm:text-sm font-semibold text-[#1D4ED8] hover:underline"
             >
               <ArrowLeft className="h-4 w-4" />
               <span>Kembali ke Katalog Kamar</span>
@@ -200,7 +200,7 @@ export default function CheckoutPage() {
                 Reservasi kamar <strong className="text-gray-900">{selectedRoom.name}</strong> telah terdaftar di sistem. Mengalihkan Anda ke Dashboard Member...
               </p>
               <div className="mt-6 flex justify-center">
-                <svg className="animate-spin h-6 w-6 text-[#0B4F37]" viewBox="0 0 24 24">
+                <svg className="animate-spin h-6 w-6 text-[#1D4ED8]" viewBox="0 0 24 24">
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                 </svg>
@@ -210,11 +210,11 @@ export default function CheckoutPage() {
             <form onSubmit={handleProcessCheckout} className="grid grid-cols-1 gap-8 lg:grid-cols-3">
               {/* Kolom Kiri: Form Data & Pilihan Pembayaran */}
               <div className="lg:col-span-2 space-y-6">
-                
+
                 {/* Card Data Pemesan */}
                 <div className="rounded-3xl border border-gray-200/80 bg-white p-6 sm:p-7 shadow-sm">
                   <h2 className="text-base font-bold text-gray-900 mb-4 flex items-center gap-2">
-                    <Users className="h-5 w-5 text-[#0B4F37]" />
+                    <Users className="h-5 w-5 text-[#1D4ED8]" />
                     <span>Data Diri Pemesan (Tamu)</span>
                   </h2>
 
@@ -234,7 +234,7 @@ export default function CheckoutPage() {
                 {/* Card Tanggal & Catatan Pemesanan (Prisma: `bookings.notes`) */}
                 <div className="rounded-3xl border border-gray-200/80 bg-white p-6 sm:p-7 shadow-sm">
                   <h2 className="text-base font-bold text-gray-900 mb-4 flex items-center gap-2">
-                    <Calendar className="h-5 w-5 text-[#0B4F37]" />
+                    <Calendar className="h-5 w-5 text-[#1D4ED8]" />
                     <span>Jadwal Menginap & Catatan</span>
                   </h2>
 
@@ -245,7 +245,7 @@ export default function CheckoutPage() {
                         type="date"
                         value={checkIn}
                         onChange={(e) => setCheckIn(e.target.value)}
-                        className="w-full rounded-xl border border-gray-300 p-2.5 text-xs text-gray-900 focus:border-[#0B4F37] focus:outline-none"
+                        className="w-full rounded-xl border border-gray-300 p-2.5 text-xs text-gray-900 focus:border-[#1D4ED8] focus:outline-none"
                         required
                       />
                     </div>
@@ -256,7 +256,7 @@ export default function CheckoutPage() {
                         type="date"
                         value={checkOut}
                         onChange={(e) => setCheckOut(e.target.value)}
-                        className="w-full rounded-xl border border-gray-300 p-2.5 text-xs text-gray-900 focus:border-[#0B4F37] focus:outline-none"
+                        className="w-full rounded-xl border border-gray-300 p-2.5 text-xs text-gray-900 focus:border-[#1D4ED8] focus:outline-none"
                         required
                       />
                     </div>
@@ -266,7 +266,7 @@ export default function CheckoutPage() {
                       <select
                         value={guestCount}
                         onChange={(e) => setGuestCount(e.target.value)}
-                        className="w-full rounded-xl border border-gray-300 p-2.5 text-xs text-gray-900 focus:border-[#0B4F37] focus:outline-none"
+                        className="w-full rounded-xl border border-gray-300 p-2.5 text-xs text-gray-900 focus:border-[#1D4ED8] focus:outline-none"
                       >
                         <option value="1">1 Orang</option>
                         <option value="2">2 Orang</option>
@@ -286,7 +286,7 @@ export default function CheckoutPage() {
                       onChange={(e) => setNotes(e.target.value)}
                       rows={3}
                       placeholder="Contoh: Minta kamar bebas asap rokok, meminta extra handuk..."
-                      className="w-full rounded-xl border border-gray-300 p-3 text-xs text-gray-900 focus:border-[#0B4F37] focus:outline-none"
+                      className="w-full rounded-xl border border-gray-300 p-3 text-xs text-gray-900 focus:border-[#1D4ED8] focus:outline-none"
                     />
                   </div>
                 </div>
@@ -294,17 +294,16 @@ export default function CheckoutPage() {
                 {/* Card Metode Pembayaran (Prisma: `payments.payment_method`) */}
                 <div className="rounded-3xl border border-gray-200/80 bg-white p-6 sm:p-7 shadow-sm">
                   <h2 className="text-base font-bold text-gray-900 mb-4 flex items-center gap-2">
-                    <CreditCard className="h-5 w-5 text-[#0B4F37]" />
+                    <CreditCard className="h-5 w-5 text-[#1D4ED8]" />
                     <span>Pilih Metode Pembayaran</span>
                   </h2>
 
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                     <label
-                      className={`flex items-center justify-between p-4 rounded-2xl border cursor-pointer transition-all ${
-                        paymentMethod === "gopay"
-                          ? "border-[#0B4F37] bg-emerald-50/50 ring-2 ring-[#0B4F37]/20"
-                          : "border-gray-200 hover:bg-gray-50"
-                      }`}
+                      className={`flex items-center justify-between p-4 rounded-2xl border cursor-pointer transition-all ${paymentMethod === "gopay"
+                        ? "border-[#1D4ED8] bg-emerald-50/50 ring-2 ring-[#1D4ED8]/20"
+                        : "border-gray-200 hover:bg-gray-50"
+                        }`}
                     >
                       <div className="flex items-center gap-2.5">
                         <input
@@ -313,18 +312,17 @@ export default function CheckoutPage() {
                           value="gopay"
                           checked={paymentMethod === "gopay"}
                           onChange={(e) => setPaymentMethod(e.target.value)}
-                          className="h-4 w-4 text-[#0B4F37]"
+                          className="h-4 w-4 text-[#1D4ED8]"
                         />
                         <span className="text-xs font-bold text-gray-800">GoPay / E-Wallet</span>
                       </div>
                     </label>
 
                     <label
-                      className={`flex items-center justify-between p-4 rounded-2xl border cursor-pointer transition-all ${
-                        paymentMethod === "bank_transfer"
-                          ? "border-[#0B4F37] bg-emerald-50/50 ring-2 ring-[#0B4F37]/20"
-                          : "border-gray-200 hover:bg-gray-50"
-                      }`}
+                      className={`flex items-center justify-between p-4 rounded-2xl border cursor-pointer transition-all ${paymentMethod === "bank_transfer"
+                        ? "border-[#1D4ED8] bg-emerald-50/50 ring-2 ring-[#1D4ED8]/20"
+                        : "border-gray-200 hover:bg-gray-50"
+                        }`}
                     >
                       <div className="flex items-center gap-2.5">
                         <input
@@ -333,18 +331,17 @@ export default function CheckoutPage() {
                           value="bank_transfer"
                           checked={paymentMethod === "bank_transfer"}
                           onChange={(e) => setPaymentMethod(e.target.value)}
-                          className="h-4 w-4 text-[#0B4F37]"
+                          className="h-4 w-4 text-[#1D4ED8]"
                         />
                         <span className="text-xs font-bold text-gray-800">Virtual Account</span>
                       </div>
                     </label>
 
                     <label
-                      className={`flex items-center justify-between p-4 rounded-2xl border cursor-pointer transition-all ${
-                        paymentMethod === "qris"
-                          ? "border-[#0B4F37] bg-emerald-50/50 ring-2 ring-[#0B4F37]/20"
-                          : "border-gray-200 hover:bg-gray-50"
-                      }`}
+                      className={`flex items-center justify-between p-4 rounded-2xl border cursor-pointer transition-all ${paymentMethod === "qris"
+                        ? "border-[#1D4ED8] bg-emerald-50/50 ring-2 ring-[#1D4ED8]/20"
+                        : "border-gray-200 hover:bg-gray-50"
+                        }`}
                     >
                       <div className="flex items-center gap-2.5">
                         <input
@@ -353,7 +350,7 @@ export default function CheckoutPage() {
                           value="qris"
                           checked={paymentMethod === "qris"}
                           onChange={(e) => setPaymentMethod(e.target.value)}
-                          className="h-4 w-4 text-[#0B4F37]"
+                          className="h-4 w-4 text-[#1D4ED8]"
                         />
                         <span className="text-xs font-bold text-gray-800">QRIS Instant</span>
                       </div>
@@ -366,7 +363,7 @@ export default function CheckoutPage() {
               <div className="lg:col-span-1">
                 <div className="sticky top-24 rounded-3xl border border-gray-200/90 bg-white p-6 shadow-xl space-y-6">
                   <div className="border-b border-gray-100 pb-4">
-                    <span className="rounded-full bg-[#0B4F37] px-3 py-1 text-[11px] font-bold text-white">
+                    <span className="rounded-full bg-[#1D4ED8] px-3 py-1 text-[11px] font-bold text-white">
                       {selectedRoom.type}
                     </span>
                     <h3 className="text-lg font-bold text-gray-900 mt-2">{selectedRoom.name}</h3>
@@ -397,7 +394,7 @@ export default function CheckoutPage() {
                       <span>Rp {serviceFee.toLocaleString("id-ID")}</span>
                     </div>
 
-                    <div className="flex justify-between text-base font-extrabold text-[#0B4F37] pt-2 border-t border-gray-100">
+                    <div className="flex justify-between text-base font-extrabold text-[#1D4ED8] pt-2 border-t border-gray-100">
                       <span>Total Tagihan</span>
                       <span>Rp {totalPrice.toLocaleString("id-ID")}</span>
                     </div>
@@ -406,7 +403,7 @@ export default function CheckoutPage() {
                   <button
                     type="submit"
                     disabled={isLoading}
-                    className="w-full rounded-full bg-[#0B4F37] py-3.5 text-xs font-bold text-white shadow-md transition-all hover:bg-[#073524] hover:shadow-lg active:scale-95 disabled:opacity-50"
+                    className="w-full rounded-full bg-[#1D4ED8] py-3.5 text-xs font-bold text-white shadow-md transition-all hover:bg-[#1E3A8A] hover:shadow-lg active:scale-95 disabled:opacity-50"
                   >
                     {isLoading ? "Memproses Pemesanan..." : "Konfirmasi & Bayar Sekarang"}
                   </button>

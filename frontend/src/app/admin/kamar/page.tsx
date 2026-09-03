@@ -24,6 +24,7 @@ interface RoomData {
   name: string;
   type: string;
   location: string;
+  description?: string;
   capacity: number;
   price_per_night: number;
   facilities: string[];
@@ -535,7 +536,7 @@ export default function KamarPage() {
                       <p className="text-xs text-gray-500 font-medium mb-0.5">
                         Tarif per malam
                       </p>
-                      <p className="text-lg font-bold text-[#0B4F37]">
+                      <p className="text-lg font-bold text-[#1D4ED8]">
                         Rp {room.price_per_night.toLocaleString("id-ID")}
                       </p>
                     </div>
@@ -720,11 +721,10 @@ export default function KamarPage() {
                     </p>
 
                     <div
-                      className={`border-2 border-dashed rounded-2xl p-6 text-center transition-colors group mb-4 ${
-                        isDragging
+                      className={`border-2 border-dashed rounded-2xl p-6 text-center transition-colors group mb-4 ${isDragging
                           ? "bg-emerald-50 border-emerald-500 scale-[1.02]"
                           : "border-gray-300 hover:bg-emerald-50/50 hover:border-emerald-300"
-                      }`}
+                        }`}
                       onDragOver={handleDragOver}
                       onDragLeave={handleDragLeave}
                       onDrop={handleDrop}
@@ -896,7 +896,7 @@ export default function KamarPage() {
         type={modal.type}
         title={modal.title}
         message={modal.message}
-        onClose={modal.onClose || (() => {})}
+        onClose={modal.onClose || (() => { })}
         onConfirm={modal.onConfirm}
       />
     </div>

@@ -47,11 +47,11 @@ export default function FaqSection() {
     <section className="w-full bg-gray-50/80 py-16 sm:py-20 text-gray-900 border-t border-gray-100" id="faq">
       {/* Wrapper pembatas lebar konten */}
       <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
-        
+
         {/* HEADER SECTION: Judul & Subtitle FAQ */}
         <div className="text-center mb-12">
           {/* Badge Ikon FAQ */}
-          <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-100 text-[#0B4F37] shadow-sm">
+          <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-100 text-[#1D4ED8] shadow-sm">
             <HelpCircle className="h-6 w-6" />
           </div>
           {/* Judul Utama */}
@@ -84,9 +84,8 @@ export default function FaqSection() {
                   </span>
                   {/* Ikon Panah Rotate saat Terbuka */}
                   <div
-                    className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gray-100 text-gray-600 transition-transform duration-300 ${
-                      isOpen ? "rotate-180 bg-[#0B4F37] text-white" : ""
-                    }`}
+                    className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gray-100 text-gray-600 transition-transform duration-300 ${isOpen ? "rotate-180 bg-[#1D4ED8] text-white" : ""
+                      }`}
                   >
                     <ChevronDown className="h-4 w-4" />
                   </div>

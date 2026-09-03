@@ -19,12 +19,19 @@ export default function PenggunaPage() {
   const [errorMsg, setErrorMsg] = useState("");
   const [activeTab, setActiveTab] = useState<"official" | "users">("official");
 
-  const [modal, setModal] = useState({
+  const [modal, setModal] = useState<{
+    isOpen: boolean;
+    type: "success" | "error" | "warning" | "info" | "confirm";
+    title: string;
+    message: string;
+    onConfirm?: (() => void) | undefined;
+    onClose: () => void;
+  }>({
     isOpen: false,
-    type: "info" as "success" | "error" | "warning" | "info" | "confirm",
+    type: "info",
     title: "",
     message: "",
-    onConfirm: undefined as (() => void) | undefined,
+    onConfirm: undefined,
     onClose: () => setModal(prev => ({ ...prev, isOpen: false })),
   });
 
