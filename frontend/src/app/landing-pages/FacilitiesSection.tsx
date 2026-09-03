@@ -1,30 +1,20 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import {
-  WifiHigh,
-  Waves,
-  ForkKnife,
-  Barbell,
-  Sparkle,
-  Clock,
-  Briefcase,
-  Car,
-  ShieldCheck,
-  Buildings,
-} from "@phosphor-icons/react";
 
 const getIconForFacility = (name: string) => {
   const lower = name.toLowerCase();
-  if (lower.includes('renang') || lower.includes('pool') || lower.includes('jacuzzi')) return Waves;
-  if (lower.includes('wi-fi') || lower.includes('wifi') || lower.includes('internet')) return WifiHigh;
-  if (lower.includes('makan') || lower.includes('restoran') || lower.includes('sarapan') || lower.includes('dapur')) return ForkKnife;
-  if (lower.includes('gym') || lower.includes('fitness')) return Barbell;
-  if (lower.includes('spa') || lower.includes('pijat') || lower.includes('aromaterapi')) return Sparkle;
-  if (lower.includes('24 jam') || lower.includes('butler') || lower.includes('siaga')) return Clock;
-  if (lower.includes('rapat') || lower.includes('meeting') || lower.includes('kerja')) return Briefcase;
-  if (lower.includes('parkir') || lower.includes('valet') || lower.includes('lift')) return Car;
-  return ShieldCheck;
+  if (lower.includes('renang') || lower.includes('pool') || lower.includes('jacuzzi')) return 'pool';
+  if (lower.includes('wi-fi') || lower.includes('wifi') || lower.includes('internet')) return 'wifi';
+  if (lower.includes('makan') || lower.includes('restoran') || lower.includes('sarapan') || lower.includes('dapur')) return 'restaurant';
+  if (lower.includes('gym') || lower.includes('fitness')) return 'fitness_center';
+  if (lower.includes('spa') || lower.includes('pijat') || lower.includes('aromaterapi')) return 'spa';
+  if (lower.includes('24 jam') || lower.includes('butler') || lower.includes('siaga')) return 'schedule';
+  if (lower.includes('rapat') || lower.includes('meeting') || lower.includes('kerja')) return 'business_center';
+  if (lower.includes('parkir') || lower.includes('valet') || lower.includes('lift')) return 'local_parking';
+  if (lower.includes('ac') || lower.includes('pendingin')) return 'ac_unit';
+  if (lower.includes('tv') || lower.includes('televisi')) return 'tv';
+  return 'verified';
 };
 
 export default function FacilitiesSection() {
@@ -73,90 +63,100 @@ export default function FacilitiesSection() {
   }, []);
 
   return (
-    <section className="w-full bg-slate-50/60 py-20 border-t border-slate-200/80 font-sans" id="fasilitas">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        
-        {/* HEADER SECTION (CLEAN HUMAN DESIGN - NO AI BADGES) */}
-        <div className="mb-12 max-w-2xl">
-          <h2 className="text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl">
-            Fasilitas & Layanan Kamar
-          </h2>
-          <p className="mt-3 text-base text-slate-600 leading-relaxed">
-            Daftar fasilitas yang tersedia sesuai dengan tipe kelas kamar yang kamu pilih.
-          </p>
-        </div>
-
-        {/* LOADING STATE */}
-        {isLoading ? (
-          <div className="flex justify-center items-center py-16">
-            <div className="animate-spin rounded-full h-9 w-9 border-2 border-slate-300 border-t-blue-600"></div>
-          </div>
-        ) : (
-          <div className="flex flex-col lg:flex-row gap-6 lg:gap-8 items-start">
-
-            {/* TABS SIDEBAR (CLEAN HUMAN CARD) */}
-            <div className="w-full lg:w-64 shrink-0 bg-white rounded-xl border border-slate-200 p-3 shadow-xs">
-              <p className="px-3 py-2 text-xs font-semibold text-slate-400 uppercase tracking-wider">Tipe Kamar</p>
-              <div className="flex flex-row lg:flex-col gap-1 overflow-x-auto lg:overflow-visible">
-                {Object.keys(groupedFacilities).map((type) => (
-                  <button
-                    key={type}
-                    onClick={() => setActiveTab(type)}
-                    className={`w-full flex items-center justify-between rounded-lg px-3.5 py-2.5 text-sm font-medium transition-colors text-left ${
-                      activeTab === type
-                        ? "bg-blue-600 text-white font-semibold"
-                        : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
-                    }`}
-                  >
-                    <span>{type}</span>
-                    <Buildings weight="duotone" className={`h-4 w-4 ${activeTab === type ? "text-white" : "text-slate-400"}`} />
-                  </button>
-                ))}
+    <section className="py-space-3xl lg:py-space-4xl relative z-10 bg-surface-bright" id="fasilitas">
+      <div className="max-w-container-max mx-auto px-gutter-mobile lg:px-gutter-desktop">
+        <div className="flex flex-col lg:flex-row gap-space-xl lg:gap-space-2xl">
+          
+          {/* Text Intro & Tabs (Sticky on Desktop) */}
+          <div className="lg:w-1/3">
+            <div className="sticky top-32">
+              <div className="inline-flex items-center gap-space-2xs text-secondary mb-space-xs">
+                <span className="material-symbols-outlined text-[20px]">spa</span>
+                <span className="font-label-md text-label-md uppercase tracking-widest">Kenyamanan Maksimal</span>
               </div>
-            </div>
-
-            {/* KONTEN FASILITAS (CLEAN GRID) */}
-            <div className="flex-1 w-full bg-white rounded-xl border border-slate-200 p-6 sm:p-8 shadow-xs">
-              {activeTab && (
-                <div>
-                  <div className="mb-6 pb-4 border-b border-slate-100 flex items-center justify-between">
-                    <div>
-                      <h3 className="text-xl font-bold text-slate-900">
-                        Kamar Tipe <span className="text-blue-600">{activeTab}</span>
-                      </h3>
-                      <p className="text-xs text-slate-500 mt-1">
-                        {groupedFacilities[activeTab].length} fasilitas terdaftar
-                      </p>
-                    </div>
+              <h2 className="font-display-xl text-headline-lg lg:text-display-xl text-primary mb-space-md tracking-tight">
+                Fasilitas & Layanan Kamar
+              </h2>
+              <p className="font-body-lg text-body-lg text-on-surface-variant mb-space-lg">
+                Daftar fasilitas yang tersedia sesuai dengan tipe kelas kamar yang kamu pilih.
+              </p>
+              
+              {/* TABS SIDEBAR */}
+              {!isLoading && Object.keys(groupedFacilities).length > 0 && (
+                <div className="flex flex-col gap-space-2xs bg-surface-container-lowest p-space-sm rounded-2xl border border-surface-container shadow-sm">
+                  <p className="px-space-sm py-space-2xs font-label-sm text-label-sm uppercase tracking-wider text-outline">Tipe Kamar</p>
+                  <div className="flex flex-row lg:flex-col gap-space-2xs overflow-x-auto lg:overflow-visible pb-2 lg:pb-0 hide-scrollbar">
+                    {Object.keys(groupedFacilities).map((type) => (
+                      <button
+                        key={type}
+                        onClick={() => setActiveTab(type)}
+                        className={`shrink-0 lg:shrink w-full flex items-center justify-between rounded-xl px-space-md py-space-sm font-label-lg text-label-lg transition-all text-left ${
+                          activeTab === type
+                            ? "bg-primary text-on-primary shadow-md"
+                            : "bg-surface-container-low text-on-surface hover:bg-surface-container"
+                        }`}
+                      >
+                        <span>{type}</span>
+                        <span className="material-symbols-outlined text-[18px] opacity-80 hidden lg:block">hotel_class</span>
+                      </button>
+                    ))}
                   </div>
-
-                  {groupedFacilities[activeTab].length === 0 ? (
-                    <div className="flex flex-col items-center justify-center py-12 text-center bg-slate-50 rounded-lg border border-slate-100">
-                      <ShieldCheck weight="duotone" className="h-8 w-8 text-slate-300 mb-2" />
-                      <p className="text-slate-500 font-medium text-xs">Belum ada fasilitas khusus untuk tipe kamar ini.</p>
-                    </div>
-                  ) : (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3.5">
-                      {groupedFacilities[activeTab].map((facility, fIdx) => {
-                        const Icon = getIconForFacility(facility);
-                        return (
-                          <div
-                            key={fIdx}
-                            className="flex items-center gap-3.5 rounded-lg border border-slate-200/80 bg-slate-50/50 p-3.5 transition-colors hover:border-blue-300 hover:bg-blue-50/30"
-                          >
-                            <Icon weight="duotone" className="h-5 w-5 text-blue-600 shrink-0" />
-                            <span className="text-sm font-medium text-slate-800">{facility}</span>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  )}
                 </div>
               )}
             </div>
-
           </div>
-        )}
+
+          {/* Grid Content */}
+          <div className="lg:w-2/3">
+            {isLoading ? (
+              <div className="flex justify-center items-center h-64 bg-surface-container-lowest rounded-3xl border border-surface-container">
+                <div className="animate-spin rounded-full h-10 w-10 border-4 border-surface-container-high border-t-primary"></div>
+              </div>
+            ) : (
+              <div className="bg-surface-container-lowest rounded-3xl border border-surface-container p-space-lg lg:p-space-xl shadow-[0_8px_24px_rgba(14,47,118,0.06)] h-full">
+                {activeTab && (
+                  <div className="h-full flex flex-col">
+                    <div className="mb-space-lg pb-space-md border-b border-surface-container flex items-center justify-between">
+                      <div>
+                        <h3 className="font-headline-md text-headline-md text-on-surface">
+                          Kamar Tipe <span className="text-primary">{activeTab}</span>
+                        </h3>
+                        <p className="font-body-sm text-body-sm text-on-surface-variant mt-space-2xs">
+                          {groupedFacilities[activeTab].length} fasilitas terdaftar
+                        </p>
+                      </div>
+                    </div>
+
+                    {groupedFacilities[activeTab].length === 0 ? (
+                      <div className="flex-1 flex flex-col items-center justify-center py-space-2xl text-center bg-surface-container-low rounded-2xl border border-surface-container">
+                        <span className="material-symbols-outlined text-[48px] text-outline-variant mb-space-sm">info</span>
+                        <p className="font-label-lg text-label-lg text-on-surface-variant">Belum ada fasilitas khusus untuk tipe kamar ini.</p>
+                      </div>
+                    ) : (
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-space-sm auto-rows-max">
+                        {groupedFacilities[activeTab].map((facility, fIdx) => {
+                          const iconName = getIconForFacility(facility);
+                          return (
+                            <div
+                              key={fIdx}
+                              className="flex items-center gap-space-sm rounded-xl border border-surface-container-high bg-surface-container-low p-space-md transition-all hover:border-primary-fixed-dim hover:bg-primary-fixed/20 hover:shadow-sm hover:-translate-y-0.5"
+                            >
+                              <div className="w-10 h-10 rounded-full bg-surface-container-lowest flex items-center justify-center text-primary shadow-sm">
+                                <span className="material-symbols-outlined text-[20px]">{iconName}</span>
+                              </div>
+                              <span className="font-label-lg text-label-lg text-on-surface">{facility}</span>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+
+        </div>
       </div>
     </section>
   );

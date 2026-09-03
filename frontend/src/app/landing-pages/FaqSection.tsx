@@ -1,9 +1,7 @@
-"use client"; // Client Component Next.js untuk interaksi accordion buka/tutup FAQ
+"use client";
 
-import React, { useState } from "react"; // Mengimpor React dan useState untuk melacak accordion mana yang sedang terbuka
-import { ChevronDown, HelpCircle } from "lucide-react"; // Mengimpor ikon panah bawah dan bantuan dari lucide-react
+import React, { useState } from "react";
 
-// Array data 5 pertanyaan populer FAQ SiniBook Hotel
 const faqData = [
   {
     id: 1,
@@ -32,76 +30,81 @@ const faqData = [
   },
 ];
 
-// Komponen FaqSection: Menampilkan Pertanyaan Populer dengan Accordion UI interaktif
 export default function FaqSection() {
-  // State untuk melacak ID pertanyaan FAQ yang sedang terbuka (default terbuka nomor 1)
   const [openFaqId, setOpenFaqId] = useState<number | null>(1);
 
-  // Toggle buka/tutup accordion
   const toggleFaq = (id: number) => {
     setOpenFaqId(openFaqId === id ? null : id);
   };
 
   return (
-    // Section FAQ dengan id="faq" agar terhubung langsung dengan link FAQ di Footer
-    <section className="w-full bg-gray-50/80 py-16 sm:py-20 text-gray-900 border-t border-gray-100" id="faq">
-      {/* Wrapper pembatas lebar konten */}
-      <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
-
-        {/* HEADER SECTION: Judul & Subtitle FAQ */}
-        <div className="text-center mb-12">
-          {/* Badge Ikon FAQ */}
-          <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-100 text-[#1D4ED8] shadow-sm">
-            <HelpCircle className="h-6 w-6" />
+    <section className="py-space-3xl lg:py-space-4xl bg-surface-container-lowest relative z-10" id="faq">
+      <div className="max-w-container-max mx-auto px-gutter-mobile lg:px-gutter-desktop">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-space-2xl items-start">
+          
+          {/* KOLOM KIRI: JUDUL & KONTAK */}
+          <div className="lg:col-span-4 lg:sticky lg:top-32">
+            <div className="inline-flex items-center gap-space-2xs text-secondary mb-space-xs">
+              <span className="material-symbols-outlined text-[20px]">help_center</span>
+              <span className="font-label-md text-label-md uppercase tracking-widest">Pusat Bantuan</span>
+            </div>
+            <h2 className="font-display-xl text-headline-lg lg:text-display-xl text-primary mb-space-md tracking-tight">
+              Pertanyaan Umum.
+            </h2>
+            <p className="font-body-lg text-body-lg text-on-surface-variant mb-space-lg">
+              Temukan jawaban cepat mengenai layanan, fasilitas, dan prosedur menginap di NgotelIn.
+            </p>
+            
+            <div className="bg-surface-container-low p-space-lg rounded-2xl border border-surface-container mt-space-xl">
+              <h4 className="font-headline-sm text-headline-sm text-on-surface mb-space-xs">Butuh bantuan lain?</h4>
+              <p className="font-body-sm text-body-sm text-on-surface-variant mb-space-md">Tim kami siap membantu Anda 24/7.</p>
+              <a href="#" className="inline-flex items-center justify-center w-full gap-space-2xs px-space-md py-space-sm rounded-full bg-primary text-on-primary font-label-lg text-label-lg transition-colors hover:shadow-md">
+                <span className="material-symbols-outlined text-[18px]">chat</span>
+                <span>Hubungi Kami</span>
+              </a>
+            </div>
           </div>
-          {/* Judul Utama */}
-          <h2 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl lg:text-4xl">
-            Pertanyaan Sering Diajukan (FAQ)
-          </h2>
-          {/* Subtitle */}
-          <p className="mt-2 text-sm text-gray-500 sm:text-base max-w-xl mx-auto font-light">
-            Temukan jawaban cepat mengenai layanan, fasilitas, dan prosedur menginap di NgotelIn.
-          </p>
-        </div>
 
-        {/* DAFTAR ACCORDION FAQ */}
-        <div className="space-y-4">
-          {faqData.map((faq) => {
-            const isOpen = openFaqId === faq.id;
-            return (
-              <div
-                key={faq.id}
-                className="overflow-hidden rounded-2xl border border-gray-200/80 bg-white shadow-sm transition-all duration-200 hover:border-emerald-200"
-              >
-                {/* TOMBOL HEADER PERTANYAAN (KLIK UNTUK TOGGLE) */}
-                <button
-                  onClick={() => toggleFaq(faq.id)}
-                  className="flex w-full items-center justify-between p-5 text-left transition-colors hover:bg-gray-50/80"
-                  aria-expanded={isOpen}
+          {/* KOLOM KANAN: ACCORDION FAQ */}
+          <div className="lg:col-span-8 space-y-space-md">
+            {faqData.map((faq) => {
+              const isOpen = openFaqId === faq.id;
+              return (
+                <div 
+                  key={faq.id} 
+                  className={`bg-surface border rounded-2xl overflow-hidden transition-all duration-300 hover:shadow-md ${isOpen ? "border-primary/30 shadow-sm" : "border-surface-container"}`}
                 >
-                  <span className="text-sm sm:text-base font-bold text-gray-900 pr-4">
-                    {faq.question}
-                  </span>
-                  {/* Ikon Panah Rotate saat Terbuka */}
-                  <div
-                    className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gray-100 text-gray-600 transition-transform duration-300 ${isOpen ? "rotate-180 bg-[#1D4ED8] text-white" : ""
-                      }`}
+                  <button 
+                    onClick={() => toggleFaq(faq.id)}
+                    className="w-full px-space-lg py-space-md flex items-center justify-between text-left gap-space-md group bg-transparent border-none cursor-pointer"
+                    aria-expanded={isOpen}
                   >
-                    <ChevronDown className="h-4 w-4" />
+                    <span className={`font-headline-sm text-headline-sm transition-colors ${isOpen ? "text-primary" : "text-on-surface group-hover:text-primary"}`}>
+                      {faq.question}
+                    </span>
+                    <span className={`material-symbols-outlined icon text-outline transition-transform duration-300 shrink-0 ${isOpen ? "rotate-180 text-primary" : ""}`}>
+                      expand_more
+                    </span>
+                  </button>
+                  
+                  {/* ISI JAWABAN */}
+                  <div 
+                    className={`grid transition-[grid-template-rows] duration-300 ease-in-out ${isOpen ? "grid-rows-[1fr]" : "grid-rows-[0fr]"}`}
+                  >
+                    <div className="overflow-hidden">
+                      <div className="px-space-lg pb-space-lg">
+                        <p className="font-body-md text-body-md text-on-surface-variant pt-space-xs border-t border-surface-container">
+                          {faq.answer}
+                        </p>
+                      </div>
+                    </div>
                   </div>
-                </button>
+                </div>
+              );
+            })}
+          </div>
 
-                {/* TEKS JAWABAN ACCORDION (Tampil Saat State isOpen = true) */}
-                {isOpen && (
-                  <div className="px-5 pb-5 pt-1 text-xs sm:text-sm text-gray-600 leading-relaxed font-light border-t border-gray-100 bg-gray-50/40">
-                    <p>{faq.answer}</p>
-                  </div>
-                )}
-              </div>
-            );
-          })}
         </div>
-
       </div>
     </section>
   );

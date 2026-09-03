@@ -1,244 +1,146 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import Image from "next/image";
-import { 
-  CalendarBlank, 
-  User, 
-  Bed, 
-  MagnifyingGlass, 
-  Tag, 
-  ArrowCounterClockwise, 
-  ForkKnife, 
-  WifiHigh, 
-  Clock, 
-  X, 
-  CheckCircle 
-} from "@phosphor-icons/react";
 
 export default function HeroSection() {
-  const [checkInDate, setCheckInDate] = useState("2024-05-20");
-  const [checkOutDate, setCheckOutDate] = useState("2024-05-21");
-  const [guests, setGuests] = useState("2 Dewasa");
-  const [rooms, setRooms] = useState("1 Kamar");
-  const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
-
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSearchModalOpen(true);
-  };
 
   return (
-    <section className="relative w-full min-h-[600px] overflow-hidden bg-slate-950 text-white flex flex-col justify-between font-sans">
-      {/* BACKGROUND IMAGE */}
-      <Image
-        src="/images/hero-hotel.png"
-        alt="SiniBook Hotel"
-        fill
-        priority
-        className="object-cover object-center z-0 opacity-40"
-      />
+    <>
+      <section className="relative w-full min-h-[100svh] flex flex-col justify-center overflow-hidden -mt-20 pt-32 lg:pt-40 pb-space-2xl lg:pb-space-4xl bg-gradient-to-b from-surface-bright via-background to-surface-container-low">
+        {/* Atmospheric Ambient Glows & Cycladic Curves */}
+        <div className="absolute -top-32 -left-32 w-96 h-96 rounded-full bg-secondary-container/40 blur-3xl pointer-events-none"></div>
+        <div className="absolute top-1/3 -right-24 w-[500px] h-[500px] rounded-full bg-surface-tint/10 blur-3xl pointer-events-none"></div>
 
-      {/* OVERLAY GRADIENT */}
-      <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/60 to-slate-900/40 z-10" />
-
-      {/* HERO CONTENT */}
-      <div className="relative z-20 mx-auto w-full max-w-7xl px-4 pt-20 pb-16 sm:px-6 lg:px-8">
-        
-        {/* HEADINGS */}
-        <div className="max-w-3xl">
-          <h1 className="text-3xl font-extrabold tracking-tight text-white sm:text-5xl lg:text-6xl leading-tight">
-            Reservasi Kamar Hotel Nyaman & Praktis
-          </h1>
-          <p className="mt-4 text-base sm:text-lg text-slate-300 max-w-xl font-normal leading-relaxed">
-            Temukan berbagai pilihan tipe kamar dengan fasilitas lengkap untuk keperluan bisnis maupun liburan keluarga.
-          </p>
-        </div>
-
-        {/* SEARCH BOX */}
-        <div className="mt-10">
-          <form
-            onSubmit={handleSearch}
-            className="rounded-xl bg-white p-3.5 sm:p-4 shadow-lg text-slate-800 border border-slate-200"
-          >
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-5 items-center">
-
-              {/* CHECK-IN */}
-              <div className="flex flex-col rounded-lg border border-slate-200 p-2.5 bg-slate-50/80 hover:border-blue-500 transition-colors">
-                <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">CHECK-IN</span>
-                <div className="mt-1 flex items-center gap-2">
-                  <CalendarBlank weight="duotone" className="h-4 w-4 text-blue-600 shrink-0" />
-                  <input
-                    type="date"
-                    value={checkInDate}
-                    onChange={(e) => setCheckInDate(e.target.value)}
-                    className="w-full bg-transparent text-xs font-semibold text-slate-900 focus:outline-none cursor-pointer"
-                  />
-                </div>
-              </div>
-
-              {/* CHECK-OUT */}
-              <div className="flex flex-col rounded-lg border border-slate-200 p-2.5 bg-slate-50/80 hover:border-blue-500 transition-colors">
-                <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">CHECK-OUT</span>
-                <div className="mt-1 flex items-center gap-2">
-                  <CalendarBlank weight="duotone" className="h-4 w-4 text-blue-600 shrink-0" />
-                  <input
-                    type="date"
-                    value={checkOutDate}
-                    onChange={(e) => setCheckOutDate(e.target.value)}
-                    className="w-full bg-transparent text-xs font-semibold text-slate-900 focus:outline-none cursor-pointer"
-                  />
-                </div>
-              </div>
-
-              {/* TAMU */}
-              <div className="flex flex-col rounded-lg border border-slate-200 p-2.5 bg-slate-50/80 hover:border-blue-500 transition-colors">
-                <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">TAMU</span>
-                <div className="mt-1 flex items-center gap-2">
-                  <User weight="duotone" className="h-4 w-4 text-blue-600 shrink-0" />
-                  <select
-                    value={guests}
-                    onChange={(e) => setGuests(e.target.value)}
-                    className="w-full bg-transparent text-xs font-semibold text-slate-900 focus:outline-none cursor-pointer"
-                  >
-                    <option value="1 Dewasa">1 Dewasa</option>
-                    <option value="2 Dewasa">2 Dewasa</option>
-                    <option value="3 Dewasa">3 Dewasa</option>
-                    <option value="Keluarga (2 Dewasa, 2 Anak)">Keluarga (2 Dewasa, 2 Anak)</option>
-                  </select>
-                </div>
-              </div>
-
-              {/* KAMAR */}
-              <div className="flex flex-col rounded-lg border border-slate-200 p-2.5 bg-slate-50/80 hover:border-blue-500 transition-colors">
-                <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">KAMAR</span>
-                <div className="mt-1 flex items-center gap-2">
-                  <Bed weight="duotone" className="h-4 w-4 text-blue-600 shrink-0" />
-                  <select
-                    value={rooms}
-                    onChange={(e) => setRooms(e.target.value)}
-                    className="w-full bg-transparent text-xs font-semibold text-slate-900 focus:outline-none cursor-pointer"
-                  >
-                    <option value="1 Kamar">1 Kamar</option>
-                    <option value="2 Kamar">2 Kamar</option>
-                    <option value="3 Kamar">3 Kamar</option>
-                    <option value="4+ Kamar">4+ Kamar</option>
-                  </select>
-                </div>
-              </div>
-
-              {/* BUTTON */}
-              <div className="sm:col-span-2 lg:col-span-1">
-                <button
-                  type="submit"
-                  className="flex h-full min-h-[46px] w-full items-center justify-center gap-2 rounded-lg bg-blue-600 px-5 py-2.5 text-xs font-bold text-white shadow-sm transition-colors hover:bg-blue-700 active:scale-98"
-                >
-                  <MagnifyingGlass weight="bold" className="h-4 w-4" />
-                  <span>Cari Kamar</span>
-                </button>
-              </div>
-
-            </div>
-          </form>
-        </div>
-
-        {/* FEATURE PILLS */}
-        <div className="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5 text-white">
-          <div className="flex items-center gap-2.5 rounded-lg bg-slate-900/60 p-2.5 border border-slate-800 backdrop-blur-xs">
-            <Tag weight="duotone" className="h-5 w-5 text-blue-400 shrink-0" />
-            <div>
-              <h4 className="text-xs font-semibold text-white">Harga Terbaik</h4>
-              <p className="text-[10px] text-slate-400">Jaminan harga jujur</p>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-2.5 rounded-lg bg-slate-900/60 p-2.5 border border-slate-800 backdrop-blur-xs">
-            <ArrowCounterClockwise weight="duotone" className="h-5 w-5 text-blue-400 shrink-0" />
-            <div>
-              <h4 className="text-xs font-semibold text-white">Bisa Pembatalan</h4>
-              <p className="text-[10px] text-slate-400">Syarat & ketentuan berlaku</p>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-2.5 rounded-lg bg-slate-900/60 p-2.5 border border-slate-800 backdrop-blur-xs">
-            <ForkKnife weight="duotone" className="h-5 w-5 text-blue-400 shrink-0" />
-            <div>
-              <h4 className="text-xs font-semibold text-white">Pilihan Sarapan</h4>
-              <p className="text-[10px] text-slate-400">Tersedia per kamar</p>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-2.5 rounded-lg bg-slate-900/60 p-2.5 border border-slate-800 backdrop-blur-xs">
-            <WifiHigh weight="duotone" className="h-5 w-5 text-blue-400 shrink-0" />
-            <div>
-              <h4 className="text-xs font-semibold text-white">Wi-Fi Kamar</h4>
-              <p className="text-[10px] text-slate-400">Koneksi stabil</p>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-2.5 rounded-lg bg-slate-900/60 p-2.5 border border-slate-800 backdrop-blur-xs col-span-2 sm:col-span-1">
-            <Clock weight="duotone" className="h-5 w-5 text-blue-400 shrink-0" />
-            <div>
-              <h4 className="text-xs font-semibold text-white">Layanan Reception</h4>
-              <p className="text-[10px] text-slate-400">24 jam siaga</p>
-            </div>
-          </div>
-        </div>
-
-      </div>
-
-      {/* SEARCH MODAL */}
-      {isSearchModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/70 p-4 backdrop-blur-xs animate-fade-in text-slate-900 font-sans">
-          <div className="relative w-full max-w-sm rounded-xl bg-white p-5 shadow-xl border border-slate-200">
-            <button
-              onClick={() => setIsSearchModalOpen(false)}
-              className="absolute top-3.5 right-3.5 rounded-lg p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition-colors"
-            >
-              <X className="h-4 w-4" />
-            </button>
-
-            <div className="flex flex-col items-center text-center">
-              <div className="flex h-11 w-11 items-center justify-center rounded-full bg-blue-50 text-blue-600 mb-2.5">
-                <CheckCircle weight="duotone" className="h-6 w-6" />
-              </div>
-
-              <h3 className="text-base font-bold text-slate-900">
-                Kriteria Pencarian
-              </h3>
-              <p className="mt-1 text-xs text-slate-500">
-                Detail tanggal & kapasitas kamar yang kamu pilih:
+        <div className="max-w-container-max mx-auto px-gutter-mobile lg:px-gutter-desktop relative z-10">
+          {/* Main Hero Content Split Grid */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-space-xl lg:gap-space-2xl items-center mb-16 lg:mb-24">
+            {/* Text Column */}
+            <div className="lg:col-span-7 flex flex-col items-start gap-space-md">
+              <h1 className="font-display-xl text-display-xl-mobile lg:text-display-xl text-primary tracking-tight">
+                Reservasi Kamar Hotel Nyaman & Praktis
+              </h1>
+              <p className="font-body-lg text-body-lg text-on-surface-variant max-w-xl">
+                Temukan berbagai pilihan tipe kamar dengan fasilitas lengkap
+                untuk keperluan bisnis maupun liburan keluarga. Jaminan harga
+                jujur dan koneksi stabil.
               </p>
+              <div className="flex flex-wrap items-center gap-space-sm pt-space-2xs">
+                <a
+                  className="group inline-flex items-center gap-space-xs px-space-xl py-space-sm rounded-full bg-primary-container hover:bg-primary text-on-primary font-label-lg text-label-lg shadow-[0_8px_20px_rgba(14,47,118,0.22)] hover:shadow-[0_12px_28px_rgba(14,47,118,0.3)] hover:-translate-y-1 transition-all duration-300"
+                  href="#quick-booking"
+                >
+                  <span>Eksplor Kamar & Suites</span>
+                  <span className="material-symbols-outlined text-[20px] group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-300">
+                    arrow_outward
+                  </span>
+                </a>
+                <a
+                  href="#ai-assistant"
+                  className="group/ai flex items-center gap-space-xs px-space-md py-space-sm rounded-full bg-surface-container-lowest text-primary shadow-sm hover:shadow-md hover:-translate-y-0.5 hover:text-primary transition-all duration-300 cursor-pointer"
+                >
+                  <span className="material-symbols-outlined text-[20px] group-hover/ai:animate-pulse">
+                    smart_toy
+                  </span>
+                  <span className="font-label-sm text-label-sm text-on-surface group-hover/ai:text-primary transition-colors">
+                    Tanya AI Asisten
+                  </span>
+                </a>
+              </div>
+            </div>
 
-              <div className="mt-4 w-full rounded-lg bg-slate-50 p-3 text-left border border-slate-200/80 text-xs space-y-1.5">
-                <div className="flex justify-between border-b border-slate-200/60 pb-1">
-                  <span className="text-slate-500">Check-in:</span>
-                  <span className="font-semibold text-slate-900">{checkInDate}</span>
-                </div>
-                <div className="flex justify-between border-b border-slate-200/60 pb-1">
-                  <span className="text-slate-500">Check-out:</span>
-                  <span className="font-semibold text-slate-900">{checkOutDate}</span>
-                </div>
-                <div className="flex justify-between border-b border-slate-200/60 pb-1">
-                  <span className="text-slate-500">Tamu:</span>
-                  <span className="font-semibold text-slate-900">{guests}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-slate-500">Kamar:</span>
-                  <span className="font-semibold text-slate-900">{rooms}</span>
+            {/* Hero Visual Showcase / Stacked Cards */}
+            <div className="lg:col-span-5 relative group">
+              {/* Main Architectural Frame */}
+              <div className="relative rounded-xl overflow-hidden shadow-2xl bg-surface-container-lowest p-space-xs hover:shadow-[0_20px_40px_rgba(14,47,118,0.2)] transition-shadow duration-500">
+                <div className="relative w-full h-[400px] lg:h-[480px] xl:h-[540px] rounded-lg overflow-hidden">
+                  <Image
+                    src="/images/hero-hotel.png"
+                    alt="SiniBook Hotel"
+                    fill
+                    className="object-cover transition-transform duration-1000 group-hover:scale-110"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-primary/70 via-primary/10 to-transparent opacity-80 group-hover:opacity-100 transition-opacity duration-500"></div>
+                  {/* VIP Ticket / Boarding Pass Floating Card */}
+                  <div className="absolute bottom-space-md left-space-md right-space-md flex shadow-2xl transform group-hover:-translate-y-2 group-hover:scale-[1.02] transition-all duration-500">
+                    
+                    {/* Main Ticket Body */}
+                    <div className="flex-1 bg-surface-bright/95 backdrop-blur-xl p-space-md rounded-l-2xl border-r-[3px] border-dashed border-outline-variant/60 relative">
+                      <div className="flex items-center gap-1.5 mb-1.5">
+                        <span className="material-symbols-outlined text-[14px] text-amber-500" style={{ fontVariationSettings: "'FILL' 1" }}>local_activity</span>
+                        <span className="font-label-sm text-[10px] text-secondary tracking-widest uppercase font-bold">
+                          VIP BOARDING PASS
+                        </span>
+                      </div>
+                      <p className="font-headline-sm text-headline-sm text-primary leading-none tracking-tight">
+                        SiniBook Hotel
+                      </p>
+                      
+                      {/* Fake Barcode Graphic */}
+                      <div className="flex items-end gap-[3px] h-5 mt-3 opacity-50">
+                        <div className="w-1.5 h-full bg-on-surface-variant"></div>
+                        <div className="w-[1px] h-full bg-on-surface-variant"></div>
+                        <div className="w-1 h-full bg-on-surface-variant"></div>
+                        <div className="w-2 h-full bg-on-surface-variant"></div>
+                        <div className="w-[1px] h-full bg-on-surface-variant"></div>
+                        <div className="w-1.5 h-full bg-on-surface-variant"></div>
+                        <div className="w-1 h-full bg-on-surface-variant"></div>
+                        <div className="w-[2px] h-full bg-on-surface-variant"></div>
+                        <div className="w-2 h-full bg-on-surface-variant"></div>
+                        <span className="font-mono text-[9px] text-on-surface-variant ml-2 leading-none font-bold">SNB-001</span>
+                      </div>
+                    </div>
+
+                    {/* Ticket Stub / Tear-off portion */}
+                    <div className="w-[100px] bg-surface-bright/95 backdrop-blur-xl rounded-r-2xl flex flex-col items-center justify-center relative overflow-hidden">
+                      <p className="font-label-sm text-[9px] text-secondary uppercase tracking-widest font-bold rotate-90 absolute -right-6 top-1/2 -translate-y-1/2 opacity-40 whitespace-nowrap origin-center">
+                        ADMIT ONE
+                      </p>
+                      <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white group-hover:scale-110 group-hover:shadow-[0_8px_20px_rgba(14,47,118,0.3)] transition-all duration-300 z-10">
+                        <span className="material-symbols-outlined text-[24px]">
+                          location_on
+                        </span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
+            </div>
+          </div>
 
-              <button
-                onClick={() => setIsSearchModalOpen(false)}
-                className="mt-4 w-full rounded-lg bg-blue-600 py-2 text-xs font-semibold text-white shadow-xs hover:bg-blue-700 transition-colors"
-              >
-                Tutup
-              </button>
+          {/* FLOATING STATS / SOCIAL PROOF BAR */}
+          <div className="w-full bg-surface-container-lowest rounded-2xl lg:rounded-full p-space-md lg:py-space-md lg:px-space-xl shadow-[0_16px_36px_rgba(14,47,118,0.08)] border border-surface-container-highest">
+            <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-outline-variant/30 gap-y-space-md">
+              {/* Stat 1 */}
+              <div className="flex flex-col items-center justify-center py-space-sm group cursor-default">
+                <div className="flex items-center gap-space-xs text-primary mb-1">
+                  <span className="material-symbols-outlined text-[28px] group-hover:scale-110 transition-transform duration-300">bedroom_parent</span>
+                  <span className="font-display-xl-mobile text-[32px] lg:text-headline-lg font-bold tracking-tight">150+</span>
+                </div>
+                <span className="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Kamar Premium</span>
+              </div>
+              
+              {/* Stat 2 */}
+              <div className="flex flex-col items-center justify-center py-space-sm group cursor-default">
+                <div className="flex items-center gap-space-xs text-primary mb-1">
+                  <span className="material-symbols-outlined text-[28px] text-amber-500 group-hover:scale-110 transition-transform duration-300">star</span>
+                  <span className="font-display-xl-mobile text-[32px] lg:text-headline-lg font-bold tracking-tight">4.9/5</span>
+                </div>
+                <span className="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Rating Tamu</span>
+              </div>
+
+              {/* Stat 3 */}
+              <div className="flex flex-col items-center justify-center py-space-sm group cursor-default">
+                <div className="flex items-center gap-space-xs text-primary mb-1">
+                  <span className="material-symbols-outlined text-[28px] group-hover:scale-110 transition-transform duration-300">room_service</span>
+                  <span className="font-display-xl-mobile text-[32px] lg:text-headline-lg font-bold tracking-tight">24/7</span>
+                </div>
+                <span className="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider">Layanan Kamar</span>
+              </div>
             </div>
           </div>
         </div>
-      )}
-    </section>
+      </section>
+    </>
   );
 }

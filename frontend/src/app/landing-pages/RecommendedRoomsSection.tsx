@@ -1,17 +1,9 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import {
-  Users,
-  MapPin,
-  ArrowRight,
-  Sparkles,
-  Building2,
-} from "lucide-react";
 
-// Interface disamakan 100% dengan Prisma Schema (model resources)
 interface ResourceRoom {
   id: string;
   name: string;
@@ -20,13 +12,11 @@ interface ResourceRoom {
   capacity: number;
   price_per_night: number;
   facilities: string[];
-  image: string; // dari relation room_images
+  image: string;
 }
 
-// Placeholder image jika kamar dari DB belum punya foto
-const FALLBACK_IMAGE = "https://images.unsplash.com/photo-1611892440504-42a792e24d32?auto=format&fit=crop&w=800&q=80";
-
-import { useState, useEffect } from "react";
+const FALLBACK_IMAGE =
+  "https://images.unsplash.com/photo-1611892440504-42a792e24d32?auto=format&fit=crop&w=800&q=80";
 
 export default function RecommendedRoomsSection() {
   const [recommendedRooms, setRecommendedRooms] = useState<ResourceRoom[]>([]);
@@ -35,25 +25,26 @@ export default function RecommendedRoomsSection() {
   useEffect(() => {
     const fetchRooms = async () => {
       try {
-        // Solusi "ga ribet": Ambil semua kamar, potong 3 teratas di frontend!
         const response = await fetch("http://localhost:3001/resources");
         const json = await response.json();
 
         if (response.ok) {
-          // Format data dari API (Backend) agar sesuai dengan UI kita
           const dataArray = Array.isArray(json) ? json : json.data || [];
-          const formattedRooms: ResourceRoom[] = dataArray.slice(0, 3).map((room: any) => ({
-            id: room.id,
-            name: room.name,
-            type: room.type,
-            location: room.location,
-            capacity: room.capacity,
-            price_per_night: room.price_per_night,
-            facilities: room.facilities || [],
-            image: room.room_images && room.room_images.length > 0
-              ? room.room_images[0].image_url
-              : FALLBACK_IMAGE,
-          }));
+          const formattedRooms: ResourceRoom[] = dataArray
+            .slice(0, 3)
+            .map((room: any) => ({
+              id: room.id,
+              name: room.name,
+              type: room.type,
+              location: room.location,
+              capacity: room.capacity,
+              price_per_night: room.price_per_night,
+              facilities: room.facilities || [],
+              image:
+                room.room_images && room.room_images.length > 0
+                  ? room.room_images[0].image_url
+                  : FALLBACK_IMAGE,
+            }));
           setRecommendedRooms(formattedRooms);
         }
       } catch (error) {
@@ -65,132 +56,143 @@ export default function RecommendedRoomsSection() {
 
     fetchRooms();
   }, []);
+
   return (
-    <section className="w-full bg-slate-50 py-16 sm:py-24" id="kamar">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <section
+      className="py-space-3xl lg:py-space-4xl bg-surface relative z-10"
+      id="kamar"
+    >
+      <div className="max-w-container-max mx-auto px-gutter-mobile lg:px-gutter-desktop">
         {/* HEADER SECTION */}
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between mb-12">
-          <div>
-            <div className="flex items-center gap-2 text-xs font-bold tracking-wider text-emerald-700 uppercase mb-2">
-              <Sparkles className="h-4 w-4 text-emerald-600" />
-              <span>Pilihan Kamar Terbaik</span>
-            </div>
-            <h2 className="text-2xl font-bold tracking-tight text-gray-900 sm:text-3xl lg:text-4xl">
+        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-space-md mb-space-2xl">
+          <div className="max-w-2xl">
+            <h2 className="font-display-xl text-headline-lg lg:text-display-xl text-primary mb-space-sm tracking-tight">
               Recommended
             </h2>
-            <p className="mt-2 text-sm text-gray-600 max-w-2xl">
-              Nikmati fasilitas terbaik dan kenyamanan kamar berbintang di SiniBook Hotel.
+            <p className="font-body-lg text-body-lg text-on-surface-variant">
+              Nikmati fasilitas terbaik dan kenyamanan kamar berbintang di
+              SiniBook Hotel.
             </p>
           </div>
-
-          {/* Tombol Lihat Semua Kamar */}
           <Link
             href="/kamar"
-            className="inline-flex items-center gap-2 rounded-full bg-[#1D4ED8] px-5 py-2.5 text-sm font-semibold text-white transition-all hover:bg-[#1E3A8A] hover:shadow-md self-start sm:self-auto"
+            className="group inline-flex items-center gap-space-2xs px-space-xl py-space-sm rounded-full bg-surface-container hover:bg-surface-container-high text-on-surface font-label-lg text-label-lg transition-all duration-300 border border-outline-variant hover:border-outline shadow-sm hover:shadow-md"
           >
             <span>Lihat Semua Kamar</span>
-            <ArrowRight className="h-4 w-4" />
+            <span className="material-symbols-outlined text-[18px] transition-transform duration-300 group-hover:translate-x-1">
+              arrow_forward
+            </span>
           </Link>
         </div>
 
         {/* GRID KARTU KAMAR REKOMENDASI */}
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-space-lg">
           {isLoading ? (
-            // Skeleton loading sederhana saat mengambil data API
             Array.from({ length: 3 }).map((_, i) => (
-              <div key={i} className="h-96 rounded-2xl bg-gray-200 animate-pulse border border-gray-100" />
+              <div
+                key={i}
+                className="flex flex-col rounded-3xl bg-surface-container-lowest overflow-hidden border border-surface-container shadow-[0_8px_24px_rgba(14,47,118,0.06)] animate-pulse h-[500px]"
+              >
+                <div className="relative aspect-[4/3] bg-surface-container"></div>
+                <div className="p-space-lg flex flex-col flex-1 gap-space-md">
+                  <div className="h-6 w-3/4 bg-surface-container rounded"></div>
+                  <div className="h-4 w-1/2 bg-surface-container rounded mt-auto"></div>
+                </div>
+              </div>
             ))
           ) : recommendedRooms.length > 0 ? (
             recommendedRooms.map((room) => (
               <div
                 key={room.id}
-                className="group flex flex-col overflow-hidden rounded-2xl bg-white border border-gray-200/80 shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl"
+                className="group flex flex-col rounded-3xl bg-surface-container-lowest overflow-hidden border border-surface-container shadow-sm hover:shadow-[0_20px_40px_rgba(14,47,118,0.08)] hover:border-primary-container/50 hover:-translate-y-1.5 transition-all duration-500 relative cursor-pointer"
               >
-                {/* GAMBAR KAMAR & BADGE TIPE */}
-                <div className="relative h-60 w-full overflow-hidden bg-gray-100">
+                <div className="relative aspect-[4/3] overflow-hidden">
                   <Image
-                    src={room.image.startsWith('http') ? room.image : `http://localhost:3001${room.image}`}
+                    src={
+                      room.image.startsWith("http")
+                        ? room.image
+                        : `http://localhost:3001${room.image}`
+                    }
                     alt={room.name}
                     fill
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                    className="object-cover transition-transform duration-500 group-hover:scale-105"
+                    className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
                   />
-
-                  {/* Overlay Soft Gradient */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
-
-                  {/* Badge Tipe Kamar (Field `type` di Prisma) */}
-                  <div className="absolute top-3.5 left-3.5 flex items-center gap-1.5">
-                    <span className="rounded-full bg-[#1D4ED8] px-3 py-1 text-xs font-bold text-white shadow-md">
+                  <div className="absolute inset-0 bg-gradient-to-t from-primary/60 to-transparent"></div>
+                  <div className="absolute bottom-space-md left-space-md text-on-primary">
+                    <h3 className="font-headline-sm text-headline-sm text-on-primary">
+                      {room.name}
+                    </h3>
+                    <p className="font-label-sm text-label-sm text-primary-fixed-dim">
                       {room.type}
-                    </span>
+                    </p>
                   </div>
                 </div>
 
-                {/* KONTEN KARTU KAMAR */}
-                <div className="flex flex-1 flex-col justify-between p-5 sm:p-6">
-                  <div>
-                    {/* Informasi Kapasitas & Lokasi (Field `capacity` & `location` di Prisma) */}
-                    <div className="flex items-center justify-between text-xs font-medium text-gray-500 mb-2.5">
-                      <span className="flex items-center gap-1">
-                        <Users className="h-3.5 w-3.5 text-emerald-600" />
+                <div className="p-space-lg flex flex-col flex-1 gap-space-md">
+                  <div className="grid grid-cols-2 gap-space-sm mb-space-xs">
+                    <div className="flex items-center gap-space-2xs text-on-surface-variant">
+                      <span className="material-symbols-outlined text-[18px]">
+                        group
+                      </span>
+                      <span className="font-body-sm text-body-sm">
                         {room.capacity} Tamu
                       </span>
-                      <span className="flex items-center gap-1 text-gray-400 truncate max-w-[170px]">
-                        <MapPin className="h-3.5 w-3.5 text-emerald-600 shrink-0" />
-                        <span className="truncate">{room.location}</span>
-                      </span>
                     </div>
-
-                    {/* Nama Kamar (Field `name` di Prisma) */}
-                    <h3 className="text-lg font-bold text-gray-900 group-hover:text-[#1D4ED8] transition-colors">
-                      {room.name}
-                    </h3>
-
-                    {/* Badges Fasilitas (Field `facilities String[]` di Prisma) */}
-                    <div className="mt-4 flex flex-wrap gap-1.5 border-t border-gray-100 pt-3">
-                      {room.facilities.slice(0, 4).map((fac, idx) => (
-                        <span
-                          key={idx}
-                          className="rounded-md bg-emerald-50 px-2 py-0.5 text-[11px] font-medium text-emerald-700"
-                        >
-                          {fac}
-                        </span>
-                      ))}
-                      {room.facilities.length > 4 && (
-                        <span className="rounded-md bg-gray-100 px-2 py-0.5 text-[11px] font-medium text-gray-500">
-                          +{room.facilities.length - 4}
-                        </span>
-                      )}
+                    <div className="flex items-center gap-space-2xs text-on-surface-variant">
+                      <span className="material-symbols-outlined text-[18px]">
+                        location_on
+                      </span>
+                      <span className="font-body-sm text-body-sm truncate">
+                        {room.location}
+                      </span>
                     </div>
                   </div>
 
-                  {/* KAKI KARTU: HARGA & TOMBOL BOOKING (Field `price_per_night` di Prisma) */}
-                  <div className="mt-6 flex items-center justify-between border-t border-gray-100 pt-4">
-                    <div>
-                      <span className="block text-[10px] uppercase font-bold text-gray-400 tracking-wider">
-                        Harga / Malam
+                  <div className="flex flex-wrap gap-space-2xs mt-auto">
+                    {room.facilities.slice(0, 3).map((fac, idx) => (
+                      <span
+                        key={idx}
+                        className="px-space-xs py-space-2xs rounded-md bg-surface-container text-on-surface-variant font-label-sm text-label-sm border border-surface-container-high"
+                      >
+                        {fac}
                       </span>
-                      <div className="flex items-baseline gap-1">
-                        <span className="text-lg font-extrabold text-[#1D4ED8]">
-                          Rp {room.price_per_night.toLocaleString("id-ID")}
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* Tombol Detail */}
-                    <Link
-                      href={`/kamar/${room.id}`}
-                      className="rounded-xl bg-[#1D4ED8] px-4 py-2.5 text-xs font-semibold text-white transition-all hover:bg-[#1E3A8A] hover:shadow-md active:scale-95"
-                    >
-                      Detail Kamar
-                    </Link>
+                    ))}
+                    {room.facilities.length > 3 && (
+                      <span className="px-space-xs py-space-2xs rounded-md bg-surface-container text-on-surface-variant font-label-sm text-label-sm border border-surface-container-high">
+                        +{room.facilities.length - 3}
+                      </span>
+                    )}
                   </div>
+                </div>
+
+                <div className="px-space-lg pb-space-lg pt-space-md border-t border-surface-container flex items-center justify-between">
+                  <div>
+                    <span className="block font-label-sm text-label-sm text-secondary uppercase mb-space-2xs">
+                      Mulai Dari
+                    </span>
+                    <div className="flex items-baseline gap-space-2xs">
+                      <span className="font-headline-sm text-headline-sm text-primary">
+                        Rp {room.price_per_night.toLocaleString("id-ID")}
+                      </span>
+                      <span className="font-body-sm text-body-sm text-on-surface-variant">
+                        /mlm
+                      </span>
+                    </div>
+                  </div>
+                  <Link
+                    href={`/kamar/${room.id}`}
+                    className="w-12 h-12 rounded-full bg-surface-container-high text-on-surface flex items-center justify-center hover:bg-primary hover:text-on-primary transition-all duration-300 hover:-rotate-45 shadow-sm hover:shadow-[0_8px_16px_rgba(14,47,118,0.25)]"
+                  >
+                    <span className="material-symbols-outlined text-[20px]">
+                      arrow_forward
+                    </span>
+                  </Link>
                 </div>
               </div>
             ))
           ) : (
-            <div className="col-span-1 md:col-span-2 lg:col-span-3 text-center py-10 text-gray-500">
+            <div className="col-span-1 md:col-span-2 lg:col-span-3 text-center py-10 text-on-surface-variant font-body-lg">
               Belum ada kamar yang tersedia saat ini.
             </div>
           )}
