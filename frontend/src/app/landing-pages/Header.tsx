@@ -16,8 +16,8 @@ export default function Header({ activePage = "home" }: HeaderProps) {
   const [isMobileProfileOpen, setIsMobileProfileOpen] = useState(false);
   const [prevActivePage, setPrevActivePage] = useState(activePage);
 
-  const [isLoggedIn, setIsLoggedIn] = useState(true);
-  const [userName, setUserName] = useState("Ahmad");
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userName, setUserName] = useState("");
 
   if (activePage !== prevActivePage) {
     setPrevActivePage(activePage);
