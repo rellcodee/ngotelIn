@@ -5,30 +5,48 @@ import {
   InternalServerErrorException,
   BadRequestException,
   ForbiddenException,
+  Inject,
 } from '@nestjs/common';
 import { CreateReviewDto } from './dto/create-review.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Prisma } from '@prisma/client';
 import { BookingStatus, Role } from 'src/common/enums';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import type { Cache } from 'cache-manager';
 
 @Injectable()
 export class ReviewsService {
-  constructor(private prisma: PrismaService) { }
+  constructor(
+    private prisma: PrismaService,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
+  ) { }
 
   async create(createReviewDto: CreateReviewDto, currentUser: any) {
     const { booking_id, rating, comment } = createReviewDto;
 
     const booking = await this.prisma.bookings.findUnique({
       where: { id: booking_id },
+      include: {
+        schedules: {
+          select: { resource_id: true },
+        },
+      },
     });
 
     if (!booking) {
       throw new NotFoundException('Data booking tidak ditemukan!');
     }
 
+    const currentUserId = currentUser.userId || currentUser.id;
+    if (booking.user_id !== currentUserId) {
+      throw new ForbiddenException(
+        'Akses ditolak! Anda tidak bisa memberi ulasan untuk booking milik orang lain.',
+      );
+    }
+
     if (booking.status !== BookingStatus.COMPLETED) {
       throw new BadRequestException(
-        `Gagal memberikan ulasan. Status booking saat ini '${booking.status}'. Ulasan hanya bisa diberikan jika booking sudah selesai (COMPLETED)!`
+        `Gagal memberikan ulasan. Status booking saat ini '${booking.status}'. Ulasan hanya bisa diberikan jika status booking sudah COMPLETED!`,
       );
     }
 
@@ -52,20 +70,37 @@ export class ReviewsService {
         },
       });
 
+      const resourceId = booking.schedules?.resource_id;
+      if (resourceId) {
+        await this.cacheManager.del(`reviews:resource:${resourceId}`);
+      }
+
       return {
         message: 'Ulasan berhasil ditambahkan!',
         data: review,
       };
     } catch (error) {
-      if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
-        throw new ConflictException('Anda sudah memberikan ulasan untuk booking ini!');
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === 'P2002'
+      ) {
+        throw new ConflictException(
+          'Anda sudah memberikan ulasan untuk booking ini!',
+        );
       }
-      throw new InternalServerErrorException('Terjadi kesalahan internal pada server');
+      throw new InternalServerErrorException(
+        'Terjadi kesalahan internal pada server',
+      );
     }
   }
 
-  // 2. AMBIL SEMUA REVIEW BERDASARKAN RESOURCE/KAMAR ID (Untuk Detail Kamar)
   async findByResource(resourceId: string) {
+    const cacheKey = `reviews:resource:${resourceId}`;
+    const cachedReviews = await this.cacheManager.get(cacheKey);
+    if (cachedReviews) {
+      return cachedReviews;
+    }
+
     const resourceExists = await this.prisma.resources.findUnique({
       where: { id: resourceId },
     });
@@ -74,7 +109,6 @@ export class ReviewsService {
       throw new NotFoundException('Resource/Kamar tidak ditemukan!');
     }
 
-    // Query ulasan lewat relasi bertingkat
     const reviews = await this.prisma.reviews.findMany({
       where: {
         bookings: {
@@ -101,13 +135,18 @@ export class ReviewsService {
       },
     });
 
-    // Hitung total ulasan & rata-rata rating
     const totalReviews = reviews.length;
-    const averageRating = totalReviews > 0
-      ? Number((reviews.reduce((acc, curr) => acc + (curr.rating || 0), 0) / totalReviews).toFixed(1))
-      : 0;
+    const averageRating =
+      totalReviews > 0
+        ? Number(
+          (
+            reviews.reduce((acc, curr) => acc + (curr.rating || 0), 0) /
+            totalReviews
+          ).toFixed(1),
+        )
+        : 0;
 
-    return {
+    const formattedResponse = {
       resource_id: resourceId,
       total_reviews: totalReviews,
       average_rating: averageRating,
@@ -119,6 +158,10 @@ export class ReviewsService {
         created_at: r.bookings?.created_at,
       })),
     };
+
+    await this.cacheManager.set(cacheKey, formattedResponse, 1800000);
+
+    return formattedResponse;
   }
 
   async findOne(id: string) {
@@ -144,6 +187,9 @@ export class ReviewsService {
         bookings: {
           select: {
             user_id: true,
+            schedules: {
+              select: { resource_id: true },
+            },
           },
         },
       },
@@ -153,8 +199,8 @@ export class ReviewsService {
       throw new NotFoundException('Ulasan tidak ditemukan!');
     }
 
-    // CEK HAK AKSES: Pemilik ulasan (lewat booking.user_id) ATAU Admin
-    const isOwner = review.bookings?.user_id === currentUser.id;
+    const currentUserId = currentUser.userId || currentUser.id;
+    const isOwner = review.bookings?.user_id === currentUserId;
     const isAdmin = currentUser.role === Role.ADMIN;
 
     if (!isOwner && !isAdmin) {
@@ -165,6 +211,12 @@ export class ReviewsService {
 
     try {
       await this.prisma.reviews.delete({ where: { id } });
+
+      const resourceId = review.bookings?.schedules?.resource_id;
+      if (resourceId) {
+        await this.cacheManager.del(`reviews:resource:${resourceId}`);
+      }
+
       return { message: 'Ulasan berhasil dihapus' };
     } catch (error) {
       throw new InternalServerErrorException('Gagal menghapus ulasan');

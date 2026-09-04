@@ -1,18 +1,32 @@
-import { Injectable, ConflictException, NotFoundException, InternalServerErrorException, BadRequestException, HttpException } from '@nestjs/common';
+import { Injectable, ConflictException, NotFoundException, InternalServerErrorException, BadRequestException, HttpException, Inject } from '@nestjs/common';
 import { CreateResourceDto } from './dto/create-resource.dto';
 import { UpdateResourceDto } from './dto/update-resource.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Prisma } from '@prisma/client';
-import { put, del } from '@vercel/blob';
+import * as fs from 'fs/promises';
+import * as path from 'path';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import type { Cache } from 'cache-manager';
+
 @Injectable()
 export class ResourcesService {
 
-  constructor(private readonly prisma: PrismaService) { }
+  constructor(private readonly prisma: PrismaService,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
+  ) { }
   async create(createResourceDto: CreateResourceDto, files?: Express.Multer.File[]) {
     try {
 
       if (files && files.length > 5) {
         throw new BadRequestException('Maksimal foto yang diunggah adalah 5 file!');
+      }
+
+      const existingResource = await this.prisma.resources.findUnique({
+        where: { name: createResourceDto.name },
+      });
+
+      if (existingResource) {
+        throw new ConflictException('Resource dengan nama tersebut sudah terdaftar!');
       }
 
       const resource = await this.prisma.resources.create({
@@ -29,14 +43,24 @@ export class ResourcesService {
 
       // 2. Jika ada file gambar yang diunggah
       if (files && files.length > 0) {
+        const uploadFolder = path.resolve('./public/uploads/rooms');
+
+        // Pastikan folder tujuan ada
+        await fs.mkdir(uploadFolder, { recursive: true });
+
         const uploadPromises = files.map(async (file, index) => {
-          const fileName = `room-images/${resource.id}-${Date.now()}-${file.originalname}`;
-          const blob = await put(fileName, file.buffer, { access: 'public' });
+          const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+          const ext = path.extname(file.originalname);
+          const fileName = `room-${uniqueSuffix}${ext}`;
+          const filePath = path.join(uploadFolder, fileName);
+
+          // Tulis fisik buffer ke hard disk
+          await fs.writeFile(filePath, file.buffer);
 
           return {
             resource_id: resource.id,
-            image_url: blob.url,
-            is_primary: index === 0, // Foto pertama otomatis jadi foto utama
+            image_url: `/uploads/rooms/${fileName}`,
+            is_primary: index === 0,
           };
         });
 
@@ -47,10 +71,12 @@ export class ResourcesService {
         });
       }
 
+      await this.cacheManager.set('resources:version', Date.now(), 0);
       return await this.prisma.resources.findUnique({
         where: { id: resource.id },
         include: { room_images: true },
       });
+
 
     } catch (error) {
       if (error instanceof HttpException) throw error;
@@ -66,10 +92,25 @@ export class ResourcesService {
   async findAll(query?: { search?: string; location?: string; type?: string }) {
     const { search, location, type } = query || {};
 
-    // Penampung kondisi filter Prisma
+    const currentVersion = (await this.cacheManager.get<number>('resources:version')) || 1;
+
+    const searchPart = search ? `search:${search.toLowerCase().trim()}` : '';
+    const locPart = location ? `loc:${location.toLowerCase().trim()}` : '';
+    const typePart = type ? `type:${type.toLowerCase().trim()}` : '';
+
+    const filterKey = [searchPart, locPart, typePart].filter(Boolean).join(':');
+
+    const cacheKey = filterKey
+      ? `resources:v${currentVersion}:filter:${filterKey}`
+      : `resources:v${currentVersion}:all`;
+
+    const cachedData = await this.cacheManager.get(cacheKey);
+    if (cachedData) {
+      return cachedData;
+    }
+
     const whereCondition: Prisma.resourcesWhereInput = {};
 
-    // 1. Logika untuk Search Bar (Mencari teks di nama atau lokasi)
     if (search) {
       whereCondition.OR = [
         { name: { contains: search, mode: 'insensitive' } },
@@ -77,24 +118,22 @@ export class ResourcesService {
       ];
     }
 
-    // 2. Logika untuk Filter Select (Pencocokan Tepat / Exact Match)
-    // Kalau ada filter lokasi (misal user pilih 'Lantai 2' di dropdown)
     if (location) {
       whereCondition.location = { contains: location, mode: 'insensitive' };
     }
-
-    // Kalau ada filter type (misal user pilih 'MEWAH' di dropdown)
     if (type) {
-      whereCondition.type = type; // Langsung match (bisa sesuaikan kalau pakai Enum)
+      whereCondition.type = type;
     }
 
-    // Eksekusi ke database dengan semua filter yang aktif
-    return await this.prisma.resources.findMany({
+    const resources = await this.prisma.resources.findMany({
       where: whereCondition,
       include: {
         room_images: true,
-      }
+      },
     });
+
+    await this.cacheManager.set(cacheKey, resources, 3600000);
+    return resources;
   }
 
   async findOne(id: string) {
@@ -117,9 +156,8 @@ export class ResourcesService {
     updateDto: UpdateResourceDto,
     files?: Express.Multer.File[],
     deleteImageIds?: string[],
-    primaryImageId?: string
+    primaryImageId?: string,
   ) {
-    // A. Cek apakah kamar ada di DB
     const existingResource = await this.prisma.resources.findUnique({
       where: { id },
       include: { room_images: true },
@@ -130,7 +168,6 @@ export class ResourcesService {
     }
 
     try {
-      // B. VALIDASI TOTAL FOTO DI AWAL! (Sebelum hapus/upload apa pun)
       const currentImagesCount = existingResource.room_images.length;
       const deleteCount = deleteImageIds ? deleteImageIds.length : 0;
       const newFilesCount = files ? files.length : 0;
@@ -139,19 +176,28 @@ export class ResourcesService {
 
       if (finalImageCount > 5) {
         throw new BadRequestException(
-          `Maksimal total foto untuk 1 kamar adalah 5! Setelah perubahan ini total foto akan menjadi ${finalImageCount}.`
+          `Maksimal total foto untuk 1 kamar adalah 5! Setelah perubahan ini total foto akan menjadi ${finalImageCount}.`,
         );
       }
 
-      // C. PROSES DELETE GAMBAR LAMA
       if (deleteImageIds && deleteImageIds.length > 0) {
         const imagesToDelete = await this.prisma.room_images.findMany({
           where: { id: { in: deleteImageIds }, resource_id: id },
         });
 
         if (imagesToDelete.length > 0) {
-          const deleteBlobPromises = imagesToDelete.map((img) => del(img.image_url));
-          await Promise.all(deleteBlobPromises);
+          const deleteFilePromises = imagesToDelete.map(async (img) => {
+            try {
+              const cleanPath = img.image_url.startsWith('/')
+                ? img.image_url.slice(1)
+                : img.image_url;
+              const fullPath = path.resolve('./public', cleanPath);
+              await fs.unlink(fullPath);
+            } catch (err) {
+              console.error(`Gagal menghapus file lokal: ${img.image_url}`, err);
+            }
+          });
+          await Promise.all(deleteFilePromises);
 
           await this.prisma.room_images.deleteMany({
             where: { id: { in: deleteImageIds } },
@@ -159,7 +205,6 @@ export class ResourcesService {
         }
       }
 
-      // D. PROSES SET PRIMARY IMAGE
       if (primaryImageId) {
         await this.prisma.room_images.updateMany({
           where: { resource_id: id },
@@ -172,20 +217,26 @@ export class ResourcesService {
         });
       }
 
-      // E. PROSES UPLOAD FOTO BARU
       if (files && files.length > 0) {
         const remainingImages = await this.prisma.room_images.findMany({
           where: { resource_id: id },
         });
         const hasPrimary = remainingImages.some((img) => img.is_primary);
 
+        const uploadFolder = path.resolve('./public/uploads/rooms');
+        await fs.mkdir(uploadFolder, { recursive: true });
+
         const uploadPromises = files.map(async (file, i) => {
-          const fileName = `room-images/${id}-${Date.now()}-${file.originalname}`;
-          const blob = await put(fileName, file.buffer, { access: 'public' });
+          const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+          const ext = path.extname(file.originalname);
+          const fileName = `room-${uniqueSuffix}${ext}`;
+          const filePath = path.join(uploadFolder, fileName);
+
+          await fs.writeFile(filePath, file.buffer);
 
           return {
             resource_id: id,
-            image_url: blob.url,
+            image_url: `/uploads/rooms/${fileName}`,
             is_primary: !hasPrimary && i === 0,
           };
         });
@@ -197,7 +248,6 @@ export class ResourcesService {
         });
       }
 
-      // F. UPDATE DATA TEKS
       await this.prisma.resources.update({
         where: { id },
         data: {
@@ -206,10 +256,14 @@ export class ResourcesService {
           location: updateDto.location,
           description: updateDto.description,
           capacity: updateDto.capacity ? Number(updateDto.capacity) : undefined,
-          price_per_night: updateDto.price_per_night ? Number(updateDto.price_per_night) : undefined,
+          price_per_night: updateDto.price_per_night
+            ? Number(updateDto.price_per_night)
+            : undefined,
           facilities: updateDto.facilities,
         },
       });
+
+      await this.cacheManager.set('resources:version', Date.now(), 0);
 
       return await this.prisma.resources.findUnique({
         where: { id },
@@ -217,19 +271,17 @@ export class ResourcesService {
       });
 
     } catch (error) {
-      // 👈 SANGAT PENTING: Biar BadRequestException (400) dan NotFoundException (404) 
-      // langsung diteruskan ke client tanpa diubah jadi 500!
       if (error instanceof HttpException) {
         throw error;
       }
 
-      console.error("Update resource error: ", error);
+      console.error('Update resource error: ', error);
       throw new InternalServerErrorException('Gagal memperbarui data kamar dan gambar');
     }
   }
 
+
   async remove(id: string) {
-    // Cari kamar beserta daftar gambar-gambarnya dulu
     const resource = await this.prisma.resources.findUnique({
       where: { id },
       include: { room_images: true },
@@ -240,25 +292,37 @@ export class ResourcesService {
     }
 
     try {
-      // Jika kamar punya foto, hapus SEMUA file fisiknya di Blob
+      // 1. Hapus semua file fisik dari disk lokal
       if (resource.room_images && resource.room_images.length > 0) {
-        const deleteBlobPromises = resource.room_images.map((img) => del(img.image_url));
-        await Promise.all(deleteBlobPromises);
+        const deletePromises = resource.room_images.map(async (image) => {
+          try {
+            const cleanPath = image.image_url.startsWith('/')
+              ? image.image_url.slice(1)
+              : image.image_url;
+            const fullPath = path.resolve('./public', cleanPath);
+            await fs.unlink(fullPath);
+          } catch (err) {
+            console.error(`Gagal menghapus file lokal: ${image.image_url}`, err);
+          }
+        });
+        await Promise.all(deletePromises);
       }
 
-      // Setelah file di cloud bersih, baru hapus data kamar dari database
+      // 2. Hapus data kamar dari database (relasi room_images otomatis terhapus via onDelete: Cascade)
       await this.prisma.resources.delete({
         where: { id },
       });
 
+      await this.cacheManager.set('resources:version', Date.now(), 0);
       return {
-        message: `Kamar "${resource.name}" beserta seluruh gambarnya berhasil dihapus dari cloud dan database!`,
+        message: `Kamar "${resource.name}" beserta seluruh gambarnya berhasil dihapus dari server dan database!`,
       };
     } catch (error) {
+      if (error instanceof HttpException) throw error;
+      console.error('Error saat menghapus resource:', error);
       throw new InternalServerErrorException('Gagal menghapus kamar beserta gambarnya');
     }
   }
-
   async getLiveStatus(query?: { search?: string; type?: string }) {
     const { search, type } = query || {};
     const whereCondition: Prisma.resourcesWhereInput = {};
@@ -266,7 +330,7 @@ export class ResourcesService {
     if (search) {
       whereCondition.name = { contains: search, mode: 'insensitive' };
     }
-    
+
     if (type && type !== 'all') {
       whereCondition.type = type;
     }

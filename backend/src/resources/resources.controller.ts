@@ -12,6 +12,7 @@ import { Roles } from '../common/decorators/roles.decorator';
 import { RolesGuard } from '../common/guards/roles.guard';
 import { Role } from '../common/enums';
 
+
 @Controller('resources')
 export class ResourcesController {
   constructor(private readonly resourcesService: ResourcesService) { }
@@ -23,13 +24,38 @@ export class ResourcesController {
     FilesInterceptor('files', 5, { // maksimal 5 gambar
       limits: { fileSize: 5 * 1024 * 1024 }, // Limit 5MB per file
       fileFilter: (req, file, callback) => {
-        if (!file.mimetype.match(/\/(jpg|jpeg|png|webp)$/)) {
-          return callback(
-            new BadRequestException('Hanya file gambar (JPG, JPEG, PNG, WEBP) yang diperbolehkan!'),
-            false,
-          );
+        // Ambil ekstensi dari nama file asli (misal: "kamar.PNG" -> ".png")
+        const ext = file.originalname
+          ? file.originalname.toLowerCase().slice(file.originalname.lastIndexOf('.'))
+          : '';
+
+        const allowedExtensions = ['.jpg', '.jpeg', '.png', '.webp'];
+
+        // Cek apakah ekstensinya cocok
+        if (allowedExtensions.includes(ext)) {
+          return callback(null, true);
         }
-        callback(null, true);
+
+        // Jika ekstensi tidak ada, cek mimetype-nya sebagai cadangan
+        const allowedMimeTypes = [
+          'image/jpeg',
+          'image/pjpeg',
+          'image/png',
+          'image/x-png',
+          'image/webp',
+        ];
+
+        if (allowedMimeTypes.includes(file.mimetype?.toLowerCase())) {
+          return callback(null, true);
+        }
+
+        // Jika dua-duanya tidak cocok, baru tolak
+        return callback(
+          new BadRequestException(
+            'Hanya file gambar (JPG, JPEG, PNG, WEBP) yang diperbolehkan!',
+          ),
+          false,
+        );
       },
     }),
   )
@@ -74,13 +100,38 @@ export class ResourcesController {
     FilesInterceptor('files', 5, { // Upload gambar baru jika ada
       limits: { fileSize: 5 * 1024 * 1024 },
       fileFilter: (req, file, callback) => {
-        if (!file.mimetype.match(/\/(jpg|jpeg|png|webp)$/)) {
-          return callback(
-            new BadRequestException('Hanya file gambar (JPG, JPEG, PNG, WEBP) yang diperbolehkan!'),
-            false,
-          );
+        // Ambil ekstensi dari nama file asli (misal: "kamar.PNG" -> ".png")
+        const ext = file.originalname
+          ? file.originalname.toLowerCase().slice(file.originalname.lastIndexOf('.'))
+          : '';
+
+        const allowedExtensions = ['.jpg', '.jpeg', '.png', '.webp'];
+
+        // Cek apakah ekstensinya cocok
+        if (allowedExtensions.includes(ext)) {
+          return callback(null, true);
         }
-        callback(null, true);
+
+        // Jika ekstensi tidak ada, cek mimetype-nya sebagai cadangan
+        const allowedMimeTypes = [
+          'image/jpeg',
+          'image/pjpeg',
+          'image/png',
+          'image/x-png',
+          'image/webp',
+        ];
+
+        if (allowedMimeTypes.includes(file.mimetype?.toLowerCase())) {
+          return callback(null, true);
+        }
+
+        // Jika dua-duanya tidak cocok, baru tolak
+        return callback(
+          new BadRequestException(
+            'Hanya file gambar (JPG, JPEG, PNG, WEBP) yang diperbolehkan!',
+          ),
+          false,
+        );
       },
     }),
   )

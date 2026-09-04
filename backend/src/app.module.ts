@@ -13,6 +13,8 @@ import { AiBotModule } from './ai_bot/ai_bot.module';
 import { ReviewsModule } from './reviews/reviews.module';
 import { NotificationsModule } from './notifications/notifications.module';
 import { PaymentsModule } from './payments/payments.module';
+import { CacheModule } from '@nestjs/cache-manager';
+import { createKeyv } from '@keyv/redis';
 
 @Module({
   imports: [
@@ -28,6 +30,13 @@ import { PaymentsModule } from './payments/payments.module';
     ReviewsModule,
     NotificationsModule,
     PaymentsModule,
+    CacheModule.registerAsync({
+      isGlobal: true,
+      useFactory: async () => ({
+        stores: [createKeyv('redis://localhost:6379')],
+        ttl: 60 * 60 * 1000,
+      }),
+    }),
 
   ],
   controllers: [AppController],

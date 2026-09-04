@@ -3,6 +3,7 @@ import {
   ConflictException,
   NotFoundException,
   ForbiddenException,
+  Inject,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -10,10 +11,14 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateOfficialDto } from './dto/create-official.dto';
 import { Role } from '../common/enums';
 import * as bcrypt from 'bcrypt';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import type { Cache } from 'cache-manager';
 
 @Injectable()
 export class UserService {
-  constructor(private prisma: PrismaService) { }
+  constructor(private prisma: PrismaService,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
+  ) { }
 
   async create(createUserDto: CreateUserDto) {
     const { password, ...userData } = createUserDto;
@@ -28,6 +33,7 @@ export class UserService {
       });
 
       const { password_hash: _, ...result } = user;
+      await this.cacheManager.del('users:all');
       return result;
     } catch (error: any) {
       if (error.code === 'P2002') {
@@ -37,21 +43,21 @@ export class UserService {
     }
   }
 
-  // Tambahkan fungsi ini di bawah fungsi create() yang udah lu punya
   async findOrCreateGoogleUser(googlePayload: { email: string; name?: string }) {
     let user = await this.findByEmail(googlePayload.email);
 
     if (!user) {
-      // Auto-register kalau email Google ini belum ada di DB
       user = await this.prisma.users.create({
         data: {
           email: googlePayload.email,
           name: googlePayload.name || googlePayload.email.split('@')[0],
-          password_hash: null, // Kosongin karena login via Google
-          role: Role.USER,        // Kunci mati rolenya sebagai tamu/user
+          password_hash: null,
+          role: Role.USER,
         },
       });
+      await this.cacheManager.del('users:all');
     }
+
     const { password_hash: _, ...result } = user;
     return result;
   }
@@ -69,6 +75,7 @@ export class UserService {
       });
 
       const { password_hash: _, ...result } = official;
+      await this.cacheManager.del('users:all');
       return result;
     } catch (error: any) {
       if (error.code === 'P2002') {
@@ -79,10 +86,26 @@ export class UserService {
   }
 
   async findAll() {
-    const users = await this.prisma.users.findMany();
-    return users.map(({ password_hash: _, ...user }) => user);
-  }
+    const cacheKey = 'users:all';
+    const cachedUsers = await this.cacheManager.get(cacheKey);
+    if (cachedUsers) {
+      return cachedUsers;
+    }
 
+    const users = await this.prisma.users.findMany({
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        role: true,
+        created_at: true,
+      },
+      orderBy: { created_at: 'desc' },
+    });
+
+    await this.cacheManager.set(cacheKey, users, 1800000);
+    return users;
+  }
   // --- CEK KEPEMILIKAN AKUN ---
   private checkAccountOwnership(targetId: string, currentUser: any) {
     if (currentUser.role === Role.ADMIN) return;
@@ -133,6 +156,7 @@ export class UserService {
       });
 
       const { password_hash: _, ...result } = user;
+      await this.cacheManager.del('users:all');
       return result;
     } catch (error: any) {
       if (error.code === 'P2025') {
@@ -150,6 +174,7 @@ export class UserService {
       await this.prisma.users.delete({
         where: { id },
       });
+      await this.cacheManager.del('users:all');
       return { message: `User dengan ID ${id} berhasil dihapus` };
     } catch (error: any) {
       if (error.code === 'P2025') {
