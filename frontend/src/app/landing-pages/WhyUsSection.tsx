@@ -2,7 +2,7 @@
 
 import React from "react";
 
-const whyUsData = [
+export const whyUsData = [
   {
     id: 1,
     icon: "location_on",
@@ -24,8 +24,8 @@ const whyUsData = [
   {
     id: 4,
     icon: "support_agent",
-    title: "Staf Profesional",
-    description: "Siap membantu 24 jam dengan ramah dan cekatan.",
+    title: "Tini Bot",
+    description: "Siap membantu 24/7 untuk info hotel.",
   },
   {
     id: 5,
@@ -37,41 +37,63 @@ const whyUsData = [
 
 export default function WhyUsSection() {
   return (
-    <section className="py-space-3xl lg:py-space-4xl bg-surface relative z-10" id="experience">
-      <div className="max-w-container-max mx-auto px-gutter-mobile lg:px-gutter-desktop">
-        
-        <div className="text-center max-w-3xl mx-auto mb-space-2xl">
-          <div className="inline-flex items-center justify-center gap-space-2xs text-secondary mb-space-sm">
-            <span className="material-symbols-outlined text-[20px]">award_star</span>
-            <span className="font-label-md text-label-md uppercase tracking-widest">Keunggulan Kami</span>
-          </div>
-          <h2 className="font-display-xl text-headline-lg lg:text-display-xl text-primary mb-space-md tracking-tight">
-            Mengapa Memilih NgotelIn?
+    <section
+      className="py-16 md:py-20 lg:py-28 bg-surface relative z-10"
+      id="experience"
+    >
+      <div className="max-w-container-max mx-auto px-5 sm:px-8 lg:px-12">
+        <div className="text-center max-w-3xl mx-auto mb-10 md:mb-16">
+          <h2 className="font-display-xl font-bold text-[32px] sm:text-[40px] md:text-[48px] lg:text-[56px] text-primary mb-3 md:mb-5 tracking-tight">
+            Mengapa Memilih SiniBook?
           </h2>
-          <p className="font-body-lg text-body-lg text-on-surface-variant">
-            Berbagai keunggulan yang membuat pengalaman menginap Anda makin istimewa.
+          <p className="font-body-lg text-[14px] sm:text-[16px] md:text-[18px] text-on-surface-variant">
+            Berbagai keunggulan yang membuat pengalaman menginap Anda makin
+            istimewa.
           </p>
         </div>
 
-        <div className="flex flex-wrap justify-center gap-space-lg">
-          {whyUsData.map((item) => (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 lg:gap-8">
+          {whyUsData.map((item, index) => (
             <div
               key={item.id}
-              className="w-full sm:w-[calc(50%-1rem)] lg:w-[calc(33.333%-1.067rem)] bg-surface-container-lowest rounded-[2rem] p-space-xl border border-surface-container shadow-[0_8px_24px_rgba(14,47,118,0.06)] hover:shadow-[0_16px_40px_rgba(14,47,118,0.12)] hover:-translate-y-2 transition-all duration-300 text-center flex flex-col items-center group"
+              className={`bg-surface-container-lowest rounded-2xl md:rounded-[2rem] p-6 sm:p-8 lg:p-10 border border-surface-container shadow-[0_8px_24px_rgba(14,47,118,0.06)] hover:shadow-[0_16px_40px_rgba(14,47,118,0.12)] hover:-translate-y-2 transition-all duration-300 text-center flex flex-col items-center justify-center group ${
+                index === 0 ? "lg:col-span-2 lg:row-span-2" : ""
+              } ${index === 4 ? "sm:col-span-2 lg:col-span-2" : ""}`}
             >
-              <div className="w-20 h-20 rounded-full bg-surface-container-low flex items-center justify-center text-primary mb-space-lg group-hover:bg-primary group-hover:text-on-primary transition-colors duration-300">
-                <span className="material-symbols-outlined text-[36px]">{item.icon}</span>
+              <div
+                className={`rounded-full bg-surface-container-low flex items-center justify-center text-primary mb-4 md:mb-6 lg:mb-8 group-hover:bg-primary group-hover:text-on-primary transition-colors duration-300 ${
+                  index === 0 ? "w-20 h-20 md:w-24 md:h-24 lg:w-28 lg:h-28" : "w-16 h-16 md:w-20 md:h-20"
+                }`}
+              >
+                <span
+                  className={`material-symbols-outlined ${
+                    index === 0 ? "text-[36px] md:text-[48px] lg:text-[56px]" : "text-[28px] md:text-[36px]"
+                  }`}
+                >
+                  {item.icon}
+                </span>
               </div>
-              <h3 className="font-headline-md text-headline-md text-on-surface mb-space-sm">
+              <h3
+                className={`font-bold text-on-surface mb-2 md:mb-3 ${
+                  index === 0
+                    ? "text-[20px] md:text-[24px] lg:text-[32px]"
+                    : "text-[18px] md:text-[20px]"
+                }`}
+              >
                 {item.title}
               </h3>
-              <p className="font-body-md text-body-md text-on-surface-variant">
+              <p
+                className={`text-on-surface-variant leading-relaxed ${
+                  index === 0
+                    ? "text-[14px] sm:text-[16px] md:text-[18px] lg:text-[20px] max-w-md"
+                    : "text-[14px] md:text-[15px]"
+                }`}
+              >
                 {item.description}
               </p>
             </div>
           ))}
         </div>
-
       </div>
     </section>
   );

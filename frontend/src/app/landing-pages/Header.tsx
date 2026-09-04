@@ -13,10 +13,11 @@ interface HeaderProps {
 export default function Header({ activePage = "home" }: HeaderProps) {
   const [activeNav, setActiveNav] = useState(activePage);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isMobileProfileOpen, setIsMobileProfileOpen] = useState(false);
   const [prevActivePage, setPrevActivePage] = useState(activePage);
 
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [userName, setUserName] = useState("");
+  const [isLoggedIn, setIsLoggedIn] = useState(true);
+  const [userName, setUserName] = useState("Ahmad");
 
   if (activePage !== prevActivePage) {
     setPrevActivePage(activePage);
@@ -134,6 +135,17 @@ export default function Header({ activePage = "home" }: HeaderProps) {
             Tentang Kami
           </Link>
           <Link
+            href="/#ulasan"
+            onClick={() => setActiveNav("ulasan")}
+            className={`px-space-md py-space-xs rounded-full transition-all font-label-lg text-label-lg ${
+              activeNav === "ulasan"
+                ? "bg-primary-container text-on-primary font-bold"
+                : "text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high"
+            }`}
+          >
+            Testimoni
+          </Link>
+          <Link
             href="/#kontak"
             onClick={() => setActiveNav("kontak")}
             className={`px-space-md py-space-xs rounded-full transition-all font-label-lg text-label-lg ${
@@ -206,8 +218,56 @@ export default function Header({ activePage = "home" }: HeaderProps) {
             )}
           </div>
 
+          {/* Mobile Profile Icon (Visible only on mobile when logged in) */}
+          {isLoggedIn && (
+            <div className="lg:hidden relative">
+              <button 
+                onClick={() => {
+                  setIsMobileProfileOpen(!isMobileProfileOpen);
+                  setIsMobileMenuOpen(false); // Close hamburger if open
+                }}
+                className="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-on-primary font-bold shadow-md hover:bg-primary/90 transition-colors"
+              >
+                {userName ? userName.charAt(0) : "U"}
+              </button>
+              
+              {/* Mobile Profile Dropdown */}
+              {isMobileProfileOpen && (
+                <div className="absolute top-full right-0 mt-3 w-56 bg-surface-bright border border-surface-container rounded-2xl shadow-xl flex flex-col p-2 z-50">
+                  <div className="px-3 py-3 border-b border-surface-container mb-2 flex items-center gap-3">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary-container text-primary font-bold text-lg">
+                      {userName ? userName.charAt(0) : "U"}
+                    </div>
+                    <div className="overflow-hidden">
+                      <p className="font-bold text-[15px] text-on-surface truncate">{userName}</p>
+                      <p className="text-[12px] text-on-surface-variant">Member SiniBook</p>
+                    </div>
+                  </div>
+                  <Link
+                    href="/dashboard"
+                    onClick={() => setIsMobileProfileOpen(false)}
+                    className="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-surface-container text-on-surface transition-colors"
+                  >
+                    <span className="material-symbols-outlined text-[20px] text-primary">dashboard</span>
+                    <span className="font-bold text-[14px]">Dashboard Profil</span>
+                  </Link>
+                  <button
+                    onClick={() => { setIsMobileProfileOpen(false); handleLogoutClick(); }}
+                    className="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-error/10 text-error transition-colors w-full text-left mt-1"
+                  >
+                    <span className="material-symbols-outlined text-[20px]">logout</span>
+                    <span className="font-bold text-[14px]">Keluar Akun</span>
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
+
           <button
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            onClick={() => {
+              setIsMobileMenuOpen(!isMobileMenuOpen);
+              setIsMobileProfileOpen(false); // Close profile if open
+            }}
             className="lg:hidden w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center text-on-surface hover:bg-surface-container-highest transition-colors"
             aria-label="Toggle menu"
           >
@@ -252,6 +312,13 @@ export default function Header({ activePage = "home" }: HeaderProps) {
               Tentang Hotel
             </Link>
             <Link
+              href="/#ulasan"
+              className={`rounded-xl px-space-md py-space-sm font-label-lg text-label-lg ${activeNav === "ulasan" ? "bg-primary-container text-on-primary font-bold" : "text-on-surface hover:bg-surface-container"}`}
+              onClick={() => { setActiveNav("ulasan"); setIsMobileMenuOpen(false); }}
+            >
+              Testimoni
+            </Link>
+            <Link
               href="/#kontak"
               className={`rounded-xl px-space-md py-space-sm font-label-lg text-label-lg ${activeNav === "kontak" ? "bg-primary-container text-on-primary font-bold" : "text-on-surface hover:bg-surface-container"}`}
               onClick={() => { setActiveNav("kontak"); setIsMobileMenuOpen(false); }}
@@ -261,33 +328,7 @@ export default function Header({ activePage = "home" }: HeaderProps) {
           </nav>
           <div className="h-px bg-surface-container w-full" />
           <div className="flex flex-col gap-space-sm">
-            {isLoggedIn ? (
-              <>
-                <Link
-                  href="/dashboard"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="flex items-center gap-space-md p-space-md rounded-xl bg-surface-container-lowest border border-surface-container"
-                >
-                  <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-on-primary font-bold">
-                    {userName ? userName.charAt(0) : "U"}
-                  </div>
-                  <div>
-                    <span className="block font-label-sm text-label-sm text-on-surface-variant">
-                      Dashboard Member
-                    </span>
-                    <span className="block font-headline-sm text-on-surface">
-                      {userName}
-                    </span>
-                  </div>
-                </Link>
-                <button
-                  onClick={handleLogoutClick}
-                  className="w-full py-space-sm rounded-full border border-error/50 text-error font-label-lg hover:bg-error/10 transition-colors"
-                >
-                  Keluar Akun
-                </button>
-              </>
-            ) : (
+            {!isLoggedIn && (
               <div className="flex gap-space-xs">
                 <Link
                   href="/login"
