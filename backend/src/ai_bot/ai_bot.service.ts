@@ -6,70 +6,70 @@ import { CreateChatDto } from './dto/create-chat.dto';
 
 @Injectable()
 export class AiBotService {
-    private genAI: GoogleGenerativeAI;
+  private genAI: GoogleGenerativeAI;
 
-    constructor(
-        private configService: ConfigService,
-        private prisma: PrismaService,
-    ) {
-        const apiKey = this.configService.get<string>('GEMINI_API_KEY');
-        if (!apiKey) throw new Error('GEMINI_API_KEY tidak ditemukan!');
-        this.genAI = new GoogleGenerativeAI(apiKey);
-    }
+  constructor(
+    private configService: ConfigService,
+    private prisma: PrismaService,
+  ) {
+    const apiKey = this.configService.get<string>('GEMINI_API_KEY');
+    if (!apiKey) throw new Error('GEMINI_API_KEY tidak ditemukan!');
+    this.genAI = new GoogleGenerativeAI(apiKey);
+  }
 
-    async chatWithAi(dto: CreateChatDto, userId: string) {
-        try {
-            // Ambil Data Kamar dan User dari DB (add id: true)
-            const resourcesData = await this.prisma.resources.findMany({
-                select: {
-                    id: true,
-                    name: true,
-                    type: true,
-                    capacity: true,
-                    price_per_night: true,
-                    facilities: true,
-                },
-            });
+  async chatWithAi(dto: CreateChatDto, userId: string) {
+    try {
+      // Ambil Data Kamar dan User dari DB (add id: true)
+      const resourcesData = await this.prisma.resources.findMany({
+        select: {
+          id: true,
+          name: true,
+          type: true,
+          capacity: true,
+          price_per_night: true,
+          facilities: true,
+        },
+      });
 
-            let userName = 'Tamu';
-            if (userId) {
-                const user = await this.prisma.users.findUnique({
-                    where: { id: userId },
-                    select: { name: true },
-                });
-                if (user?.name) {
-                    userName = user.name;
-                }
-            }
+      let userName = 'Tamu';
+      if (userId) {
+        const user = await this.prisma.users.findUnique({
+          where: { id: userId },
+          select: { name: true },
+        });
+        if (user?.name) {
+          userName = user.name;
+        }
+      }
 
-            const hotelDataString = JSON.stringify(resourcesData, null, 2);
+      const hotelDataString = JSON.stringify(resourcesData, null, 2);
 
-            // RETRIEVAL HISTORY: Tarik 6 percakapan terakhir
-            const previousLogs = userId
-                ? await this.prisma.ai_chat_logs.findMany({
-                    where: { user_id: userId },
-                    orderBy: { created_at: 'desc' },
-                    take: 6,
-                })
-                : [];
+      // RETRIEVAL HISTORY: Tarik 6 percakapan terakhir
+      const previousLogs = userId
+        ? await this.prisma.ai_chat_logs.findMany({
+            where: { user_id: userId },
+            orderBy: { created_at: 'desc' },
+            take: 6,
+          })
+        : [];
 
-            const chronologicLogs = [...previousLogs].reverse();
+      const chronologicLogs = [...previousLogs].reverse();
 
-            // Format history
-            const formattedHistory: Content[] = [];
-            chronologicLogs.forEach((log) => {
-                formattedHistory.push({
-                    role: 'user',
-                    parts: [{ text: log.message ?? '' }],
-                });
-                formattedHistory.push({
-                    role: 'model',
-                    parts: [{ text: log.response ?? '' }],
-                });
-            });
+      // Format history
+      const formattedHistory: Content[] = [];
+      chronologicLogs.forEach((log) => {
+        formattedHistory.push({
+          role: 'user',
+          parts: [{ text: log.message ?? '' }],
+        });
+        formattedHistory.push({
+          role: 'model',
+          parts: [{ text: log.response ?? '' }],
+        });
+      });
 
-            // System Instruction
-            const systemInstruction = `
+      // System Instruction
+      const systemInstruction = `
 Kamu adalah "TiniBot Asisten AI Hotel" untuk SiniBook.
 Kamu sedang berbicara dengan tamu bernama: ${userName || 'Tamu'}.
 Sebut namanya sesekali agar terasa lebih akrab dan personal, jangan menggunakan kata "ibu" atau "bapak", tapi gunakans "Kak" jika memanggil dengan nama.
@@ -115,54 +115,56 @@ ATURAN UTAMA & BATASAN:
             
 `;
 
-            // 6. Inisialisasi Model Gemini
-            const model = this.genAI.getGenerativeModel({
-                model: 'gemini-flash-lite-latest',
-                systemInstruction: systemInstruction,
-            });
+      // 6. Inisialisasi Model Gemini
+      const model = this.genAI.getGenerativeModel({
+        model: 'gemini-flash-lite-latest',
+        systemInstruction: systemInstruction,
+      });
 
-            // 7. Jalankan Chat Session dengan History
-            const chatSession = model.startChat({
-                history: formattedHistory,
-            });
+      // 7. Jalankan Chat Session dengan History
+      const chatSession = model.startChat({
+        history: formattedHistory,
+      });
 
-            const result = await chatSession.sendMessage(dto.message);
-            const aiResponseText = result.response.text();
+      const result = await chatSession.sendMessage(dto.message);
+      const aiResponseText = result.response.text();
 
-            // 8. Simpan Pesan Baru ke Log DB
-            const chatLog = await this.prisma.ai_chat_logs.create({
-                data: {
-                    user_id: userId,
-                    message: dto.message,
-                    response: aiResponseText,
-                },
-            });
+      // 8. Simpan Pesan Baru ke Log DB
+      const chatLog = await this.prisma.ai_chat_logs.create({
+        data: {
+          user_id: userId,
+          message: dto.message,
+          response: aiResponseText,
+        },
+      });
 
-            return {
-                message: 'Success',
-                data: {
-                    log_id: chatLog.id,
-                    reply: aiResponseText,
-                },
-            };
-        } catch (error) {
-            console.error('Error saat memanggil Gemini:', error);
-            throw new InternalServerErrorException('Gagal terhubung ke Smart AI Concierge.');
-        }
+      return {
+        message: 'Success',
+        data: {
+          log_id: chatLog.id,
+          reply: aiResponseText,
+        },
+      };
+    } catch (error) {
+      console.error('Error saat memanggil Gemini:', error);
+      throw new InternalServerErrorException(
+        'Gagal terhubung ke Smart AI Concierge.',
+      );
     }
+  }
 
-    async clearChatHistory(userId: string) {
-        try {
-            await this.prisma.ai_chat_logs.deleteMany({
-                where: { user_id: userId },
-            });
+  async clearChatHistory(userId: string) {
+    try {
+      await this.prisma.ai_chat_logs.deleteMany({
+        where: { user_id: userId },
+      });
 
-            return {
-                message: 'Success',
-                data: 'Riwayat percakapan telah dibersihkan. AI siap dari nol!',
-            };
-        } catch (error) {
-            throw new InternalServerErrorException('Gagal menghapus riwayat chat.');
-        }
+      return {
+        message: 'Success',
+        data: 'Riwayat percakapan telah dibersihkan. AI siap dari nol!',
+      };
+    } catch (error) {
+      throw new InternalServerErrorException('Gagal menghapus riwayat chat.');
     }
+  }
 }

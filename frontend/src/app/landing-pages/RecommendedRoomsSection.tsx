@@ -18,6 +18,14 @@ interface ResourceRoom {
 const FALLBACK_IMAGE =
   "https://images.unsplash.com/photo-1611892440504-42a792e24d32?auto=format&fit=crop&w=800&q=80";
 
+const formatRoomType = (str: string) => {
+  if (!str) return "";
+  return str
+    .split("_")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join(" ");
+};
+
 export default function RecommendedRoomsSection() {
   const [recommendedRooms, setRecommendedRooms] = useState<ResourceRoom[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -30,9 +38,10 @@ export default function RecommendedRoomsSection() {
 
         if (response.ok) {
           const dataArray = Array.isArray(json) ? json : json.data || [];
-          const formattedRooms: ResourceRoom[] = dataArray
+          const formattedRooms: ResourceRoom[] = [...dataArray]
+            .reverse()
             .slice(0, 3)
-            .map((room: any) => ({
+            .map((room: ResourceRoom & { room_images?: { image_url: string }[] }) => ({
               id: room.id,
               name: room.name,
               type: room.type,
@@ -74,15 +83,6 @@ export default function RecommendedRoomsSection() {
               SiniBook Hotel.
             </p>
           </div>
-          <Link
-            href="/kamar"
-            className="group inline-flex items-center gap-space-2xs px-space-xl py-space-sm rounded-full bg-surface-container hover:bg-surface-container-high text-on-surface font-label-lg text-label-lg transition-all duration-300 border border-outline-variant hover:border-outline shadow-sm hover:shadow-md"
-          >
-            <span>Lihat Semua Kamar</span>
-            <span className="material-symbols-outlined text-[18px] transition-transform duration-300 group-hover:translate-x-1">
-              arrow_forward
-            </span>
-          </Link>
         </div>
 
         {/* GRID KARTU KAMAR REKOMENDASI */}
@@ -102,11 +102,12 @@ export default function RecommendedRoomsSection() {
             ))
           ) : recommendedRooms.length > 0 ? (
             recommendedRooms.map((room) => (
-              <div
+              <Link
+                href={`/kamar/${room.id}`}
                 key={room.id}
                 className="group flex flex-col rounded-3xl bg-surface-container-lowest overflow-hidden border border-surface-container shadow-sm hover:shadow-[0_20px_40px_rgba(14,47,118,0.08)] hover:border-primary-container/50 hover:-translate-y-1.5 transition-all duration-500 relative cursor-pointer"
               >
-                <div className="relative aspect-[4/3] overflow-hidden">
+                <div className="relative aspect-[16/10] sm:aspect-[16/9] overflow-hidden">
                   <Image
                     src={
                       room.image.startsWith("http")
@@ -124,7 +125,7 @@ export default function RecommendedRoomsSection() {
                       {room.name}
                     </h3>
                     <p className="font-label-sm text-label-sm text-primary-fixed-dim">
-                      {room.type}
+                      {formatRoomType(room.type)}
                     </p>
                   </div>
                 </div>
@@ -180,22 +181,34 @@ export default function RecommendedRoomsSection() {
                       </span>
                     </div>
                   </div>
-                  <Link
-                    href={`/kamar/${room.id}`}
-                    className="w-12 h-12 rounded-full bg-surface-container-high text-on-surface flex items-center justify-center hover:bg-primary hover:text-on-primary transition-all duration-300 hover:-rotate-45 shadow-sm hover:shadow-[0_8px_16px_rgba(14,47,118,0.25)]"
+                  <div
+                    className="w-12 h-12 rounded-full bg-surface-container-high text-on-surface flex items-center justify-center group-hover:bg-primary group-hover:text-on-primary transition-all duration-300 group-hover:-rotate-45 shadow-sm group-hover:shadow-[0_8px_16px_rgba(14,47,118,0.25)]"
                   >
                     <span className="material-symbols-outlined text-[20px]">
                       arrow_forward
                     </span>
-                  </Link>
+                  </div>
                 </div>
-              </div>
+              </Link>
             ))
           ) : (
             <div className="col-span-1 md:col-span-2 lg:col-span-3 text-center py-10 text-on-surface-variant font-body-lg">
               Belum ada kamar yang tersedia saat ini.
             </div>
           )}
+        </div>
+
+        {/* BUTTON LIHAT SEMUA KAMAR */}
+        <div className="mt-space-2xl flex justify-center">
+          <Link
+            href="/kamar"
+            className="group inline-flex items-center gap-space-2xs px-space-xl py-space-sm rounded-full bg-surface-container hover:bg-surface-container-high text-on-surface font-label-lg text-label-lg transition-all duration-300 border border-outline-variant hover:border-outline shadow-sm hover:shadow-md"
+          >
+            <span>Lihat Semua Kamar</span>
+            <span className="material-symbols-outlined text-[18px] transition-transform duration-300 group-hover:translate-x-1">
+              arrow_forward
+            </span>
+          </Link>
         </div>
       </div>
     </section>

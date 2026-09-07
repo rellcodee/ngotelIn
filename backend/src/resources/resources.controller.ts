@@ -1,7 +1,16 @@
 import {
-  Controller, Get, Post, Body, Patch, Param, Delete, Query, UseInterceptors,
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Query,
+  UseInterceptors,
   UploadedFiles,
-  BadRequestException, UseGuards
+  BadRequestException,
+  UseGuards,
 } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { ResourcesService } from './resources.service';
@@ -14,18 +23,21 @@ import { Role } from '../common/enums';
 
 @Controller('resources')
 export class ResourcesController {
-  constructor(private readonly resourcesService: ResourcesService) { }
+  constructor(private readonly resourcesService: ResourcesService) {}
 
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles(Role.ADMIN)
   @Post()
   @UseInterceptors(
-    FilesInterceptor('files', 5, { // maksimal 5 gambar
+    FilesInterceptor('files', 5, {
+      // maksimal 5 gambar
       limits: { fileSize: 5 * 1024 * 1024 }, // Limit 5MB per file
       fileFilter: (req, file, callback) => {
         if (!file.mimetype.match(/\/(jpg|jpeg|png|webp)$/)) {
           return callback(
-            new BadRequestException('Hanya file gambar (JPG, JPEG, PNG, WEBP) yang diperbolehkan!'),
+            new BadRequestException(
+              'Hanya file gambar (JPG, JPEG, PNG, WEBP) yang diperbolehkan!',
+            ),
             false,
           );
         }
@@ -71,12 +83,15 @@ export class ResourcesController {
   @Roles(Role.ADMIN)
   @Patch(':id')
   @UseInterceptors(
-    FilesInterceptor('files', 5, { // Upload gambar baru jika ada
+    FilesInterceptor('files', 5, {
+      // Upload gambar baru jika ada
       limits: { fileSize: 5 * 1024 * 1024 },
       fileFilter: (req, file, callback) => {
         if (!file.mimetype.match(/\/(jpg|jpeg|png|webp)$/)) {
           return callback(
-            new BadRequestException('Hanya file gambar (JPG, JPEG, PNG, WEBP) yang diperbolehkan!'),
+            new BadRequestException(
+              'Hanya file gambar (JPG, JPEG, PNG, WEBP) yang diperbolehkan!',
+            ),
             false,
           );
         }
@@ -99,7 +114,13 @@ export class ResourcesController {
       deleteImageIds = deleteImageIdsRaw;
     }
 
-    return this.resourcesService.update(id, updateResourceDto, files, deleteImageIds, primaryImageId);
+    return this.resourcesService.update(
+      id,
+      updateResourceDto,
+      files,
+      deleteImageIds,
+      primaryImageId,
+    );
   }
 
   @UseGuards(AuthGuard('jwt'), RolesGuard)

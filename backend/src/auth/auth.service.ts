@@ -10,7 +10,7 @@ export class AuthService {
   constructor(
     private userService: UserService,
     private jwtService: JwtService,
-  ) { }
+  ) {}
 
   async validateUser(email: string, pass: string): Promise<any> {
     const user = await this.userService.findByEmail(email);
@@ -18,7 +18,9 @@ export class AuthService {
 
     // Cek apakah user ini login pakai Google atau password biasa
     if (!user.password_hash) {
-      throw new UnauthorizedException('Silakan login menggunakan tombol Google Sign-In.');
+      throw new UnauthorizedException(
+        'Silakan login menggunakan tombol Google Sign-In.',
+      );
     }
 
     if (user && (await bcrypt.compare(pass, user.password_hash))) {

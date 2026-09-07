@@ -5,7 +5,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { Throttle } from '@nestjs/throttler';
 @Controller('ai')
 export class AiBotController {
-  constructor(private readonly aiBotService: AiBotService) { }
+  constructor(private readonly aiBotService: AiBotService) {}
 
   @Throttle({ default: { limit: 10, ttl: 60000 } })
   @UseGuards(AuthGuard('jwt'))

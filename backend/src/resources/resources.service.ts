@@ -1,4 +1,11 @@
-import { Injectable, ConflictException, NotFoundException, InternalServerErrorException, BadRequestException, HttpException } from '@nestjs/common';
+import {
+  Injectable,
+  ConflictException,
+  NotFoundException,
+  InternalServerErrorException,
+  BadRequestException,
+  HttpException,
+} from '@nestjs/common';
 import { CreateResourceDto } from './dto/create-resource.dto';
 import { UpdateResourceDto } from './dto/update-resource.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -6,13 +13,16 @@ import { Prisma } from '@prisma/client';
 import { put, del } from '@vercel/blob';
 @Injectable()
 export class ResourcesService {
-
-  constructor(private readonly prisma: PrismaService) { }
-  async create(createResourceDto: CreateResourceDto, files?: Express.Multer.File[]) {
+  constructor(private readonly prisma: PrismaService) {}
+  async create(
+    createResourceDto: CreateResourceDto,
+    files?: Express.Multer.File[],
+  ) {
     try {
-
       if (files && files.length > 5) {
-        throw new BadRequestException('Maksimal foto yang diunggah adalah 5 file!');
+        throw new BadRequestException(
+          'Maksimal foto yang diunggah adalah 5 file!',
+        );
       }
 
       const resource = await this.prisma.resources.create({
@@ -21,7 +31,9 @@ export class ResourcesService {
           type: createResourceDto.type,
           location: createResourceDto.location,
           description: createResourceDto.description,
-          capacity: createResourceDto.capacity ? Number(createResourceDto.capacity) : null,
+          capacity: createResourceDto.capacity
+            ? Number(createResourceDto.capacity)
+            : null,
           price_per_night: Number(createResourceDto.price_per_night),
           facilities: createResourceDto.facilities || [],
         },
@@ -51,15 +63,21 @@ export class ResourcesService {
         where: { id: resource.id },
         include: { room_images: true },
       });
-
     } catch (error) {
       if (error instanceof HttpException) throw error;
 
-      if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
-        throw new ConflictException('Resource dengan nama tersebut sudah terdaftar!');
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === 'P2002'
+      ) {
+        throw new ConflictException(
+          'Resource dengan nama tersebut sudah terdaftar!',
+        );
       }
 
-      throw new InternalServerErrorException('Terjadi kesalahan internal pada server');
+      throw new InternalServerErrorException(
+        'Terjadi kesalahan internal pada server',
+      );
     }
   }
 
@@ -93,7 +111,7 @@ export class ResourcesService {
       where: whereCondition,
       include: {
         room_images: true,
-      }
+      },
     });
   }
 
@@ -102,7 +120,7 @@ export class ResourcesService {
       where: { id },
       include: {
         room_images: true,
-      }
+      },
     });
 
     if (!resource) {
@@ -117,7 +135,7 @@ export class ResourcesService {
     updateDto: UpdateResourceDto,
     files?: Express.Multer.File[],
     deleteImageIds?: string[],
-    primaryImageId?: string
+    primaryImageId?: string,
   ) {
     // A. Cek apakah kamar ada di DB
     const existingResource = await this.prisma.resources.findUnique({
@@ -126,7 +144,9 @@ export class ResourcesService {
     });
 
     if (!existingResource) {
-      throw new NotFoundException(`Resource/Kamar dengan ID ${id} tidak ditemukan`);
+      throw new NotFoundException(
+        `Resource/Kamar dengan ID ${id} tidak ditemukan`,
+      );
     }
 
     try {
@@ -139,7 +159,7 @@ export class ResourcesService {
 
       if (finalImageCount > 5) {
         throw new BadRequestException(
-          `Maksimal total foto untuk 1 kamar adalah 5! Setelah perubahan ini total foto akan menjadi ${finalImageCount}.`
+          `Maksimal total foto untuk 1 kamar adalah 5! Setelah perubahan ini total foto akan menjadi ${finalImageCount}.`,
         );
       }
 
@@ -150,7 +170,9 @@ export class ResourcesService {
         });
 
         if (imagesToDelete.length > 0) {
-          const deleteBlobPromises = imagesToDelete.map((img) => del(img.image_url));
+          const deleteBlobPromises = imagesToDelete.map((img) =>
+            del(img.image_url),
+          );
           await Promise.all(deleteBlobPromises);
 
           await this.prisma.room_images.deleteMany({
@@ -206,7 +228,9 @@ export class ResourcesService {
           location: updateDto.location,
           description: updateDto.description,
           capacity: updateDto.capacity ? Number(updateDto.capacity) : undefined,
-          price_per_night: updateDto.price_per_night ? Number(updateDto.price_per_night) : undefined,
+          price_per_night: updateDto.price_per_night
+            ? Number(updateDto.price_per_night)
+            : undefined,
           facilities: updateDto.facilities,
         },
       });
@@ -215,16 +239,17 @@ export class ResourcesService {
         where: { id },
         include: { room_images: true },
       });
-
     } catch (error) {
-      // 👈 SANGAT PENTING: Biar BadRequestException (400) dan NotFoundException (404) 
+      // 👈 SANGAT PENTING: Biar BadRequestException (400) dan NotFoundException (404)
       // langsung diteruskan ke client tanpa diubah jadi 500!
       if (error instanceof HttpException) {
         throw error;
       }
 
-      console.error("Update resource error: ", error);
-      throw new InternalServerErrorException('Gagal memperbarui data kamar dan gambar');
+      console.error('Update resource error: ', error);
+      throw new InternalServerErrorException(
+        'Gagal memperbarui data kamar dan gambar',
+      );
     }
   }
 
@@ -236,13 +261,17 @@ export class ResourcesService {
     });
 
     if (!resource) {
-      throw new NotFoundException(`Resource/Kamar dengan ID ${id} tidak ditemukan`);
+      throw new NotFoundException(
+        `Resource/Kamar dengan ID ${id} tidak ditemukan`,
+      );
     }
 
     try {
       // Jika kamar punya foto, hapus SEMUA file fisiknya di Blob
       if (resource.room_images && resource.room_images.length > 0) {
-        const deleteBlobPromises = resource.room_images.map((img) => del(img.image_url));
+        const deleteBlobPromises = resource.room_images.map((img) =>
+          del(img.image_url),
+        );
         await Promise.all(deleteBlobPromises);
       }
 
@@ -255,7 +284,9 @@ export class ResourcesService {
         message: `Kamar "${resource.name}" beserta seluruh gambarnya berhasil dihapus dari cloud dan database!`,
       };
     } catch (error) {
-      throw new InternalServerErrorException('Gagal menghapus kamar beserta gambarnya');
+      throw new InternalServerErrorException(
+        'Gagal menghapus kamar beserta gambarnya',
+      );
     }
   }
 
@@ -266,14 +297,14 @@ export class ResourcesService {
     if (search) {
       whereCondition.name = { contains: search, mode: 'insensitive' };
     }
-    
+
     if (type && type !== 'all') {
       whereCondition.type = type;
     }
 
     const allResources = await this.prisma.resources.findMany({
       where: whereCondition,
-      include: { room_images: { where: { is_primary: true } } }
+      include: { room_images: { where: { is_primary: true } } },
     });
 
     const now = new Date();
@@ -288,19 +319,19 @@ export class ResourcesService {
       select: {
         resource_id: true,
         status: true,
-      }
+      },
     });
 
     const statusMap = new Map<string, string>();
-    activeSchedules.forEach(schedule => {
+    activeSchedules.forEach((schedule) => {
       if (schedule.resource_id && schedule.status) {
         statusMap.set(schedule.resource_id, schedule.status);
       }
     });
 
-    return allResources.map(res => ({
+    return allResources.map((res) => ({
       ...res,
-      current_status: statusMap.get(res.id) || 'available'
+      current_status: statusMap.get(res.id) || 'available',
     }));
   }
 
@@ -316,7 +347,8 @@ export class ResourcesService {
       },
     });
 
-    const busyResourceIds = busySchedules.map((s) => s.resource_id)
+    const busyResourceIds = busySchedules
+      .map((s) => s.resource_id)
       .filter((id: string): id is string => id !== null);
 
     // 2. Tampilkan semua kamar dari tabel Resources yang ID-nya TIDAK ADA di list kamar sibuk

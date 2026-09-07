@@ -3,17 +3,7 @@
 import React, { useState } from "react"; // Mengimpor React dan useState untuk mengelola state halaman
 import Image from "next/image"; // Komponen Image Next.js untuk optimasi loading gambar kamar
 import Link from "next/link"; // Komponen Link Next.js untuk berpindah ke halaman detail kamar
-import {
-  Users,
-  MapPin,
-  Search,
-  Heart,
-  X,
-  SlidersHorizontal,
-  PhoneCall,
-  ShieldCheck,
-  Building2,
-} from "lucide-react"; // Mengimpor ikon-ikon modern dari Lucide React
+import { Search, X, SlidersHorizontal, PhoneCall } from "lucide-react"; // Mengimpor ikon-ikon modern dari Lucide React
 
 // Mengimpor komponen layout utama (Header, Footer)
 import Header from "../landing-pages/Header";
@@ -32,21 +22,34 @@ interface RoomItem {
 }
 
 // Placeholder image jika kamar dari DB belum punya foto
-const FALLBACK_IMAGE = "https://images.unsplash.com/photo-1566665797739-1674de7a421a?auto=format&fit=crop&w=800&q=80";
+const FALLBACK_IMAGE =
+  "https://images.unsplash.com/photo-1566665797739-1674de7a421a?auto=format&fit=crop&w=800&q=80";
 
 import { useEffect, useMemo } from "react";
+
+const formatRoomType = (str: string) => {
+  if (!str) return "";
+  if (str.toLowerCase() === "semua") return "Semua";
+  return str
+    .replace(/_/g, " ")
+    .split(" ")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join(" ");
+};
 export default function KamarPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("Semua");
-  const [favoriteIds, setFavoriteIds] = useState<string[]>([]);
-  const [favoriteToast, setFavoriteToast] = useState<string | null>(null);
   const [showContactToast, setShowContactToast] = useState(false);
+  const [rowsPerPage, setRowsPerPage] = useState(6);
+  const [visibleCount, setVisibleCount] = useState(6);
   const [roomsData, setRoomsData] = useState<RoomItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
+
+
   // Derive unique categories from fetched rooms
   const dynamicCategories = useMemo(() => {
-    const types = new Set(roomsData.map((room) => room.type));
+    const types = new Set(roomsData.map((room) => formatRoomType(room.type)));
     return ["Semua", ...Array.from(types)];
   }, [roomsData]);
 
@@ -58,18 +61,21 @@ export default function KamarPage() {
 
         if (response.ok) {
           const dataArray = Array.isArray(json) ? json : json.data || [];
-          const formattedRooms: RoomItem[] = dataArray.map((room: any) => ({
-            id: room.id,
-            name: room.name,
-            type: room.type,
-            location: room.location,
-            capacity: room.capacity,
-            price_per_night: room.price_per_night,
-            facilities: room.facilities || [],
-            image: room.room_images && room.room_images.length > 0
-              ? room.room_images[0].image_url
-              : FALLBACK_IMAGE,
-          }));
+          const formattedRooms: RoomItem[] = dataArray.map(
+            (room: RoomItem & { room_images?: { image_url: string }[] }) => ({
+              id: room.id,
+              name: room.name,
+              type: room.type,
+              location: room.location,
+              capacity: room.capacity,
+              price_per_night: room.price_per_night,
+              facilities: room.facilities || [],
+              image:
+                room.room_images && room.room_images.length > 0
+                  ? room.room_images[0].image_url
+                  : FALLBACK_IMAGE,
+            }),
+          );
           setRoomsData(formattedRooms);
         }
       } catch (error) {
@@ -82,50 +88,38 @@ export default function KamarPage() {
     fetchRooms();
   }, []);
 
-  const toggleFavorite = (roomId: string, roomName: string) => {
-    if (favoriteIds.includes(roomId)) {
-      setFavoriteIds((prev) => prev.filter((id) => id !== roomId));
-      setFavoriteToast(`Dihapus dari Kamar Favorit (${roomName})`);
-    } else {
-      setFavoriteIds((prev) => [...prev, roomId]);
-      setFavoriteToast(`❤️ Ditambahkan ke Kamar Favorit (${roomName})`);
-    }
-    setTimeout(() => setFavoriteToast(null), 3000);
-  };
-
-  const handleContactReceptionist = () => {
-    setShowContactToast(true);
-    setTimeout(() => setShowContactToast(false), 4000);
-  };
-
   const filteredRooms = roomsData.filter((room) => {
     const matchesSearch =
       room.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       room.location.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      room.facilities.some((f) => f.toLowerCase().includes(searchQuery.toLowerCase()));
+      room.facilities.some((f) =>
+        f.toLowerCase().includes(searchQuery.toLowerCase()),
+      );
     const matchesCategory =
-      selectedCategory === "Semua" || room.type === selectedCategory;
+      selectedCategory === "Semua" || formatRoomType(room.type) === selectedCategory;
     return matchesSearch && matchesCategory;
   });
 
+  const paginatedRooms = useMemo(() => {
+    return filteredRooms.slice(0, visibleCount);
+  }, [filteredRooms, visibleCount]);
+
   return (
-    <div className="min-h-screen bg-slate-50 font-sans text-gray-900 selection:bg-[#1D4ED8] selection:text-white">
+    <div className="min-h-screen bg-surface-bright font-body-md text-on-surface selection:bg-primary selection:text-on-primary">
       {/* 1. Header */}
       <Header activePage="kamar" />
 
-      {/* Toast Wishlist */}
-      {favoriteToast && (
-        <div className="fixed bottom-6 right-6 z-50 rounded-2xl bg-gray-900/90 px-5 py-3 text-sm font-semibold text-white shadow-2xl backdrop-blur-md transition-all">
-          {favoriteToast}
-        </div>
-      )}
-
       {/* Toast Kontak Resepsionis */}
       {showContactToast && (
-        <div className="fixed top-20 right-6 z-50 flex items-center gap-3 rounded-2xl bg-[#1D4ED8] px-5 py-3.5 text-sm font-medium text-white shadow-2xl backdrop-blur-md">
-          <PhoneCall className="h-5 w-5 text-emerald-300" />
-          <span>Resepsionis Siaga: <strong>+62 21 555 7890</strong></span>
-          <button onClick={() => setShowContactToast(false)} className="ml-2 text-white/70 hover:text-white">
+        <div className="fixed top-24 right-6 z-50 flex items-center gap-3 rounded-2xl bg-primary px-5 py-3.5 text-sm font-medium text-on-primary shadow-2xl backdrop-blur-md">
+          <PhoneCall className="h-5 w-5 text-secondary-fixed" />
+          <span>
+            Resepsionis Siaga: <strong>+62 21 555 7890</strong>
+          </span>
+          <button
+            onClick={() => setShowContactToast(false)}
+            className="ml-2 text-on-primary/70 hover:text-on-primary"
+          >
             <X className="h-4 w-4" />
           </button>
         </div>
@@ -134,182 +128,231 @@ export default function KamarPage() {
       {/* Main Content */}
       <main className="w-full flex-1">
         {/* HERO SECTION */}
-        <section className="relative w-full bg-[#1E3A8A] py-20 lg:py-24 text-white overflow-hidden">
-          <div className="absolute inset-0 z-0">
-            <Image
-              src="https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1920&q=80"
-              alt="SiniBook Luxury Hotel Outer View"
-              fill
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 100vw, 100vw"
-              priority
-              className="object-cover opacity-30"
-            />
-            <div className="absolute inset-0 bg-gradient-to-b from-[#1D4ED8]/30 via-[#1E3A8A]/60 to-[#1E3A8A]" />
-          </div>
+        <section className="relative w-full pt-28 md:pt-32 lg:pt-36 pb-12 bg-surface-bright flex flex-col items-center px-4 md:px-8">
+          <div className="relative w-full max-w-container-max mx-auto rounded-[1.5rem] md:rounded-[2.5rem] overflow-hidden bg-surface-container-high min-h-[300px] md:min-h-[420px] flex items-center justify-center shadow-lg group">
+            <div className="absolute inset-0 z-0">
+              <Image
+                src="https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1920&q=80"
+                alt="SiniBook Luxury Hotel Outer View"
+                fill
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 100vw, 100vw"
+                priority
+                className="object-cover transition-transform duration-1000 ease-out group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/10" />
+            </div>
 
-          <div className="relative z-10 mx-auto max-w-4xl px-4 text-center sm:px-6 lg:px-8">
-            <h1 className="text-3xl font-extrabold tracking-tight sm:text-4xl md:text-5xl lg:text-6xl text-white">
-              Pilihan Kamar & Suites
-            </h1>
-            <p className="mt-4 text-sm sm:text-base md:text-lg text-emerald-100/90 leading-relaxed max-w-2xl mx-auto font-light">
-              Temukan akomodasi terbaik dengan ketersediaan fasilitas lengkap dan kenyamanan maksimal.
-            </p>
+            <div className="relative z-10 mx-auto max-w-4xl px-6 text-center sm:px-8 lg:px-12 py-12 flex flex-col items-center">
+              <h1 className="font-display-xl text-[36px] sm:text-[44px] md:text-[52px] lg:text-[68px] text-white font-bold leading-[1.1] tracking-tight drop-shadow-md">
+                Pilihan Kamar & Suites
+              </h1>
+              <p className="mt-5 font-body-lg text-[15px] sm:text-[16px] md:text-[18px] text-white/90 leading-relaxed max-w-2xl mx-auto font-light drop-shadow-sm">
+                Temukan akomodasi premium dengan fasilitas lengkap. Didesain
+                khusus untuk memberikan pengalaman menginap terbaik dan tak
+                terlupakan bagi Anda.
+              </p>
+            </div>
           </div>
         </section>
 
         {/* SEARCH & FILTER BAR */}
-        <section className="w-full bg-white border-b border-gray-200/80 py-6 sticky top-16 z-30 shadow-sm">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+        <section className="w-full max-w-container-max mx-auto px-4 md:px-8 mb-6 sticky top-[100px] md:top-[104px] z-30">
+          <div className="bg-surface rounded-2xl py-4 px-5 md:px-6 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between shadow-sm border border-surface-container-low">
             <div className="relative flex-1 max-w-md">
-              <Search className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+              <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-on-surface-variant" />
               <input
                 type="text"
                 placeholder="Cari kamar atau fasilitas..."
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full rounded-full border border-gray-300 bg-gray-50 pl-10 pr-4 py-2.5 text-xs text-gray-900 transition-all focus:border-[#1D4ED8] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#1D4ED8]/20"
+                onChange={(e) => {
+                  setSearchQuery(e.target.value);
+                  setVisibleCount(rowsPerPage);
+                }}
+                className="w-full rounded-full border border-surface-container-high bg-white pl-12 pr-5 py-3 text-[14px] text-on-surface transition-all focus:border-primary focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary/20"
               />
             </div>
 
-            <div className="flex items-center gap-2 overflow-x-auto pb-1 md:pb-0 scrollbar-none">
-              <SlidersHorizontal className="h-4 w-4 text-gray-400 shrink-0 mr-1" />
-              {dynamicCategories.map((cat) => (
-                <button
-                  key={cat}
-                  onClick={() => setSelectedCategory(cat)}
-                  className={`rounded-full px-4 py-1.5 text-xs font-semibold whitespace-nowrap transition-all ${selectedCategory === cat
-                    ? "bg-[#1D4ED8] text-white shadow-sm"
-                    : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+            <div className="flex items-center justify-between lg:justify-end gap-4 w-full lg:w-auto">
+              <div className="flex items-center gap-2 overflow-x-auto pb-1 md:pb-0 scrollbar-none flex-1 lg:flex-initial">
+                <SlidersHorizontal className="h-5 w-5 text-on-surface-variant shrink-0 mr-2 hidden sm:block" />
+                {dynamicCategories.map((cat) => (
+                  <button
+                    key={cat}
+                    onClick={() => {
+                      setSelectedCategory(cat);
+                      setVisibleCount(rowsPerPage);
+                    }}
+                    className={`rounded-full px-5 py-2.5 text-[14px] font-bold whitespace-nowrap transition-all ${
+                      selectedCategory === cat
+                        ? "bg-primary text-on-primary shadow-sm"
+                        : "bg-surface-container text-on-surface-variant hover:bg-surface-container-high"
                     }`}
+                  >
+                    {cat}
+                  </button>
+                ))}
+              </div>
+              
+              <div className="flex items-center gap-2 shrink-0 border-l border-surface-container-high pl-4">
+                <span className="text-[14px] text-on-surface-variant font-medium hidden sm:block">Tampil:</span>
+                <select
+                  value={rowsPerPage}
+                  onChange={(e) => {
+                    const newRows = Number(e.target.value);
+                    setRowsPerPage(newRows);
+                    setVisibleCount(newRows);
+                  }}
+                  className="bg-surface border border-surface-container-high rounded-full px-3 py-1.5 text-[14px] text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/20 cursor-pointer"
                 >
-                  {cat}
-                </button>
-              ))}
+                  <option value={6}>6</option>
+                  <option value={12}>12</option>
+                  <option value={24}>24</option>
+                  <option value={9999}>Semua</option>
+                </select>
+              </div>
             </div>
           </div>
         </section>
 
         {/* GRID KATALOG KAMAR */}
-        <section className="w-full py-12 sm:py-16 md:py-20 bg-slate-50">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <section className="w-full pb-16 md:pb-20 bg-surface-bright">
+          <div className="mx-auto max-w-container-max px-4 md:px-8">
             {isLoading ? (
               <div className="flex justify-center items-center py-20">
-                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#1D4ED8]"></div>
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
               </div>
             ) : filteredRooms.length === 0 ? (
-              <div className="rounded-3xl bg-white p-12 text-center shadow-sm border border-gray-200/80 max-w-lg mx-auto">
-                <Search className="mx-auto h-12 w-12 text-gray-300 mb-3" />
-                <h3 className="text-lg font-bold text-gray-900">Kamar Tidak Ditemukan</h3>
-                <p className="mt-1 text-xs text-gray-500">
-                  Tidak ada kamar yang cocok dengan kata kunci &quot;{searchQuery}&quot;.
+              <div className="rounded-3xl bg-surface p-12 text-center shadow-sm border border-surface-container-low max-w-lg mx-auto">
+                <Search className="mx-auto h-12 w-12 text-on-surface-variant mb-3" />
+                <h3 className="font-headline-sm text-on-surface">
+                  Kamar Tidak Ditemukan
+                </h3>
+                <p className="mt-2 text-[14px] text-on-surface-variant">
+                  Tidak ada kamar yang cocok dengan kata kunci &quot;
+                  {searchQuery}&quot;.
                 </p>
                 <button
                   onClick={() => {
                     setSearchQuery("");
                     setSelectedCategory("Semua");
+                    setVisibleCount(rowsPerPage);
                   }}
-                  className="mt-5 rounded-full bg-[#1D4ED8] px-5 py-2 text-xs font-bold text-white shadow hover:bg-[#1E3A8A]"
+                  className="mt-6 rounded-full bg-primary px-6 py-2.5 text-[14px] font-bold text-on-primary shadow-sm hover:bg-primary/90 transition-all"
                 >
                   Reset Filter Pencarian
                 </button>
               </div>
             ) : (
-              <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:gap-10">
-                {filteredRooms.map((room) => {
-                  const isFav = favoriteIds.includes(room.id);
+              <>
+                <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:gap-8">
+                {paginatedRooms.map((room) => {
                   return (
-                    <div
+                    <Link
+                      href={`/kamar/${room.id}`}
                       key={room.id}
-                      className="group flex flex-col overflow-hidden rounded-2xl bg-white border border-gray-200/80 shadow-md transition-all duration-300 hover:-translate-y-1 hover:shadow-xl relative"
+                      className="group flex flex-col rounded-3xl bg-surface-container-lowest overflow-hidden border border-surface-container shadow-sm hover:shadow-[0_20px_40px_rgba(14,47,118,0.08)] hover:border-primary-container/50 hover:-translate-y-1.5 transition-all duration-500 relative cursor-pointer"
                     >
-                      {/* FOTO KAMAR & BADGE TIPE */}
-                      <div className="relative h-64 sm:h-72 w-full overflow-hidden bg-gray-100">
+                      {/* FOTO KAMAR & OVERLAY */}
+                      <div className="relative aspect-[16/10] sm:aspect-[16/9] overflow-hidden">
                         <Image
-                          src={room.image.startsWith('http') ? room.image : `http://localhost:3001${room.image}`}
+                          src={
+                            room.image.startsWith("http")
+                              ? room.image
+                              : `http://localhost:3001${room.image}`
+                          }
                           alt={room.name}
                           fill
                           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                          className="object-cover transition-transform duration-500 group-hover:scale-105"
+                          className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
                         />
+                        <div className="absolute inset-0 bg-gradient-to-t from-primary/60 to-transparent"></div>
+                        {/* NAMA & TIPE KAMAR */}
+                        <div className="absolute bottom-space-md left-space-md text-on-primary">
+                          <h3 className="font-headline-sm text-headline-sm text-on-primary">
+                            {room.name}
+                          </h3>
+                          <p className="font-label-sm text-label-sm text-primary-fixed-dim">
+                            {formatRoomType(room.type)}
+                          </p>
+                        </div>
+                      </div>
 
-                        {/* TOMBOL FAVORIT */}
-                        <button
-                          onClick={() => toggleFavorite(room.id, room.name)}
-                          aria-label="Simpan ke Favorit"
-                          className={`absolute top-4 left-4 z-10 flex h-9 w-9 items-center justify-center rounded-full shadow-md backdrop-blur-md transition-all hover:scale-110 active:scale-95 ${isFav
-                            ? "bg-rose-500 text-white"
-                            : "bg-white/80 text-gray-600 hover:bg-white hover:text-rose-500"
-                            }`}
-                        >
-                          <Heart className={`h-5 w-5 ${isFav ? "fill-current" : ""}`} />
-                        </button>
+                      {/* KONTEN DETAIL: KAPASITAS, LOKASI & FASILITAS */}
+                      <div className="p-space-lg flex flex-col flex-1 gap-space-md">
+                        <div className="grid grid-cols-2 gap-space-sm mb-space-xs">
+                          <div className="flex items-center gap-space-2xs text-on-surface-variant">
+                            <span className="material-symbols-outlined text-[18px]">
+                              group
+                            </span>
+                            <span className="font-body-sm text-body-sm">
+                              {room.capacity} Tamu
+                            </span>
+                          </div>
+                          <div className="flex items-center gap-space-2xs text-on-surface-variant">
+                            <span className="material-symbols-outlined text-[18px]">
+                              location_on
+                            </span>
+                            <span className="font-body-sm text-body-sm truncate">
+                              {room.location}
+                            </span>
+                          </div>
+                        </div>
 
-                        {/* BADGE TIPE KAMAR (Field `type` di Prisma) */}
-                        <div className="absolute top-4 right-4 z-10">
-                          <span className="rounded-full bg-[#1D4ED8]/90 px-3.5 py-1 text-xs font-semibold text-white shadow-md backdrop-blur-md border border-white/20">
-                            {room.type}
+                        <div className="flex flex-wrap gap-space-2xs mt-auto">
+                          {room.facilities.slice(0, 3).map((fac, idx) => (
+                            <span
+                              key={idx}
+                              className="px-space-xs py-space-2xs rounded-md bg-surface-container text-on-surface-variant font-label-sm text-label-sm border border-surface-container-high"
+                            >
+                              {fac}
+                            </span>
+                          ))}
+                          {room.facilities.length > 3 && (
+                            <span className="px-space-xs py-space-2xs rounded-md bg-surface-container text-on-surface-variant font-label-sm text-label-sm border border-surface-container-high">
+                              +{room.facilities.length - 3}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* HARGA DAN TOMBOL AKSI */}
+                      <div className="px-space-lg pb-space-lg pt-space-md border-t border-surface-container flex items-center justify-between">
+                        <div>
+                          <span className="block font-label-sm text-label-sm text-secondary uppercase mb-space-2xs">
+                            Mulai Dari
+                          </span>
+                          <div className="flex items-baseline gap-space-2xs">
+                            <span className="font-headline-sm text-headline-sm text-primary">
+                              Rp {room.price_per_night.toLocaleString("id-ID")}
+                            </span>
+                            <span className="font-body-sm text-body-sm text-on-surface-variant">
+                              /mlm
+                            </span>
+                          </div>
+                        </div>
+                        <div className="w-12 h-12 rounded-full bg-surface-container-high text-on-surface flex items-center justify-center group-hover:bg-primary group-hover:text-on-primary transition-all duration-300 group-hover:-rotate-45 shadow-sm group-hover:shadow-[0_8px_16px_rgba(14,47,118,0.25)]">
+                          <span className="material-symbols-outlined text-[20px]">
+                            arrow_forward
                           </span>
                         </div>
                       </div>
-
-                      {/* KONTEN DETAIL TEKS & HARGA KAMAR */}
-                      <div className="flex flex-1 flex-col justify-between p-6 sm:p-7">
-                        <div>
-                          {/* Nama Kamar & Kapasitas */}
-                          <div className="flex items-center justify-between gap-2">
-                            <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-gray-900 group-hover:text-[#1D4ED8] transition-colors">
-                              {room.name}
-                            </h2>
-                            <div className="flex items-center gap-1 bg-emerald-50 px-2.5 py-1 rounded text-xs font-semibold text-[#1D4ED8] shrink-0 border border-emerald-100">
-                              <Users className="h-3.5 w-3.5 text-emerald-600" />
-                              <span>{room.capacity} Tamu</span>
-                            </div>
-                          </div>
-
-                          {/* Lokasi Kamar (Field `location` di Prisma) */}
-                          <div className="mt-2 flex items-center gap-1 text-xs text-gray-500 font-medium">
-                            <MapPin className="h-3.5 w-3.5 text-emerald-600 shrink-0" />
-                            <span>{room.location}</span>
-                          </div>
-
-                          {/* LIST FASILITAS KAMAR (Field `facilities String[]` di Prisma) */}
-                          <div className="mt-5 flex flex-wrap items-center gap-1.5 border-t border-b border-gray-100 py-3.5">
-                            {room.facilities.map((fac, idx) => (
-                              <span
-                                key={idx}
-                                className="rounded-md bg-emerald-50 px-2.5 py-1 text-xs font-medium text-emerald-800"
-                              >
-                                {fac}
-                              </span>
-                            ))}
-                          </div>
-                        </div>
-
-                        {/* HARGA DAN TOMBOL AKSI */}
-                        <div className="mt-6 flex items-end justify-between gap-4 pt-2">
-                          <div>
-                            <span className="block text-[10px] font-bold tracking-wider text-gray-400 uppercase">
-                              HARGA / MALAM
-                            </span>
-                            <div className="flex items-baseline gap-1 mt-0.5">
-                              <span className="text-xl sm:text-2xl font-extrabold text-[#1D4ED8]">
-                                Rp {room.price_per_night.toLocaleString("id-ID")}
-                              </span>
-                            </div>
-                          </div>
-
-                          <Link
-                            href={`/kamar/${room.id}`}
-                            className="rounded-full bg-[#1D4ED8] px-6 py-2.5 text-xs font-bold text-white shadow transition-all hover:bg-[#1E3A8A] hover:shadow-md"
-                          >
-                            Detail Kamar
-                          </Link>
-                        </div>
-                      </div>
-                    </div>
+                    </Link>
                   );
                 })}
               </div>
+
+              {/* LOAD MORE BUTTON */}
+              {visibleCount < filteredRooms.length && (
+                <div className="mt-12 flex justify-center">
+                  <button
+                    onClick={() => setVisibleCount((prev) => prev + rowsPerPage)}
+                    className="px-8 py-3 rounded-full border border-surface-container-high text-on-surface hover:bg-surface-container transition-all font-bold text-[14px] shadow-sm hover:shadow-md"
+                  >
+                    Tampilkan Lebih Banyak
+                  </button>
+                </div>
+              )}
+              </>
             )}
           </div>
         </section>

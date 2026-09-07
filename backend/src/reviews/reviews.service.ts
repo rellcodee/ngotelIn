@@ -13,7 +13,7 @@ import { BookingStatus, Role } from 'src/common/enums';
 
 @Injectable()
 export class ReviewsService {
-  constructor(private prisma: PrismaService) { }
+  constructor(private prisma: PrismaService) {}
 
   async create(createReviewDto: CreateReviewDto, currentUser: any) {
     const { booking_id, rating, comment } = createReviewDto;
@@ -28,7 +28,7 @@ export class ReviewsService {
 
     if (booking.status !== BookingStatus.COMPLETED) {
       throw new BadRequestException(
-        `Gagal memberikan ulasan. Status booking saat ini '${booking.status}'. Ulasan hanya bisa diberikan jika booking sudah selesai (COMPLETED)!`
+        `Gagal memberikan ulasan. Status booking saat ini '${booking.status}'. Ulasan hanya bisa diberikan jika booking sudah selesai (COMPLETED)!`,
       );
     }
 
@@ -57,10 +57,17 @@ export class ReviewsService {
         data: review,
       };
     } catch (error) {
-      if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
-        throw new ConflictException('Anda sudah memberikan ulasan untuk booking ini!');
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === 'P2002'
+      ) {
+        throw new ConflictException(
+          'Anda sudah memberikan ulasan untuk booking ini!',
+        );
       }
-      throw new InternalServerErrorException('Terjadi kesalahan internal pada server');
+      throw new InternalServerErrorException(
+        'Terjadi kesalahan internal pada server',
+      );
     }
   }
 
@@ -103,9 +110,15 @@ export class ReviewsService {
 
     // Hitung total ulasan & rata-rata rating
     const totalReviews = reviews.length;
-    const averageRating = totalReviews > 0
-      ? Number((reviews.reduce((acc, curr) => acc + (curr.rating || 0), 0) / totalReviews).toFixed(1))
-      : 0;
+    const averageRating =
+      totalReviews > 0
+        ? Number(
+            (
+              reviews.reduce((acc, curr) => acc + (curr.rating || 0), 0) /
+              totalReviews
+            ).toFixed(1),
+          )
+        : 0;
 
     return {
       resource_id: resourceId,

@@ -16,7 +16,7 @@ import { AuthGuard } from '@nestjs/passport';
 @Controller('notifications')
 @UseGuards(AuthGuard('jwt'))
 export class NotificationsController {
-  constructor(private readonly notificationsService: NotificationsService) { }
+  constructor(private readonly notificationsService: NotificationsService) {}
 
   // GET /notifications || GET /notifications?is_read=false
   @Get()
@@ -42,7 +42,7 @@ export class NotificationsController {
 
   @Delete('user/:userId')
   deleteAll(@Param('userId', ParseUUIDPipe) userId: string) {
-    return this.notificationsService.deleteAll(userId)
+    return this.notificationsService.deleteAll(userId);
   }
 
   // PATCH /notifications/:id/read
@@ -56,6 +56,6 @@ export class NotificationsController {
 
   @Delete(':id')
   deleteNotif(@Param('id', ParseUUIDPipe) id: string) {
-    return this.notificationsService.deleteNotif(id)
+    return this.notificationsService.deleteNotif(id);
   }
 }

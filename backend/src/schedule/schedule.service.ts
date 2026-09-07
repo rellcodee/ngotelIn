@@ -12,7 +12,7 @@ import { ScheduleStatus } from 'src/common/enums';
 
 @Injectable()
 export class ScheduleService {
-  constructor(private prisma: PrismaService) { }
+  constructor(private prisma: PrismaService) {}
 
   // 1. pengecekan jadwal bentrok (Kunci Utama Dynamic Booking)
   private async checkOverlap(
@@ -25,7 +25,7 @@ export class ScheduleService {
       where: {
         resource_id,
         id: excludeScheduleId ? { not: excludeScheduleId } : undefined,
-        // HANYA status ini yang mengunci kamar. 
+        // HANYA status ini yang mengunci kamar.
         // Jika ada jadwal 'canceled', sistem akan mengabaikannya (kamar dianggap kosong).
         status: { in: [ScheduleStatus.BOOKED, ScheduleStatus.MAINTENANCE] },
         start_time: { lt: new Date(end_time) },
@@ -71,7 +71,8 @@ export class ScheduleService {
 
     // Cek Bentrok Internal (Cepat-cepatan di memory)
     const sorted = [...createScheduleDtos].sort(
-      (a, b) => new Date(a.start_time).getTime() - new Date(b.start_time).getTime(),
+      (a, b) =>
+        new Date(a.start_time).getTime() - new Date(b.start_time).getTime(),
     );
     for (let i = 0; i < sorted.length - 1; i++) {
       const current = sorted[i];
@@ -80,7 +81,9 @@ export class ScheduleService {
         current.resource_id === next.resource_id &&
         new Date(current.end_time) > new Date(next.start_time)
       ) {
-        throw new ConflictException('Ada jadwal yang tabrakan di dalam data yang Anda kirim!');
+        throw new ConflictException(
+          'Ada jadwal yang tabrakan di dalam data yang Anda kirim!',
+        );
       }
     }
 
@@ -98,7 +101,9 @@ export class ScheduleService {
       });
 
       if (dbOverlap) {
-        throw new ConflictException('Sebagian jadwal yang dikirim bentrok dengan database!');
+        throw new ConflictException(
+          'Sebagian jadwal yang dikirim bentrok dengan database!',
+        );
       }
     }
 
@@ -184,15 +189,24 @@ export class ScheduleService {
     // jika statusnya akan diubah jadi canceled, kita tidak perlu cek bentrok lagi.
     // kita hanya cek bentrok kalau statusnya dibiarkan booked/maintenance
     if (
-      (currentStatus === ScheduleStatus.BOOKED || currentStatus === ScheduleStatus.MAINTENANCE) &&
-      (updateScheduleDto.start_time || updateScheduleDto.end_time || updateScheduleDto.resource_id)
+      (currentStatus === ScheduleStatus.BOOKED ||
+        currentStatus === ScheduleStatus.MAINTENANCE) &&
+      (updateScheduleDto.start_time ||
+        updateScheduleDto.end_time ||
+        updateScheduleDto.resource_id)
     ) {
-      const resourceId = updateScheduleDto.resource_id || existingSchedule.resource_id;
-      const startTime = updateScheduleDto.start_time || existingSchedule.start_time.toISOString();
-      const endTime = updateScheduleDto.end_time || existingSchedule.end_time.toISOString();
+      const resourceId =
+        updateScheduleDto.resource_id || existingSchedule.resource_id;
+      const startTime =
+        updateScheduleDto.start_time ||
+        existingSchedule.start_time.toISOString();
+      const endTime =
+        updateScheduleDto.end_time || existingSchedule.end_time.toISOString();
 
       if (!resourceId) {
-        throw new ConflictException('Resource ID tidak valid atau tidak ditemukan pada jadwal ini.');
+        throw new ConflictException(
+          'Resource ID tidak valid atau tidak ditemukan pada jadwal ini.',
+        );
       }
 
       await this.checkOverlap(resourceId, startTime, endTime, id);
@@ -215,10 +229,17 @@ export class ScheduleService {
         data: deleted,
       };
     } catch (error) {
-      if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2025') {
-        throw new NotFoundException(`Schedule dengan ID ${id} tidak ditemukan.`);
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === 'P2025'
+      ) {
+        throw new NotFoundException(
+          `Schedule dengan ID ${id} tidak ditemukan.`,
+        );
       }
-      throw new InternalServerErrorException('Terjadi kesalahan saat menghapus jadwal');
+      throw new InternalServerErrorException(
+        'Terjadi kesalahan saat menghapus jadwal',
+      );
     }
   }
 }

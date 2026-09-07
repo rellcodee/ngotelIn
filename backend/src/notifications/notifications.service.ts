@@ -7,21 +7,28 @@ import { QueryNotificationDto } from './dto/query-notification.dto';
 
 @Injectable()
 export class NotificationsService {
-  constructor(private readonly prisma: PrismaService) { }
+  constructor(private readonly prisma: PrismaService) {}
 
   // EVENT LISTENER (INTERNAL SYSTEM)
   @OnEvent('booking.status_updated')
   async handleBookingStatusUpdated(payload: BookingStatusUpdatedEvent) {
     const messageMap: Record<BookingStatus, string> = {
-      [BookingStatus.PENDING]: 'Pesanan berhasil dibuat. Silakan lakukan pembayaran!',
-      [BookingStatus.APPROVED]: 'Pembayaran dikonfirmasi! Booking kamu resmi aman.',
-      [BookingStatus.CHECKED_IN]: 'Proses check-in berhasil. Selamat menikmati layanan kami!',
-      [BookingStatus.COMPLETED]: 'Sewa telah selesai. Terima kasih! Jangan lupa berikan ulasan ya.',
-      [BookingStatus.REJECTED]: 'Maaf, pengajuan booking kamu ditolak oleh staff.',
+      [BookingStatus.PENDING]:
+        'Pesanan berhasil dibuat. Silakan lakukan pembayaran!',
+      [BookingStatus.APPROVED]:
+        'Pembayaran dikonfirmasi! Booking kamu resmi aman.',
+      [BookingStatus.CHECKED_IN]:
+        'Proses check-in berhasil. Selamat menikmati layanan kami!',
+      [BookingStatus.COMPLETED]:
+        'Sewa telah selesai. Terima kasih! Jangan lupa berikan ulasan ya.',
+      [BookingStatus.REJECTED]:
+        'Maaf, pengajuan booking kamu ditolak oleh staff.',
       [BookingStatus.CANCELED]: 'Pesanan kamu telah dibatalkan.',
     };
 
-    const message = messageMap[payload.status] || `Status pesanan kamu sekarang: ${payload.status}`;
+    const message =
+      messageMap[payload.status] ||
+      `Status pesanan kamu sekarang: ${payload.status}`;
 
     return this.prisma.notifications.create({
       data: {
@@ -82,7 +89,9 @@ export class NotificationsService {
     });
 
     if (!notification) {
-      throw new NotFoundException('Notifikasi tidak ditemukan atau bukan milik kamu!');
+      throw new NotFoundException(
+        'Notifikasi tidak ditemukan atau bukan milik kamu!',
+      );
     }
 
     return this.prisma.notifications.update({
@@ -110,26 +119,28 @@ export class NotificationsService {
     });
 
     if (!notif) {
-      throw new NotFoundException('Notifikasi tidak ditemukan atau bukan milik kamu!');
+      throw new NotFoundException(
+        'Notifikasi tidak ditemukan atau bukan milik kamu!',
+      );
     }
 
     await this.prisma.notifications.delete({
-      where: { id }
-    })
+      where: { id },
+    });
 
-    return { message: 'Notifikasi berhasil dihapus!' }
+    return { message: 'Notifikasi berhasil dihapus!' };
   }
 
   async deleteAll(userId: string) {
     const notifications = await this.prisma.notifications.findMany({
-      where: { user_id: userId }
+      where: { user_id: userId },
     });
     if (!notifications) {
       throw new NotFoundException('Notifikasi tidak ditemukan');
     }
     await this.prisma.notifications.deleteMany({
-      where: { user_id: userId }
+      where: { user_id: userId },
     });
-    return { message: 'Semua notifikasi berhasil dihapus!' }
+    return { message: 'Semua notifikasi berhasil dihapus!' };
   }
 }
