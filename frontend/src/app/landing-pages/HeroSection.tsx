@@ -14,7 +14,7 @@ export default function HeroSection() {
           <Image
             src="/images/hero-hotel.png"
             alt="Hotel Resort"
-            fill
+            fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             className="object-cover object-center"
             priority
           />

@@ -217,7 +217,7 @@ export default function DetailKamarPage() {
               <Image
                 src={room.heroImage}
                 alt={room.name}
-                fill
+                fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 priority
                 className="object-cover transition-transform duration-700 ease-out hover:scale-105"
               />
@@ -233,7 +233,7 @@ export default function DetailKamarPage() {
                   <Image
                     src={img}
                     alt={`${room.name} gallery ${idx + 1}`}
-                    fill
+                    fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     className="object-cover transition-transform duration-700 ease-out hover:scale-105"
                   />
                 </div>
@@ -391,7 +391,7 @@ export default function DetailKamarPage() {
             <Image
               src={allImages[lightboxIndex]}
               alt={`Gallery image ${lightboxIndex + 1}`}
-              fill
+              fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
               className="object-contain"
             />
           </div>

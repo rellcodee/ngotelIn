@@ -15,9 +15,7 @@ const hotelImages = [
   "https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=800&q=80",
   "https://images.unsplash.com/photo-1611892440504-42a792e24d32?auto=format&fit=crop&w=800&q=80",
   "https://images.unsplash.com/photo-1596394516093-501ba68a0ba6?auto=format&fit=crop&w=800&q=80",
-  "https://images.unsplash.com/photo-1522771731478-44bf10472cb3?auto=format&fit=crop&w=800&q=80",
   "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?auto=format&fit=crop&w=800&q=80",
-  "https://images.unsplash.com/photo-1618773928120-2c40951af173?auto=format&fit=crop&w=800&q=80",
   "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=800&q=80",
   "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=800&q=80"
 ];
@@ -38,14 +36,14 @@ async function main() {
     }
   });
 
-  console.log("Memulai proses seeding 50 kamar...");
+  console.log("Memulai proses seeding 15 kamar...");
   
-  for (let i = 1; i <= 50; i++) {
+  for (let i = 1; i <= 15; i++) {
     // Tentukan tipe kamar berdasarkan i
     let typeConfig;
-    if (i <= 30) typeConfig = roomTypes[0]; // 30 Standard
-    else if (i <= 45) typeConfig = roomTypes[1]; // 15 Suite
-    else typeConfig = roomTypes[2]; // 5 Presidential Suite
+    if (i <= 8) typeConfig = roomTypes[0]; // 8 Standard
+    else if (i <= 13) typeConfig = roomTypes[1]; // 5 Suite
+    else typeConfig = roomTypes[2]; // 2 Presidential Suite
 
     const roomName = `Kamar ${typeConfig.type} - ${100 + i}`;
     
@@ -60,7 +58,7 @@ async function main() {
         create: {
           name: roomName,
           type: typeConfig.type,
-          location: `Lantai ${Math.ceil(i / 10)}`,
+          location: `Lantai ${Math.ceil(i / 5)}`,
           description: `Nikmati kenyamanan menginap di ${roomName} kami. Dilengkapi dengan fasilitas modern untuk pengalaman terbaik Anda.`,
           capacity: typeConfig.cap,
           price_per_night: typeConfig.price,

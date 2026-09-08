@@ -41,26 +41,37 @@ export default function KamarPage() {
   const [selectedCategory, setSelectedCategory] = useState("Semua");
   const [showContactToast, setShowContactToast] = useState(false);
   const [rowsPerPage, setRowsPerPage] = useState(6);
-  const [visibleCount, setVisibleCount] = useState(6);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [hasNextPage, setHasNextPage] = useState(false);
   const [roomsData, setRoomsData] = useState<RoomItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
+  // Daftar kategori tipe kamar (bisa disesuaikan atau diambil dari API terpisah jika ada)
+  const dynamicCategories = ["Semua", "Standard", "Suite", "Presidential Suite"];
 
-
-  // Derive unique categories from fetched rooms
-  const dynamicCategories = useMemo(() => {
-    const types = new Set(roomsData.map((room) => formatRoomType(room.type)));
-    return ["Semua", ...Array.from(types)];
-  }, [roomsData]);
+  // Reset page ke 1 kalau filter berubah
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery, selectedCategory, rowsPerPage]);
 
   useEffect(() => {
     const fetchRooms = async () => {
+      setIsLoading(true);
       try {
-        const response = await fetch("http://localhost:3001/resources");
+        const typeParam = selectedCategory === "Semua" ? "" : selectedCategory.toUpperCase().replace(" ", "_");
+        const limitParam = rowsPerPage === 9999 ? 100 : rowsPerPage;
+        
+        const url = new URL("http://localhost:3001/resources");
+        if (searchQuery) url.searchParams.append("search", searchQuery);
+        if (typeParam) url.searchParams.append("type", typeParam);
+        url.searchParams.append("page", currentPage.toString());
+        url.searchParams.append("limit", limitParam.toString());
+
+        const response = await fetch(url.toString());
         const json = await response.json();
 
         if (response.ok) {
-          const dataArray = Array.isArray(json) ? json : json.data || [];
+          const dataArray = json.data || [];
           const formattedRooms: RoomItem[] = dataArray.map(
             (room: RoomItem & { room_images?: { image_url: string }[] }) => ({
               id: room.id,
@@ -76,7 +87,14 @@ export default function KamarPage() {
                   : FALLBACK_IMAGE,
             }),
           );
-          setRoomsData(formattedRooms);
+          
+          if (currentPage === 1) {
+            setRoomsData(formattedRooms);
+          } else {
+            setRoomsData(prev => [...prev, ...formattedRooms]);
+          }
+          
+          setHasNextPage(json.meta?.has_next_page || false);
         }
       } catch (error) {
         console.error("Gagal mengambil data kamar", error);
@@ -85,24 +103,12 @@ export default function KamarPage() {
       }
     };
 
-    fetchRooms();
-  }, []);
+    const timeoutId = setTimeout(() => {
+      fetchRooms();
+    }, 300);
 
-  const filteredRooms = roomsData.filter((room) => {
-    const matchesSearch =
-      room.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      room.location.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      room.facilities.some((f) =>
-        f.toLowerCase().includes(searchQuery.toLowerCase()),
-      );
-    const matchesCategory =
-      selectedCategory === "Semua" || formatRoomType(room.type) === selectedCategory;
-    return matchesSearch && matchesCategory;
-  });
-
-  const paginatedRooms = useMemo(() => {
-    return filteredRooms.slice(0, visibleCount);
-  }, [filteredRooms, visibleCount]);
+    return () => clearTimeout(timeoutId);
+  }, [searchQuery, selectedCategory, rowsPerPage, currentPage]);
 
   return (
     <div className="min-h-screen bg-surface-bright font-body-md text-on-surface selection:bg-primary selection:text-on-primary">
@@ -166,7 +172,6 @@ export default function KamarPage() {
                 value={searchQuery}
                 onChange={(e) => {
                   setSearchQuery(e.target.value);
-                  setVisibleCount(rowsPerPage);
                 }}
                 className="w-full rounded-full border border-surface-container-high bg-white pl-12 pr-5 py-3 text-[14px] text-on-surface transition-all focus:border-primary focus:bg-white focus:outline-none focus:ring-2 focus:ring-primary/20"
               />
@@ -180,7 +185,6 @@ export default function KamarPage() {
                     key={cat}
                     onClick={() => {
                       setSelectedCategory(cat);
-                      setVisibleCount(rowsPerPage);
                     }}
                     className={`rounded-full px-5 py-2.5 text-[14px] font-bold whitespace-nowrap transition-all ${
                       selectedCategory === cat
@@ -200,7 +204,6 @@ export default function KamarPage() {
                   onChange={(e) => {
                     const newRows = Number(e.target.value);
                     setRowsPerPage(newRows);
-                    setVisibleCount(newRows);
                   }}
                   className="bg-surface border border-surface-container-high rounded-full px-3 py-1.5 text-[14px] text-on-surface focus:outline-none focus:ring-2 focus:ring-primary/20 cursor-pointer"
                 >
@@ -221,7 +224,7 @@ export default function KamarPage() {
               <div className="flex justify-center items-center py-20">
                 <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
               </div>
-            ) : filteredRooms.length === 0 ? (
+            ) : roomsData.length === 0 ? (
               <div className="rounded-3xl bg-surface p-12 text-center shadow-sm border border-surface-container-low max-w-lg mx-auto">
                 <span className="material-symbols-outlined mx-auto text-[48px] text-on-surface-variant mb-3 block">search</span>
                 <h3 className="font-headline-sm text-on-surface">
@@ -235,7 +238,6 @@ export default function KamarPage() {
                   onClick={() => {
                     setSearchQuery("");
                     setSelectedCategory("Semua");
-                    setVisibleCount(rowsPerPage);
                   }}
                   className="mt-6 rounded-full bg-primary px-6 py-2.5 text-[14px] font-bold text-on-primary shadow-sm hover:bg-primary/90 transition-all"
                 >
@@ -245,7 +247,7 @@ export default function KamarPage() {
             ) : (
               <>
                 <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:gap-8">
-                {paginatedRooms.map((room) => {
+                {roomsData.map((room) => {
                   return (
                     <Link
                       href={`/kamar/${room.id}`}
@@ -342,13 +344,14 @@ export default function KamarPage() {
               </div>
 
               {/* LOAD MORE BUTTON */}
-              {visibleCount < filteredRooms.length && (
+              {hasNextPage && (
                 <div className="mt-12 flex justify-center">
                   <button
-                    onClick={() => setVisibleCount((prev) => prev + rowsPerPage)}
+                    onClick={() => setCurrentPage((prev) => prev + 1)}
                     className="px-8 py-3 rounded-full border border-surface-container-high text-on-surface hover:bg-surface-container transition-all font-bold text-[14px] shadow-sm hover:shadow-md"
+                    disabled={isLoading}
                   >
-                    Tampilkan Lebih Banyak
+                    {isLoading ? "Memuat..." : "Tampilkan Lebih Banyak"}
                   </button>
                 </div>
               )}

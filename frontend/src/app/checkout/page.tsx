@@ -361,7 +361,7 @@ export default function CheckoutPage() {
                   </div>
 
                   <div className="relative h-40 w-full overflow-hidden rounded-2xl bg-gray-100">
-                    <Image src={selectedRoom.image} alt={selectedRoom.name} fill className="object-cover" />
+                    <Image src={selectedRoom.image} alt={selectedRoom.name} fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" className="object-cover" />
                   </div>
 
                   {/* Breakdown Harga Tagihan */}

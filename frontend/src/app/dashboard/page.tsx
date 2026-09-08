@@ -368,7 +368,7 @@ export default function UserDashboardPage() {
             <Image
               src="https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1920&q=80"
               alt="SiniBook Hotel Outer View"
-              fill
+              fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
               priority
               className="object-cover opacity-20"
             />
@@ -551,7 +551,7 @@ export default function UserDashboardPage() {
                             <Image
                               src={booking.room_image}
                               alt={booking.room_name}
-                              fill
+                              fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                               className="object-cover"
                             />
                             <div className="absolute top-3 left-3">

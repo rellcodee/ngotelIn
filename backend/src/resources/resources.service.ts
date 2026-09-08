@@ -197,16 +197,40 @@ export class ResourcesService {
   async getFacilities() {
     try {
       const resources = await this.prisma.resources.findMany({
-        select: { facilities: true },
+        select: { type: true, facilities: true },
       });
 
-      // gabung menjadi 1 array
-      const allFacilities = resources.flatMap((r) => r.facilities || []);
+      const grouped: Record<string, string[]> = {};
 
-      // kill duplikat
-      const uniqueFacilities = [...new Set(allFacilities)];
+      resources.forEach((room) => {
+        const type = room.type || "Lainnya";
+        const formattedType = type
+          .replace(/_/g, " ")
+          .split(" ")
+          .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+          .join(" ");
 
-      return uniqueFacilities;
+        if (!grouped[formattedType]) {
+          grouped[formattedType] = [];
+        }
+        
+        if (room.facilities && Array.isArray(room.facilities)) {
+          grouped[formattedType].push(...room.facilities);
+        }
+      });
+
+      // kill duplikat & urutkan
+      for (const key in grouped) {
+        grouped[key] = [...new Set(grouped[key])].sort();
+      }
+
+      // Pastikan urutan key juga rapi
+      const sortedGrouped: Record<string, string[]> = {};
+      Object.keys(grouped).sort().forEach(key => {
+        sortedGrouped[key] = grouped[key];
+      });
+
+      return sortedGrouped;
     } catch (err) {
       console.error('Gagal mengambil fasilitas:', err);
       throw new InternalServerErrorException('Gagal memuat daftar fasilitas');

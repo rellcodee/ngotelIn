@@ -64,40 +64,12 @@ export default function FacilitiesSection() {
   useEffect(() => {
     const fetchFacilities = async () => {
       try {
-        const response = await fetch("http://localhost:3001/resources");
-        const json = await response.json();
-        const dataArray = Array.isArray(json) ? json : json.data || [];
+        const response = await fetch("http://localhost:3001/resources/facilities");
+        const groupedData = await response.json();
 
-        const groups: Record<string, Set<string>> = {};
-
-        dataArray.forEach((room: any) => {
-          const type = room.type || "Lainnya";
-          const formattedType = type
-            .replace(/_/g, " ")
-            .split(" ")
-            .map(
-              (word: string) =>
-                word.charAt(0).toUpperCase() + word.slice(1).toLowerCase(),
-            )
-            .join(" ");
-
-          if (!groups[formattedType]) {
-            groups[formattedType] = new Set();
-          }
-          if (room.facilities && Array.isArray(room.facilities)) {
-            room.facilities.forEach((f: string) =>
-              groups[formattedType].add(f),
-            );
-          }
-        });
-
-        const finalGrouped: Record<string, string[]> = {};
-        const keys = Object.keys(groups).sort();
-        keys.forEach((key) => {
-          finalGrouped[key] = Array.from(groups[key]).sort();
-        });
-
-        setGroupedFacilities(finalGrouped);
+        setGroupedFacilities(groupedData);
+        
+        const keys = Object.keys(groupedData);
         if (keys.length > 0) {
           setActiveTab(keys[0]);
         }

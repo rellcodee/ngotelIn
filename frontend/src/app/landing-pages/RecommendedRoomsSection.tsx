@@ -33,15 +33,13 @@ export default function RecommendedRoomsSection() {
   useEffect(() => {
     const fetchRooms = async () => {
       try {
-        const response = await fetch("http://localhost:3001/resources");
+        const response = await fetch("http://localhost:3001/resources/recommended");
         const json = await response.json();
 
         if (response.ok) {
           const dataArray = Array.isArray(json) ? json : json.data || [];
-          const formattedRooms: ResourceRoom[] = [...dataArray]
-            .reverse()
-            .slice(0, 3)
-            .map((room: ResourceRoom & { room_images?: { image_url: string }[] }) => ({
+          const formattedRooms: ResourceRoom[] = dataArray.map(
+            (room: ResourceRoom & { room_images?: { image_url: string }[] }) => ({
               id: room.id,
               name: room.name,
               type: room.type,
@@ -53,7 +51,8 @@ export default function RecommendedRoomsSection() {
                 room.room_images && room.room_images.length > 0
                   ? room.room_images[0].image_url
                   : FALLBACK_IMAGE,
-            }));
+            })
+          );
           setRecommendedRooms(formattedRooms);
         }
       } catch (error) {
