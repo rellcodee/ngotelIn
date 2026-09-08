@@ -29,7 +29,8 @@ model resources {
   
   price_per_night Int           @default(0) 
   facilities      String[]      @default([]) 
-
+  created_at      DateTime      @default(now())
+  updated_at DateTime @default(now()) @updatedAt
   schedules schedules[]
   room_images room_images[] 
 }

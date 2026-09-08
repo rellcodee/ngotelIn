@@ -7,6 +7,7 @@ import * as fs from 'fs/promises';
 import * as path from 'path';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import type { Cache } from 'cache-manager';
+import { error } from 'console';
 
 @Injectable()
 export class ResourcesService {
@@ -91,20 +92,29 @@ export class ResourcesService {
     }
   }
 
-  async findAll(query?: { search?: string; location?: string; type?: string }) {
+  async findAll(query?: {
+    search?: string;
+    location?: string;
+    type?: string;
+    page?: string;
+    limit?: string;
+  }) {
     const { search, location, type } = query || {};
+
+    // halaman 1 = 10page
+    const page = Math.max(1, Number(query?.page) || 1);
+    const limit = Math.max(1, Number(query?.limit) || 10);
+    const skip = (page - 1) * limit;
 
     const currentVersion = (await this.cacheManager.get<number>('resources:version')) || 1;
 
     const searchPart = search ? `search:${search.toLowerCase().trim()}` : '';
     const locPart = location ? `loc:${location.toLowerCase().trim()}` : '';
     const typePart = type ? `type:${type.toLowerCase().trim()}` : '';
+    const pagePart = `p:${page}:lim:${limit}`;
 
-    const filterKey = [searchPart, locPart, typePart].filter(Boolean).join(':');
-
-    const cacheKey = filterKey
-      ? `resources:v${currentVersion}:filter:${filterKey}`
-      : `resources:v${currentVersion}:all`;
+    const filterKey = [searchPart, locPart, typePart, pagePart].filter(Boolean).join(':');
+    const cacheKey = `resources:v${currentVersion}:${filterKey}`;
 
     const cachedData = await this.cacheManager.get(cacheKey);
     if (cachedData) {
@@ -121,21 +131,61 @@ export class ResourcesService {
     }
 
     if (location) {
-      whereCondition.type = { equals: type, mode: 'insensitive' };
+      whereCondition.location = { contains: location, mode: 'insensitive' };
     }
     if (type) {
-      whereCondition.type = type;
+      whereCondition.type = { equals: type, mode: 'insensitive' };
     }
 
-    const resources = await this.prisma.resources.findMany({
-      where: whereCondition,
-      include: {
-        room_images: true,
-      },
-    });
+    const [totalItems, resources] = await this.prisma.$transaction([
+      this.prisma.resources.count({ where: whereCondition }),
+      this.prisma.resources.findMany({
+        where: whereCondition,
+        include: {
+          room_images: true,
+        },
+        skip,
+        take: limit,
+        orderBy: { name: 'asc' },
+      }),
+    ]);
 
-    await this.cacheManager.set(cacheKey, resources, 3600000);
-    return resources;
+    const totalPages = Math.ceil(totalItems / limit);
+
+    const result = {
+      data: resources,
+      meta: {
+        total_items: totalItems,
+        total_pages: totalPages,
+        current_page: page,
+        limit: limit,
+        has_next_page: page < totalPages,
+        has_prev_page: page > 1,
+      },
+    };
+
+    await this.cacheManager.set(cacheKey, result, 3600000);
+
+    return result;
+  }
+
+  async getFacilities() {
+    try {
+      const resources = await this.prisma.resources.findMany({
+        select: { facilities: true },
+      });
+
+      // gabung menjadi 1 array
+      const allFacilities = resources.flatMap((r) => r.facilities || []);
+
+      // kill duplikat
+      const uniqueFacilities = [...new Set(allFacilities)];
+
+      return uniqueFacilities;
+    } catch (err) {
+      console.error('Gagal mengambil fasilitas:', err);
+      throw new InternalServerErrorException('Gagal memuat daftar fasilitas');
+    }
   }
 
   async findOne(id: string) {
@@ -396,4 +446,24 @@ export class ResourcesService {
       },
     });
   }
+
+  async getRecommendedRooms() {
+    const currentVersion = (await this.cacheManager.get<number>('resources:version')) || 1;
+    const cacheKey = `resources:v${currentVersion}:recommended`;
+
+    const cached = await this.cacheManager.get(cacheKey);
+    if (cached) return cached;
+
+    const rooms = await this.prisma.resources.findMany({
+      take: 3,
+      orderBy: { created_at: 'desc' },
+      include: {
+        room_images: true,
+      },
+    });
+
+    await this.cacheManager.set(cacheKey, rooms, 3600000);
+    return rooms;
+  }
+
 }

@@ -68,9 +68,26 @@ export class ResourcesController {
 
   @Get()
   findAll(
-    @Query() query: { search?: string; location?: string; type?: string },
+    @Query() query: {
+      search?: string;
+      location?: string;
+      type?: string;
+      page?: string;
+      limit?: string;
+    },
   ) {
     return this.resourcesService.findAll(query);
+  }
+
+  @Get('facilities')
+  async getFacilities(
+  ) {
+    return this.resourcesService.getFacilities();
+  }
+
+  @Get('recommended')
+  getRecommendedRooms() {
+    return this.resourcesService.getRecommendedRooms();
   }
 
   @Get('available')
