@@ -14,9 +14,11 @@ export class ResourcesService {
   constructor(private readonly prisma: PrismaService,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
   ) { }
+
+
   async create(createResourceDto: CreateResourceDto, files?: Express.Multer.File[]) {
     try {
-
+      const ONE_YEAR_MS = 1000 * 60 * 60 * 24 * 365;
       if (files && files.length > 5) {
         throw new BadRequestException('Maksimal foto yang diunggah adalah 5 file!');
       }
@@ -71,7 +73,7 @@ export class ResourcesService {
         });
       }
 
-      await this.cacheManager.set('resources:version', Date.now(), 0);
+      await this.cacheManager.set('resources:version', Date.now(), ONE_YEAR_MS);
       return await this.prisma.resources.findUnique({
         where: { id: resource.id },
         include: { room_images: true },
@@ -119,7 +121,7 @@ export class ResourcesService {
     }
 
     if (location) {
-      whereCondition.location = { contains: location, mode: 'insensitive' };
+      whereCondition.type = { equals: type, mode: 'insensitive' };
     }
     if (type) {
       whereCondition.type = type;
@@ -168,6 +170,7 @@ export class ResourcesService {
     }
 
     try {
+      const ONE_YEAR_MS = 1000 * 60 * 60 * 24 * 365;
       const currentImagesCount = existingResource.room_images.length;
       const deleteCount = deleteImageIds ? deleteImageIds.length : 0;
       const newFilesCount = files ? files.length : 0;
@@ -263,7 +266,7 @@ export class ResourcesService {
         },
       });
 
-      await this.cacheManager.set('resources:version', Date.now(), 0);
+      await this.cacheManager.set('resources:version', Date.now(), ONE_YEAR_MS);
 
       return await this.prisma.resources.findUnique({
         where: { id },
@@ -292,6 +295,7 @@ export class ResourcesService {
     }
 
     try {
+      const ONE_YEAR_MS = 1000 * 60 * 60 * 24 * 365;
       // 1. Hapus semua file fisik dari disk lokal
       if (resource.room_images && resource.room_images.length > 0) {
         const deletePromises = resource.room_images.map(async (image) => {
@@ -313,7 +317,7 @@ export class ResourcesService {
         where: { id },
       });
 
-      await this.cacheManager.set('resources:version', Date.now(), 0);
+      await this.cacheManager.set('resources:version', Date.now(), ONE_YEAR_MS);
       return {
         message: `Kamar "${resource.name}" beserta seluruh gambarnya berhasil dihapus dari server dan database!`,
       };

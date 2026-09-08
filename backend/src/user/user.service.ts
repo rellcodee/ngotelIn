@@ -149,10 +149,16 @@ export class UserService {
     // Mengecek apakah yang request ini punya hak atas akun ini
     this.checkAccountOwnership(id, currentUser);
 
+    const payload = { ...updateUserDto };
+
+    if (currentUser.role !== Role.ADMIN) {
+      delete payload.role;
+    }
+
     try {
       const user = await this.prisma.users.update({
         where: { id },
-        data: updateUserDto,
+        data: payload,
       });
 
       const { password_hash: _, ...result } = user;
