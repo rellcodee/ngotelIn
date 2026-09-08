@@ -1,17 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import {
-  CalendarDays,
-  CalendarRange,
-  Search,
-  CheckCircle2,
-  XCircle,
-  Clock,
-  Edit2,
-  Plus,
-  Trash2,
-} from "lucide-react";
+
 import CustomModal from "@/components/CustomModal";
 
 // --- TYPES ---
@@ -393,7 +383,7 @@ export default function AdminReservasiPage() {
             onClick={() => setIsAddScheduleOpen(true)}
             className="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-xl font-medium shadow-sm transition-all hover:-translate-y-0.5 active:scale-95"
           >
-            <Plus className="w-4 h-4" /> Tambah Jadwal
+            <span className="material-symbols-outlined text-[16px]">add</span> Tambah Jadwal
           </button>
         )}
       </div>
@@ -408,7 +398,7 @@ export default function AdminReservasiPage() {
               : "text-gray-500 hover:text-gray-700 hover:bg-gray-200/50"
           }`}
         >
-          <CalendarDays className="w-4 h-4" />
+          <span className="material-symbols-outlined text-[16px]">calendar_month</span>
           Daftar Reservasi
         </button>
         <button
@@ -419,7 +409,7 @@ export default function AdminReservasiPage() {
               : "text-gray-500 hover:text-gray-700 hover:bg-gray-200/50"
           }`}
         >
-          <CalendarRange className="w-4 h-4" />
+          <span className="material-symbols-outlined text-[16px]">date_range</span>
           Daftar Jadwal
         </button>
       </div>
@@ -508,7 +498,7 @@ export default function AdminReservasiPage() {
                           className="p-2 text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors shadow-sm inline-flex"
                           title="Update Status"
                         >
-                          <Edit2 className="w-4 h-4" />
+                          <span className="material-symbols-outlined text-[16px]">edit</span>
                         </button>
                       </td>
                     </tr>
@@ -569,14 +559,14 @@ export default function AdminReservasiPage() {
                             className="p-2 text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors shadow-sm inline-flex"
                             title="Edit Jadwal"
                           >
-                            <Clock className="w-4 h-4" />
+                            <span className="material-symbols-outlined text-[16px]">schedule</span>
                           </button>
                           <button
                             onClick={() => handleDeleteSchedule(sched.id)}
                             className="p-2 text-rose-600 bg-rose-50 hover:bg-rose-100 rounded-lg transition-colors shadow-sm inline-flex"
                             title="Hapus Jadwal"
                           >
-                            <Trash2 className="w-4 h-4" />
+                            <span className="material-symbols-outlined text-[16px]">delete</span>
                           </button>
                         </div>
                       </td>
@@ -608,7 +598,7 @@ export default function AdminReservasiPage() {
                 onClick={() => setIsEditBookingOpen(false)}
                 className="text-gray-400 hover:text-gray-600"
               >
-                <XCircle className="w-5 h-5" />
+                <span className="material-symbols-outlined text-[20px]">cancel</span>
               </button>
             </div>
             <form onSubmit={handleUpdateBooking} className="p-6 space-y-4">
@@ -661,7 +651,7 @@ export default function AdminReservasiPage() {
                 onClick={() => setIsAddScheduleOpen(false)}
                 className="text-gray-400 hover:text-gray-600"
               >
-                <XCircle className="w-5 h-5" />
+                <span className="material-symbols-outlined text-[20px]">cancel</span>
               </button>
             </div>
             <form onSubmit={handleAddMaintenance} className="p-6 space-y-4">
@@ -770,7 +760,7 @@ export default function AdminReservasiPage() {
           <div className="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden flex flex-col animate-in zoom-in-95">
             <div className="px-6 py-4 border-b border-gray-100 bg-slate-50 flex justify-between items-center">
               <h3 className="text-lg font-bold text-gray-900">Edit Jadwal</h3>
-              <button onClick={() => setIsRescheduleOpen(false)} className="text-gray-400 hover:text-gray-600"><XCircle className="w-5 h-5"/></button>
+              <button onClick={() => setIsRescheduleOpen(false)} className="text-gray-400 hover:text-gray-600"><span className="material-symbols-outlined text-[20px]">cancel</span></button>
             </div>
             <form onSubmit={handleReschedule} className="p-6 space-y-4">
               <div>

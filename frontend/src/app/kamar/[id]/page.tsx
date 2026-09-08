@@ -4,19 +4,7 @@ import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
-import {
-  Users,
-  MapPin,
-  CheckCircle2,
-  Lock,
-  ArrowLeft,
-  Calendar,
-  X,
-  ShieldCheck,
-  Heart,
-  SearchX,
-  Building2,
-} from "lucide-react";
+
 
 import Header from "../../landing-pages/Header";
 import Footer from "../../landing-pages/Footer";
@@ -35,7 +23,6 @@ interface RoomDetail {
   gallery: string[];
 }
 
-
 import { useEffect } from "react";
 
 export default function DetailKamarPage() {
@@ -45,14 +32,12 @@ export default function DetailKamarPage() {
   const [room, setRoom] = useState<RoomDetail | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  const [isFavorite, setIsFavorite] = useState(false);
-  const [favoriteToast, setFavoriteToast] = useState<string | null>(null);
+
   const router = useRouter();
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
-
-  const [checkInDate, setCheckInDate] = useState("2026-08-25");
-  const [checkOutDate, setCheckOutDate] = useState("2026-08-27");
-  const [guestCount, setGuestCount] = useState("2");
+  
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+  const allImages = room ? [room.heroImage, ...room.gallery] : [];
 
   useEffect(() => {
     if (!roomId) return;
@@ -71,7 +56,7 @@ export default function DetailKamarPage() {
 
           const gallery =
             roomImages.length > 1
-              ? roomImages.slice(1).map((img: any) => img.image_url)
+              ? roomImages.slice(1).map((img: { image_url: string }) => img.image_url)
               : [
                   "https://images.unsplash.com/photo-1611892440504-42a792e24d32?auto=format&fit=crop&w=600&q=80",
                   "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=600&q=80",
@@ -103,15 +88,29 @@ export default function DetailKamarPage() {
     fetchRoomDetail();
   }, [roomId]);
 
-  const handleToggleFavorite = () => {
-    setIsFavorite(!isFavorite);
-    setFavoriteToast(
-      !isFavorite
-        ? `❤️ Ditambahkan ke Kamar Favorit`
-        : `Dihapus dari Kamar Favorit`,
-    );
-    setTimeout(() => setFavoriteToast(null), 3000);
-  };
+  // Handle navigasi keyboard untuk Lightbox
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (lightboxIndex === null) return;
+      
+      if (e.key === "Escape") {
+        setLightboxIndex(null);
+      } else if (e.key === "ArrowRight") {
+        setLightboxIndex((prev) => 
+          prev !== null ? (prev + 1) % allImages.length : null
+        );
+      } else if (e.key === "ArrowLeft") {
+        setLightboxIndex((prev) => 
+          prev !== null ? (prev - 1 + allImages.length) % allImages.length : null
+        );
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [lightboxIndex, allImages.length]);
+
+
 
   const handleBookingAttempt = (e: React.FormEvent) => {
     e.preventDefault();
@@ -125,12 +124,12 @@ export default function DetailKamarPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-slate-50 flex flex-col font-sans text-gray-900">
+      <div className="min-h-screen bg-surface-bright flex flex-col font-body-md text-on-surface">
         <Header activePage="kamar" />
-        <main className="flex-1 flex items-center justify-center">
+        <main className="flex-1 flex items-center justify-center pt-24">
           <div className="flex flex-col items-center gap-3">
-            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#0B4F37]"></div>
-            <p className="text-gray-500 text-sm font-medium">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+            <p className="text-on-surface-variant text-[14px] font-medium">
               Memuat detail kamar...
             </p>
           </div>
@@ -142,29 +141,29 @@ export default function DetailKamarPage() {
 
   if (!room) {
     return (
-      <div className="min-h-screen bg-slate-50 font-sans text-gray-900 flex flex-col">
+      <div className="min-h-screen bg-surface-bright font-body-md text-on-surface flex flex-col">
         <Header activePage="kamar" />
 
-        <main className="flex-1 flex items-center justify-center p-6">
-          <div className="rounded-3xl bg-white p-10 sm:p-12 text-center shadow-xl border border-gray-200/80 max-w-lg w-full">
-            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-rose-100 text-rose-600 mb-4 shadow-inner">
-              <SearchX className="h-8 w-8" />
+        <main className="flex-1 flex items-center justify-center p-6 pt-32">
+          <div className="rounded-3xl bg-surface p-10 sm:p-12 text-center shadow-sm border border-surface-container-low max-w-lg w-full">
+            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-error/10 text-error mb-4 shadow-inner">
+              <span className="material-symbols-outlined text-[32px]">search_off</span>
             </div>
-            <h1 className="text-2xl font-bold text-gray-900">
+            <h1 className="font-headline-sm text-on-surface">
               Maaf, Tipe Kamar Tidak Ditemukan
             </h1>
-            <p className="mt-2 text-xs sm:text-sm text-gray-500 leading-relaxed">
+            <p className="mt-2 text-[14px] text-on-surface-variant leading-relaxed">
               Tipe kamar dengan ID{" "}
-              <code className="bg-gray-100 px-2 py-0.5 rounded text-rose-600 font-semibold">
+              <code className="bg-surface-container-high px-2 py-0.5 rounded text-error font-semibold">
                 {roomId}
               </code>{" "}
               tidak tersedia.
             </p>
             <Link
               href="/kamar"
-              className="mt-6 inline-flex items-center gap-2 rounded-full bg-[#0B4F37] px-6 py-3 text-xs sm:text-sm font-bold text-white shadow transition-all hover:bg-[#073524]"
+              className="mt-6 inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-[14px] font-bold text-on-primary shadow-sm transition-all hover:bg-primary/90"
             >
-              <ArrowLeft className="h-4 w-4" />
+              <span className="material-symbols-outlined text-[16px]">arrow_back</span>
               <span>Kembali ke Katalog Kamar</span>
             </Link>
           </div>
@@ -176,99 +175,51 @@ export default function DetailKamarPage() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 font-sans text-gray-900 selection:bg-[#0B4F37] selection:text-white">
+    <div className="min-h-screen bg-surface-bright font-body-md text-on-surface selection:bg-primary selection:text-on-primary">
       <Header activePage="kamar" />
 
-      {favoriteToast && (
-        <div className="fixed bottom-6 right-6 z-50 rounded-2xl bg-gray-900/90 px-5 py-3 text-sm font-semibold text-white shadow-2xl backdrop-blur-md transition-all">
-          {favoriteToast}
-        </div>
-      )}
 
-      <main className="w-full pb-20">
+
+      <main className="w-full pb-20 pt-24">
         {/* BREADCRUMB */}
-        <div className="bg-white border-b border-gray-200/80 py-4">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex items-center justify-between">
+        <div className="bg-surface-bright border-b border-surface-container py-4">
+          <div className="mx-auto max-w-container-max px-4 sm:px-6 lg:px-8 flex items-center justify-between">
             <Link
               href="/kamar"
-              className="inline-flex items-center gap-2 text-xs sm:text-sm font-semibold text-[#0B4F37] hover:underline"
+              className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-[14px] font-bold text-on-primary shadow-sm transition-all duration-300 hover:bg-primary/90 hover:shadow-md hover:-translate-y-0.5 active:scale-95 group"
             >
-              <ArrowLeft className="h-4 w-4" />
+              <span className="material-symbols-outlined text-[16px] transition-transform duration-300 group-hover:-translate-x-1">arrow_back</span>
               <span>Kembali ke Katalog Kamar</span>
             </Link>
 
-            <div className="hidden sm:flex items-center gap-2 text-xs text-gray-500 font-medium">
-              <Link href="/" className="hover:text-gray-900">
+            <div className="hidden sm:flex items-center gap-2 text-[13px] text-on-surface-variant font-medium">
+              <Link href="/" className="hover:text-on-surface">
                 Beranda
               </Link>
               <span>/</span>
-              <Link href="/kamar" className="hover:text-gray-900">
+              <Link href="/kamar" className="hover:text-on-surface">
                 Kamar
               </Link>
               <span>/</span>
-              <span className="text-[#0B4F37] font-bold">{room.name}</span>
+              <span className="text-primary font-bold">{room.name}</span>
             </div>
           </div>
         </div>
 
         {/* CONTAINER UTAMA DETAIL KAMAR */}
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-8">
-          {/* JUDUL UTAMA & HARGA */}
-          <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between border-b border-gray-200 pb-6">
-            <div>
-              <div className="flex items-center gap-3">
-                <span className="rounded-full bg-[#0B4F37] px-3.5 py-1 text-xs font-semibold text-white">
-                  {room.type}
-                </span>
-                <span className="flex items-center gap-1 text-xs font-medium text-gray-500">
-                  <MapPin className="h-3.5 w-3.5 text-emerald-600" />
-                  <span>{room.location}</span>
-                </span>
-              </div>
-
-              <div className="mt-2.5 flex items-center gap-3">
-                <h1 className="text-3xl font-extrabold tracking-tight text-gray-900 sm:text-4xl">
-                  {room.name}
-                </h1>
-
-                <button
-                  onClick={handleToggleFavorite}
-                  className={`flex h-9 w-9 items-center justify-center rounded-full border transition-all ${
-                    isFavorite
-                      ? "bg-rose-500 text-white border-rose-500"
-                      : "bg-white text-gray-500 border-gray-300 hover:border-rose-400 hover:text-rose-500"
-                  }`}
-                  aria-label="Simpan ke Favorit"
-                >
-                  <Heart
-                    className={`h-5 w-5 ${isFavorite ? "fill-current" : ""}`}
-                  />
-                </button>
-              </div>
-            </div>
-
-            {/* BLOCK HARGA PER MALAM (Field `price_per_night` di Prisma) */}
-            <div className="text-left md:text-right">
-              <span className="block text-[10px] uppercase font-bold text-gray-400 tracking-wider">
-                HARGA / MALAM
-              </span>
-              <div className="flex items-baseline gap-1 mt-0.5">
-                <span className="text-2xl sm:text-3xl font-extrabold text-[#0B4F37]">
-                  Rp {room.price_per_night.toLocaleString("id-ID")}
-                </span>
-              </div>
-            </div>
-          </div>
-
+        <div className="mx-auto max-w-container-max px-4 sm:px-6 lg:px-8 pt-8">
           {/* GALERI FOTO KAMAR (Prisma relation: room_images) */}
-          <div className="mt-8 grid grid-cols-1 gap-4 lg:grid-cols-3">
-            <div className="relative h-80 sm:h-96 lg:col-span-2 overflow-hidden rounded-2xl bg-gray-100 shadow-md">
+          <div className="mb-8 grid grid-cols-1 gap-4 lg:grid-cols-3">
+            <div 
+              className="relative h-80 sm:h-96 lg:col-span-2 overflow-hidden rounded-[1.5rem] bg-surface-container-high shadow-sm cursor-pointer group"
+              onClick={() => setLightboxIndex(0)}
+            >
               <Image
                 src={room.heroImage}
                 alt={room.name}
                 fill
                 priority
-                className="object-cover transition-transform duration-500 hover:scale-105"
+                className="object-cover transition-transform duration-700 ease-out hover:scale-105"
               />
             </div>
 
@@ -276,195 +227,232 @@ export default function DetailKamarPage() {
               {room.gallery.slice(0, 2).map((img, idx) => (
                 <div
                   key={idx}
-                  className="relative h-40 sm:h-44 overflow-hidden rounded-2xl bg-gray-100 shadow-sm"
+                  className="relative h-40 sm:h-44 overflow-hidden rounded-[1.5rem] bg-surface-container-high shadow-sm cursor-pointer group"
+                  onClick={() => setLightboxIndex(idx + 1)}
                 >
                   <Image
                     src={img}
                     alt={`${room.name} gallery ${idx + 1}`}
                     fill
-                    className="object-cover transition-transform duration-500 hover:scale-105"
+                    className="object-cover transition-transform duration-700 ease-out hover:scale-105"
                   />
                 </div>
               ))}
             </div>
           </div>
 
-          {/* GRID DETAL TEKS KIRI & CARD FORM BOOKING KANAN */}
-          <div className="mt-10 grid grid-cols-1 gap-10 lg:grid-cols-3">
-            <div className="lg:col-span-2 space-y-8">
-              {/* SPESIFIKASI KAPASITAS & LOKASI */}
-              <div className="rounded-2xl border border-gray-200/80 bg-white p-6 shadow-sm">
-                <h2 className="text-base font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <Building2 className="h-5 w-5 text-[#0B4F37]" />
-                  <span>Informasi Kamar</span>
-                </h2>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs font-medium text-gray-700">
-                  <div className="flex items-center gap-2.5 rounded-xl bg-slate-50 p-3">
-                    <Users className="h-5 w-5 text-emerald-600" />
-                    <div>
-                      <span className="block text-gray-400 text-[10px]">
-                        Kapasitas Maksimal
-                      </span>
-                      <span className="font-bold text-gray-900">
-                        {room.capacity} Tamu
-                      </span>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-2.5 rounded-xl bg-slate-50 p-3">
-                    <MapPin className="h-5 w-5 text-emerald-600" />
-                    <div>
-                      <span className="block text-gray-400 text-[10px]">
-                        Lokasi Kamar
-                      </span>
-                      <span className="font-bold text-gray-900">
-                        {room.location}
-                      </span>
-                    </div>
-                  </div>
+          {/* JUDUL, HIGHLIGHTS, DAN AKSI PEMESANAN */}
+          <div className="flex flex-col lg:flex-row lg:items-stretch lg:justify-between gap-8 border-b border-surface-container pb-8 mt-4">
+            
+            {/* KOLOM KIRI: IDENTITAS & INFO KAMAR */}
+            <div className="flex flex-col gap-6">
+              {/* Judul & Tipe */}
+              <div>
+                <div className="flex items-center gap-3">
+                  <span className="rounded-full bg-primary px-3.5 py-1 text-[12px] font-semibold text-on-primary capitalize">
+                    {room.type}
+                  </span>
+                  <span className="flex items-center gap-1 text-[13px] font-medium text-on-surface-variant">
+                    <span className="material-symbols-outlined text-[14px] text-primary">location_on</span>
+                    <span>{room.location}</span>
+                  </span>
                 </div>
+                <h1 className="mt-2.5 font-display-lg text-[32px] sm:text-[40px] text-on-surface font-bold tracking-tight leading-none">
+                  {room.name}
+                </h1>
               </div>
 
-              {/* DESKRIPSI KAMAR */}
-              {room.description && (
-                <div className="rounded-2xl border border-gray-200/80 bg-white p-6 shadow-sm">
-                  <h2 className="text-base font-bold text-gray-900 mb-4 flex items-center gap-2">
-                    <span>Tentang Kamar Ini</span>
-                  </h2>
-                  <p className="text-sm text-gray-600 leading-relaxed whitespace-pre-line">
-                    {room.description}
-                  </p>
+              {/* Highlights (Kapasitas & Lokasi) */}
+              <div className="flex flex-wrap items-center gap-8 sm:gap-20">
+                <div className="flex items-center gap-4">
+                  <span className="material-symbols-outlined text-[24px] text-primary">group</span>
+                  <div className="flex flex-col">
+                    <span className="text-[12px] font-bold text-on-surface-variant uppercase tracking-wider mb-0.5">
+                      Kapasitas
+                    </span>
+                    <span className="font-bold text-on-surface text-[15px]">
+                      {room.capacity} Tamu
+                    </span>
+                  </div>
                 </div>
-              )}
-
-              {/* DAFTAR FASILITAS TERSEDIA (Field `facilities String[]` di Prisma) */}
-              <div className="rounded-2xl border border-gray-200/80 bg-white p-6 shadow-sm">
-                <h2 className="text-base font-bold text-gray-900 mb-4 flex items-center gap-2">
-                  <ShieldCheck className="h-5 w-5 text-[#0B4F37]" />
-                  <span>Fasilitas Terdaftar di Kamar Ini</span>
-                </h2>
-
-                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                  {room.facilities.map((facility, idx) => (
-                    <div
-                      key={idx}
-                      className="flex items-center gap-2.5 text-xs text-gray-700"
-                    >
-                      <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0" />
-                      <span>{facility}</span>
-                    </div>
-                  ))}
+                <div className="hidden sm:block w-px h-10 bg-surface-container"></div>
+                <div className="flex items-center gap-4">
+                  <span className="material-symbols-outlined text-[24px] text-primary">location_on</span>
+                  <div className="flex flex-col">
+                    <span className="text-[12px] font-bold text-on-surface-variant uppercase tracking-wider mb-0.5">
+                      Lokasi
+                    </span>
+                    <span className="font-bold text-on-surface text-[15px]">
+                      {room.location}
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
 
-            {/* CARD SIDEBAR FORM SIMULASI BOOKING KAMAR */}
-            <div className="lg:col-span-1">
-              <div className="sticky top-24 rounded-3xl border border-gray-200/90 bg-white p-6 shadow-xl">
-                <div className="border-b border-gray-100 pb-4 mb-5">
-                  <span className="text-xs text-gray-400 font-medium">
-                    Harga Per Malam
+            {/* KOLOM KANAN: HARGA & TOMBOL PESAN */}
+            <div className="flex flex-col justify-between lg:items-end gap-5 lg:min-w-[280px] lg:py-1">
+              <div className="text-left lg:text-right">
+                <span className="block text-[11px] uppercase font-bold text-on-surface-variant tracking-wider">
+                  HARGA / MALAM
+                </span>
+                <div className="flex items-baseline gap-1 mt-0.5 justify-start lg:justify-end">
+                  <span className="font-headline-lg text-[24px] sm:text-[32px] font-bold text-primary leading-none">
+                    Rp {room.price_per_night.toLocaleString("id-ID")}
                   </span>
-                  <div className="flex items-baseline gap-1 mt-0.5">
-                    <span className="text-2xl font-extrabold text-[#0B4F37]">
-                      Rp {room.price_per_night.toLocaleString("id-ID")}
-                    </span>
-                  </div>
                 </div>
-
-                <form onSubmit={handleBookingAttempt} className="space-y-4">
-                  <div>
-                    <label className="block text-xs font-semibold text-gray-700 mb-1 flex items-center gap-1.5">
-                      <Calendar className="h-3.5 w-3.5 text-emerald-600" />
-                      <span>Tanggal Check-in</span>
-                    </label>
-                    <input
-                      type="date"
-                      value={checkInDate}
-                      onChange={(e) => setCheckInDate(e.target.value)}
-                      className="w-full rounded-xl border border-gray-300 p-2.5 text-xs font-medium text-gray-900 focus:border-[#0B4F37] focus:outline-none"
-                      required
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-semibold text-gray-700 mb-1 flex items-center gap-1.5">
-                      <Calendar className="h-3.5 w-3.5 text-emerald-600" />
-                      <span>Tanggal Check-out</span>
-                    </label>
-                    <input
-                      type="date"
-                      value={checkOutDate}
-                      onChange={(e) => setCheckOutDate(e.target.value)}
-                      className="w-full rounded-xl border border-gray-300 p-2.5 text-xs font-medium text-gray-900 focus:border-[#0B4F37] focus:outline-none"
-                      required
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-semibold text-gray-700 mb-1 flex items-center gap-1.5">
-                      <Users className="h-3.5 w-3.5 text-emerald-600" />
-                      <span>Jumlah Tamu</span>
-                    </label>
-                    <select
-                      value={guestCount}
-                      onChange={(e) => setGuestCount(e.target.value)}
-                      className="w-full rounded-xl border border-gray-300 p-2.5 text-xs font-medium text-gray-900 focus:border-[#0B4F37] focus:outline-none"
-                    >
-                      <option value="1">1 Orang</option>
-                      <option value="2">2 Orang</option>
-                      <option value="3">3 Orang</option>
-                      <option value="4">4 Orang</option>
-                    </select>
-                  </div>
-
-                  <button
-                    type="submit"
-                    className="w-full rounded-full bg-[#0B4F37] py-3 text-xs font-bold text-white shadow-md transition-all hover:bg-[#073524] hover:shadow-lg active:scale-95 mt-2"
-                  >
-                    Pesan Kamar Ini
-                  </button>
-                </form>
               </div>
+              <button
+                onClick={handleBookingAttempt}
+                className="flex items-center justify-center rounded-full bg-primary px-10 py-3.5 text-[15px] font-bold text-on-primary shadow-sm transition-all duration-300 hover:bg-primary/90 hover:shadow-[0_8px_30px_rgb(0,0,0,0.12)] hover:-translate-y-1 active:scale-95 w-full"
+              >
+                Pesan Kamar Ini
+              </button>
+            </div>
+
+          </div>
+
+          {/* KONTEN UTAMA DETAIL KAMAR */}
+          <div className="mt-8 w-full pb-16">
+            
+            {/* GRID 2 KOLOM UNTUK DESKRIPSI & FASILITAS */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-10">
+              
+              {/* KOLOM KIRI: TENTANG KAMAR INI (CARD) */}
+              {room.description && (
+                <section className="rounded-[2rem] border border-surface-container bg-surface-container-lowest p-8 md:p-10 shadow-sm flex flex-col h-full transition-all duration-300 hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] hover:-translate-y-1.5 hover:border-primary/20 group">
+                  <h2 className="font-display-sm text-[24px] font-bold text-on-surface mb-6 pb-6 border-b border-surface-container flex items-center gap-3">
+                    <span className="material-symbols-outlined text-[24px] text-primary">apartment</span>
+                    Tentang Kamar Ini
+                  </h2>
+                  <p className="text-[15px] text-on-surface-variant leading-relaxed whitespace-pre-line flex-grow">
+                    {room.description}
+                  </p>
+                </section>
+              )}
+
+              {/* KOLOM KANAN: FASILITAS KAMAR (CARD) */}
+              <section className="rounded-[2rem] border border-surface-container bg-surface-container-lowest p-8 md:p-10 shadow-sm flex flex-col h-full transition-all duration-300 hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] hover:-translate-y-1.5 hover:border-primary/20">
+                <h2 className="font-display-sm text-[24px] font-bold text-on-surface mb-6 pb-6 border-b border-surface-container flex items-center gap-3">
+                  <span className="material-symbols-outlined text-[24px] text-primary">check_circle</span>
+                  Fasilitas Kamar
+                </h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 flex-grow content-start">
+                  {room.facilities.map((facility, idx) => (
+                    <div
+                      key={idx}
+                      className="group flex items-center gap-3 p-3 rounded-2xl bg-surface-container-lowest border border-surface-container hover:border-primary/30 hover:bg-primary/5 hover:shadow-sm transition-all duration-300 cursor-default"
+                    >
+                      <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary transition-all duration-300 group-hover:scale-110 group-hover:bg-primary group-hover:text-on-primary">
+                        <span className="material-symbols-outlined text-[16px]">check_circle</span>
+                      </div>
+                      <span className="text-[14px] font-medium text-on-surface transition-colors group-hover:text-primary">
+                        {facility}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </section>
+
             </div>
           </div>
         </div>
       </main>
 
+      {/* MODAL LIGHTBOX GAMBAR */}
+      {lightboxIndex !== null && room && (
+        <div 
+          className="fixed inset-0 z-[60] flex items-center justify-center bg-black/95 backdrop-blur-sm p-4 animate-in fade-in duration-200"
+          onClick={() => setLightboxIndex(null)}
+        >
+          <button
+            onClick={() => setLightboxIndex(null)}
+            className="absolute top-4 right-4 sm:top-6 sm:right-6 z-50 text-white/70 hover:text-white bg-black/40 hover:bg-black/60 rounded-full p-2 transition-all"
+          >
+            <span className="material-symbols-outlined text-[24px]">close</span>
+          </button>
+
+          {allImages.length > 1 && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                setLightboxIndex((lightboxIndex - 1 + allImages.length) % allImages.length);
+              }}
+              className="absolute left-4 sm:left-10 z-50 text-white/70 hover:text-white bg-black/40 hover:bg-black/60 rounded-full p-3 transition-all"
+            >
+              <span className="material-symbols-outlined text-[32px]">chevron_left</span>
+            </button>
+          )}
+
+          <div 
+            className="relative w-full max-w-6xl aspect-[4/3] sm:aspect-video rounded-lg overflow-hidden shadow-2xl animate-in zoom-in-95 duration-200"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <Image
+              src={allImages[lightboxIndex]}
+              alt={`Gallery image ${lightboxIndex + 1}`}
+              fill
+              className="object-contain"
+            />
+          </div>
+
+          {allImages.length > 1 && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                setLightboxIndex((lightboxIndex + 1) % allImages.length);
+              }}
+              className="absolute right-4 sm:right-10 z-50 text-white/70 hover:text-white bg-black/40 hover:bg-black/60 rounded-full p-3 transition-all"
+            >
+              <span className="material-symbols-outlined text-[32px]">chevron_right</span>
+            </button>
+          )}
+          
+          <div className="absolute bottom-6 left-0 right-0 flex justify-center gap-2 pointer-events-none">
+             {allImages.map((_, idx) => (
+                <div 
+                  key={idx} 
+                  className={`h-2 w-2 rounded-full transition-all duration-300 ${idx === lightboxIndex ? "bg-white w-8" : "bg-white/40"}`}
+                />
+             ))}
+          </div>
+        </div>
+      )}
+
       {/* MODAL SYARAT LOGIN */}
       {isLoginModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-          <div className="w-full max-w-md rounded-3xl bg-white p-6 sm:p-8 text-center shadow-2xl border border-gray-100 relative animate-in fade-in zoom-in duration-200">
+          <div className="w-full max-w-md rounded-3xl bg-surface-bright p-6 sm:p-8 text-center shadow-2xl border border-surface-container-high relative animate-in fade-in zoom-in duration-200">
             <button
               onClick={() => setIsLoginModalOpen(false)}
-              className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
+              className="absolute top-4 right-4 text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded-full p-1 transition-all"
             >
-              <X className="h-5 w-5" />
+              <span className="material-symbols-outlined text-[20px]">close</span>
             </button>
 
-            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-emerald-100 text-[#0B4F37] mb-4">
-              <Lock className="h-7 w-7" />
+            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-primary/10 text-primary mb-4">
+              <span className="material-symbols-outlined text-[28px]">lock</span>
             </div>
 
-            <h3 className="text-xl font-bold text-gray-900">
+            <h3 className="font-headline-sm text-[20px] text-on-surface">
               Silakan Masuk Terlebih Dahulu
             </h3>
-            <p className="mt-2 text-xs sm:text-sm text-gray-600 leading-relaxed font-normal">
+            <p className="mt-2 text-[14px] text-on-surface-variant leading-relaxed font-normal">
               Untuk melakukan pemesanan kamar{" "}
-              <strong className="text-gray-900">{room.name}</strong>, Anda harus
-              masuk ke akun SiniBook Anda.
+              <strong className="text-on-surface">{room.name}</strong>, Anda
+              harus masuk ke akun SiniBook Anda.
             </p>
 
-            <div className="mt-6 flex flex-col gap-2.5">
+            <div className="mt-6 flex flex-col gap-3">
               <Link
                 href="/login"
-                className="w-full rounded-full bg-[#0B4F37] py-3 text-xs font-bold text-white shadow hover:bg-[#073524]"
+                className="w-full rounded-full bg-primary py-3.5 text-[14px] font-bold text-on-primary shadow-sm transition-all duration-300 hover:bg-primary/90 hover:shadow-md hover:-translate-y-0.5 active:scale-95"
               >
                 Masuk ke Akun
               </Link>
               <Link
                 href="/register"
-                className="w-full rounded-full border border-gray-300 py-3 text-xs font-bold text-gray-700 hover:bg-gray-50"
+                className="w-full rounded-full border border-outline py-3.5 text-[14px] font-bold text-on-surface transition-all duration-300 hover:bg-surface-container hover:shadow-sm hover:-translate-y-0.5 active:scale-95"
               >
                 Daftar Akun Baru
               </Link>

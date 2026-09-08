@@ -19,7 +19,7 @@ export class ReviewsService {
   constructor(
     private prisma: PrismaService,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
-  ) { }
+  ) {}
 
   async create(createReviewDto: CreateReviewDto, currentUser: any) {
     const { booking_id, rating, comment } = createReviewDto;
@@ -46,7 +46,7 @@ export class ReviewsService {
 
     if (booking.status !== BookingStatus.COMPLETED) {
       throw new BadRequestException(
-        `Gagal memberikan ulasan. Status booking saat ini '${booking.status}'. Ulasan hanya bisa diberikan jika status booking sudah COMPLETED!`,
+        `Gagal memberikan ulasan. Status booking saat ini '${booking.status}'. Ulasan hanya bisa diberikan jika booking sudah selesai (COMPLETED)!`,
       );
     }
 
@@ -139,11 +139,11 @@ export class ReviewsService {
     const averageRating =
       totalReviews > 0
         ? Number(
-          (
-            reviews.reduce((acc, curr) => acc + (curr.rating || 0), 0) /
-            totalReviews
-          ).toFixed(1),
-        )
+            (
+              reviews.reduce((acc, curr) => acc + (curr.rating || 0), 0) /
+              totalReviews
+            ).toFixed(1),
+          )
         : 0;
 
     const formattedResponse = {

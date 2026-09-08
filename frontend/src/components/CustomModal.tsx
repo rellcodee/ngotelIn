@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect } from 'react';
-import { CheckCircle2, AlertTriangle, AlertCircle, Info, X } from 'lucide-react';
+
 
 interface CustomModalProps {
     isOpen: boolean;
@@ -41,56 +41,56 @@ export default function CustomModal({
     if (!isOpen) return null;
 
     // Determine icon and theme colors based on type
-    let Icon = Info;
+    let iconName = 'info';
     let iconColor = 'text-blue-500';
     let iconBg = 'bg-blue-50 border border-blue-100';
-    let primaryButtonBg = 'bg-[#0B4F37] hover:bg-[#073524] text-white focus:ring-[#0B4F37]';
+    let primaryButtonBg = 'bg-[#1D4ED8] hover:bg-[#1E3A8A] text-white focus:ring-[#1D4ED8]';
 
     switch (type) {
         case 'success':
-            Icon = CheckCircle2;
+            iconName = 'check_circle';
             iconColor = 'text-emerald-600';
             iconBg = 'bg-emerald-50 border border-emerald-100';
             primaryButtonBg = 'bg-emerald-600 hover:bg-emerald-700 text-white focus:ring-emerald-500';
             break;
         case 'error':
-            Icon = AlertCircle;
+            iconName = 'error';
             iconColor = 'text-rose-600';
             iconBg = 'bg-rose-50 border border-rose-100';
             primaryButtonBg = 'bg-rose-600 hover:bg-rose-700 text-white focus:ring-rose-500';
             break;
         case 'warning':
-            Icon = AlertTriangle;
+            iconName = 'warning';
             iconColor = 'text-amber-600';
             iconBg = 'bg-amber-50 border border-amber-100';
             primaryButtonBg = 'bg-amber-600 hover:bg-amber-700 text-white focus:ring-amber-500';
             break;
         case 'confirm':
-            Icon = AlertCircle;
-            iconColor = 'text-[#0B4F37]';
+            iconName = 'info';
+            iconColor = 'text-[#1D4ED8]';
             iconBg = 'bg-emerald-50 border border-emerald-100';
-            primaryButtonBg = 'bg-[#0B4F37] hover:bg-[#073524] text-white focus:ring-[#0B4F37]';
+            primaryButtonBg = 'bg-[#1D4ED8] hover:bg-[#1E3A8A] text-white focus:ring-[#1D4ED8]';
             break;
     }
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
             {/* Backdrop with backdrop-blur */}
-            <div 
+            <div
                 className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity duration-300 animate-fade-in"
                 onClick={type !== 'confirm' && !isLoading ? onClose : undefined}
             />
 
             {/* Modal Container */}
             <div className="relative w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 shadow-2xl transition-all duration-300 scale-95 animate-scale-in border border-gray-100">
-                
+
                 {/* Close Button (only for non-confirm and non-loading modals) */}
                 {type !== 'confirm' && !isLoading && (
                     <button
                         onClick={onClose}
                         className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors rounded-full p-1 hover:bg-gray-100"
                     >
-                        <X className="h-5 w-5" />
+                        <span className="material-symbols-outlined text-[20px]">close</span>
                     </button>
                 )}
 
@@ -98,7 +98,7 @@ export default function CustomModal({
                 <div className="flex flex-col items-center text-center">
                     {/* Icon Section */}
                     <div className={`flex h-16 w-16 items-center justify-center rounded-full ${iconBg} mb-4 shrink-0`}>
-                        <Icon className={`h-8 w-8 ${iconColor}`} />
+                        <span className={`material-symbols-outlined text-[32px] ${iconColor}`}>{iconName}</span>
                     </div>
 
                     {/* Title */}

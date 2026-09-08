@@ -16,9 +16,10 @@ import type { Cache } from 'cache-manager';
 
 @Injectable()
 export class UserService {
-  constructor(private prisma: PrismaService,
+  constructor(
+    private prisma: PrismaService,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
-  ) { }
+  ) {}
 
   async create(createUserDto: CreateUserDto) {
     const { password, ...userData } = createUserDto;
@@ -43,7 +44,10 @@ export class UserService {
     }
   }
 
-  async findOrCreateGoogleUser(googlePayload: { email: string; name?: string }) {
+  async findOrCreateGoogleUser(googlePayload: {
+    email: string;
+    name?: string;
+  }) {
     let user = await this.findByEmail(googlePayload.email);
 
     if (!user) {
@@ -51,8 +55,8 @@ export class UserService {
         data: {
           email: googlePayload.email,
           name: googlePayload.name || googlePayload.email.split('@')[0],
-          password_hash: null,
-          role: Role.USER,
+          password_hash: null, // Kosongin karena login via Google
+          role: Role.USER, // Kunci mati rolenya sebagai tamu/user
         },
       });
       await this.cacheManager.del('users:all');

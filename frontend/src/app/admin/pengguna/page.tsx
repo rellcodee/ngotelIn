@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { Plus, Trash2, Shield, User, Mail, Lock, Edit2 } from "lucide-react";
+
 import CustomModal from "@/components/CustomModal";
 
 // Struktur data user dari backend
@@ -19,12 +19,19 @@ export default function PenggunaPage() {
   const [errorMsg, setErrorMsg] = useState("");
   const [activeTab, setActiveTab] = useState<"official" | "users">("official");
 
-  const [modal, setModal] = useState({
+  const [modal, setModal] = useState<{
+    isOpen: boolean;
+    type: "success" | "error" | "warning" | "info" | "confirm";
+    title: string;
+    message: string;
+    onConfirm?: (() => void) | undefined;
+    onClose: () => void;
+  }>({
     isOpen: false,
-    type: "info" as "success" | "error" | "warning" | "info" | "confirm",
+    type: "info",
     title: "",
     message: "",
-    onConfirm: undefined as (() => void) | undefined,
+    onConfirm: undefined,
     onClose: () => setModal(prev => ({ ...prev, isOpen: false })),
   });
 
@@ -216,7 +223,7 @@ export default function PenggunaPage() {
           onClick={() => setIsModalOpen(true)}
           className="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-xl font-medium shadow-sm transition-all hover:-translate-y-0.5 active:scale-95"
         >
-          <Plus className="w-4 h-4" /> Tambah Akun Official
+          <span className="material-symbols-outlined text-[16px]">add</span> Tambah Akun Official
         </button>
       </div>
 
@@ -276,18 +283,18 @@ export default function PenggunaPage() {
                           <td className="px-6 py-4">{user.email}</td>
                           <td className="px-6 py-4">
                             <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold ${user.role === 'admin' ? 'bg-rose-100 text-rose-700' : 'bg-amber-100 text-amber-700'}`}>
-                              <Shield className="w-3 h-3" />
+                              <span className="material-symbols-outlined text-[12px]">security</span>
                               {user.role.toUpperCase()}
                             </span>
                           </td>
                           <td className="px-6 py-4 text-center">
                             <div className="flex items-center justify-center gap-2">
                               <button onClick={() => openEditModal(user)} className="p-2 text-blue-500 hover:bg-blue-50 rounded-lg transition-colors" title="Edit Pengguna">
-                                <Edit2 className="w-4 h-4" />
+                                <span className="material-symbols-outlined text-[16px]">edit</span>
                               </button>
                               {user.role !== "admin" && (
                                 <button onClick={() => handleDelete(user.id, user.name)} className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors" title="Hapus Pengguna">
-                                  <Trash2 className="w-4 h-4" />
+                                  <span className="material-symbols-outlined text-[16px]">delete</span>
                                 </button>
                               )}
                             </div>
@@ -322,10 +329,10 @@ export default function PenggunaPage() {
                           <td className="px-6 py-4 text-center">
                             <div className="flex items-center justify-center gap-2">
                               <button onClick={() => openEditModal(user)} className="p-2 text-blue-500 hover:bg-blue-50 rounded-lg transition-colors" title="Edit Pengguna">
-                                <Edit2 className="w-4 h-4" />
+                                <span className="material-symbols-outlined text-[16px]">edit</span>
                               </button>
                               <button onClick={() => handleDelete(user.id, user.name)} className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors" title="Hapus Pengguna">
-                                <Trash2 className="w-4 h-4" />
+                                <span className="material-symbols-outlined text-[16px]">delete</span>
                               </button>
                             </div>
                           </td>
@@ -362,7 +369,7 @@ export default function PenggunaPage() {
                   Nama
                 </label>
                 <div className="relative">
-                  <User className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                  <span className="material-symbols-outlined text-[16px] text-gray-400 absolute left-3 top-1/2 -translate-y-1/2">person</span>
                   <input
                     required
                     type="text"
@@ -380,7 +387,7 @@ export default function PenggunaPage() {
                   Email
                 </label>
                 <div className="relative">
-                  <Mail className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                  <span className="material-symbols-outlined text-[16px] text-gray-400 absolute left-3 top-1/2 -translate-y-1/2">mail</span>
                   <input
                     required
                     type="email"
@@ -398,7 +405,7 @@ export default function PenggunaPage() {
                   Password
                 </label>
                 <div className="relative">
-                  <Lock className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                  <span className="material-symbols-outlined text-[16px] text-gray-400 absolute left-3 top-1/2 -translate-y-1/2">lock</span>
                   <input
                     required
                     type="password"
@@ -461,14 +468,14 @@ export default function PenggunaPage() {
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Nama</label>
                 <div className="relative">
-                  <User className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                  <span className="material-symbols-outlined text-[16px] text-gray-400 absolute left-3 top-1/2 -translate-y-1/2">person</span>
                   <input required type="text" value={editData.name} onChange={e => setEditData({...editData, name: e.target.value})} className="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none" />
                 </div>
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
                 <div className="relative">
-                  <Mail className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                  <span className="material-symbols-outlined text-[16px] text-gray-400 absolute left-3 top-1/2 -translate-y-1/2">mail</span>
                   <input required type="email" value={editData.email} onChange={e => setEditData({...editData, email: e.target.value})} className="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none" />
                 </div>
               </div>

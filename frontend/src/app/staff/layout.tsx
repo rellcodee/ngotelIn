@@ -30,12 +30,12 @@ export default function StaffLayout({ children }: { children: React.ReactNode })
   }
 
   return (
-    <div className="flex min-h-screen bg-slate-50 font-sans selection:bg-[#0B4F37] selection:text-white">
+    <div className="flex min-h-screen bg-slate-50 font-sans selection:bg-[#1D4ED8] selection:text-white">
       <Sidebar />
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
         {/* Top Header for Mobile */}
         <header className="flex h-16 items-center justify-between border-b border-gray-200 bg-white px-4 md:hidden">
-          <div className="text-lg font-bold text-[#0B4F37]">Staff Panel</div>
+          <div className="text-lg font-bold text-[#1D4ED8]">Staff Panel</div>
         </header>
         {/* Main Content */}
         <main className="flex-1 overflow-y-auto p-6 lg:p-10">

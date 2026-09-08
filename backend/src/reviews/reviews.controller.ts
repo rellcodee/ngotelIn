@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Body, Param, Delete, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Delete,
+  UseGuards,
+} from '@nestjs/common';
 import { ReviewsService } from './reviews.service';
 import { CreateReviewDto } from './dto/create-review.dto';
 import { AuthGuard } from '@nestjs/passport';
@@ -6,7 +14,7 @@ import { CurrentUser } from 'src/auth/decorators/current-user.decorator';
 
 @Controller('reviews')
 export class ReviewsController {
-  constructor(private readonly reviewsService: ReviewsService) { }
+  constructor(private readonly reviewsService: ReviewsService) {}
 
   @UseGuards(AuthGuard('jwt'))
   @Post()
@@ -30,10 +38,7 @@ export class ReviewsController {
 
   @UseGuards(AuthGuard('jwt'))
   @Delete(':id')
-  remove(
-    @Param('id') id: string,
-    @CurrentUser() currentUser: any,
-  ) {
+  remove(@Param('id') id: string, @CurrentUser() currentUser: any) {
     return this.reviewsService.remove(id, currentUser);
   }
 }

@@ -4,30 +4,7 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import {
-  Calendar,
-  CreditCard,
-  Bell,
-  Star,
-  User,
-  LogOut,
-  CheckCircle2,
-  Clock,
-  AlertCircle,
-  Building2,
-  ShieldCheck,
-  MapPin,
-  Users,
-  Search,
-  ChevronRight,
-  Sparkles,
-  ArrowLeft,
-  X,
-  Edit3,
-  Check,
-  MessageSquare,
-  Lock,
-} from "lucide-react";
+
 
 import Header from "../landing-pages/Header";
 import Footer from "../landing-pages/Footer";
@@ -353,7 +330,7 @@ export default function UserDashboardPage() {
   if (isLoadingAuth) {
     return (
       <div className="min-h-screen bg-slate-50 flex items-center justify-center">
-        <div className="flex items-center gap-3 text-[#0B4F37] font-semibold">
+        <div className="flex items-center gap-3 text-[#1D4ED8] font-semibold">
           <svg className="animate-spin h-6 w-6" viewBox="0 0 24 24">
             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
@@ -372,7 +349,7 @@ export default function UserDashboardPage() {
     .reduce((acc, curr) => acc + curr.amount, 0);
 
   return (
-    <div className="min-h-screen bg-slate-50 font-sans text-gray-900 selection:bg-[#0B4F37] selection:text-white flex flex-col">
+    <div className="min-h-screen bg-slate-50 font-sans text-gray-900 selection:bg-[#1D4ED8] selection:text-white flex flex-col">
       {/* 1. Header Navigation */}
       <Header activePage="dashboard" />
 
@@ -386,7 +363,7 @@ export default function UserDashboardPage() {
       {/* Main Content Dashboard */}
       <main className="flex-1 w-full pb-20">
         {/* BANNER PROFIL HEADER DASHBOARD */}
-        <section className="relative w-full bg-[#073524] pt-12 pb-20 text-white overflow-hidden">
+        <section className="relative w-full bg-[#1E3A8A] pt-12 pb-20 text-white overflow-hidden">
           <div className="absolute inset-0 z-0">
             <Image
               src="https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1920&q=80"
@@ -395,7 +372,7 @@ export default function UserDashboardPage() {
               priority
               className="object-cover opacity-20"
             />
-            <div className="absolute inset-0 bg-gradient-to-b from-[#0B4F37]/40 via-[#073524]/80 to-[#073524]" />
+            <div className="absolute inset-0 bg-gradient-to-b from-[#1D4ED8]/40 via-[#1E3A8A]/80 to-[#1E3A8A]" />
           </div>
 
           <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -428,7 +405,7 @@ export default function UserDashboardPage() {
               <div className="flex items-center gap-3">
                 <Link
                   href="/kamar"
-                  className="rounded-full bg-white px-5 py-2.5 text-xs font-bold text-[#0B4F37] shadow transition-all hover:bg-emerald-50 hover:shadow-md"
+                  className="rounded-full bg-white px-5 py-2.5 text-xs font-bold text-[#1D4ED8] shadow transition-all hover:bg-emerald-50 hover:shadow-md"
                 >
                   Pesan Kamar Baru
                 </Link>
@@ -436,7 +413,7 @@ export default function UserDashboardPage() {
                   onClick={handleLogout}
                   className="flex items-center gap-1.5 rounded-full border border-red-400/50 px-4 py-2.5 text-xs font-semibold text-red-200 transition-all hover:bg-red-500/20 hover:text-white"
                 >
-                  <LogOut className="h-4 w-4" />
+                  <span className="material-symbols-outlined text-[16px]">logout</span>
                   <span>Keluar</span>
                 </button>
               </div>
@@ -476,13 +453,12 @@ export default function UserDashboardPage() {
             <div className="flex border-b border-gray-100 bg-gray-50/70 overflow-x-auto scrollbar-none">
               <button
                 onClick={() => setActiveTab("bookings")}
-                className={`flex items-center gap-2 px-6 py-4 text-xs sm:text-sm font-bold transition-all whitespace-nowrap border-b-2 ${
-                  activeTab === "bookings"
-                    ? "border-[#0B4F37] bg-white text-[#0B4F37]"
-                    : "border-transparent text-gray-500 hover:text-gray-900 hover:bg-gray-100/50"
-                }`}
+                className={`flex items-center gap-2 px-6 py-4 text-xs sm:text-sm font-bold transition-all whitespace-nowrap border-b-2 ${activeTab === "bookings"
+                  ? "border-[#1D4ED8] bg-white text-[#1D4ED8]"
+                  : "border-transparent text-gray-500 hover:text-gray-900 hover:bg-gray-100/50"
+                  }`}
               >
-                <Calendar className="h-4 w-4" />
+                <span className="material-symbols-outlined text-[16px]">calendar_today</span>
                 <span>Pemesanan Saya</span>
                 <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] text-emerald-800">
                   {bookings.length}
@@ -491,25 +467,23 @@ export default function UserDashboardPage() {
 
               <button
                 onClick={() => setActiveTab("payments")}
-                className={`flex items-center gap-2 px-6 py-4 text-xs sm:text-sm font-bold transition-all whitespace-nowrap border-b-2 ${
-                  activeTab === "payments"
-                    ? "border-[#0B4F37] bg-white text-[#0B4F37]"
-                    : "border-transparent text-gray-500 hover:text-gray-900 hover:bg-gray-100/50"
-                }`}
+                className={`flex items-center gap-2 px-6 py-4 text-xs sm:text-sm font-bold transition-all whitespace-nowrap border-b-2 ${activeTab === "payments"
+                  ? "border-[#1D4ED8] bg-white text-[#1D4ED8]"
+                  : "border-transparent text-gray-500 hover:text-gray-900 hover:bg-gray-100/50"
+                  }`}
               >
-                <CreditCard className="h-4 w-4" />
+                <span className="material-symbols-outlined text-[16px]">credit_card</span>
                 <span>Riwayat Pembayaran</span>
               </button>
 
               <button
                 onClick={() => setActiveTab("notifications")}
-                className={`flex items-center gap-2 px-6 py-4 text-xs sm:text-sm font-bold transition-all whitespace-nowrap border-b-2 relative ${
-                  activeTab === "notifications"
-                    ? "border-[#0B4F37] bg-white text-[#0B4F37]"
-                    : "border-transparent text-gray-500 hover:text-gray-900 hover:bg-gray-100/50"
-                }`}
+                className={`flex items-center gap-2 px-6 py-4 text-xs sm:text-sm font-bold transition-all whitespace-nowrap border-b-2 relative ${activeTab === "notifications"
+                  ? "border-[#1D4ED8] bg-white text-[#1D4ED8]"
+                  : "border-transparent text-gray-500 hover:text-gray-900 hover:bg-gray-100/50"
+                  }`}
               >
-                <Bell className="h-4 w-4" />
+                <span className="material-symbols-outlined text-[16px]">notifications</span>
                 <span>Notifikasi</span>
                 {unreadNotifCount > 0 && (
                   <span className="rounded-full bg-rose-500 px-2 py-0.5 text-[10px] text-white font-bold animate-pulse">
@@ -520,32 +494,30 @@ export default function UserDashboardPage() {
 
               <button
                 onClick={() => setActiveTab("reviews")}
-                className={`flex items-center gap-2 px-6 py-4 text-xs sm:text-sm font-bold transition-all whitespace-nowrap border-b-2 ${
-                  activeTab === "reviews"
-                    ? "border-[#0B4F37] bg-white text-[#0B4F37]"
-                    : "border-transparent text-gray-500 hover:text-gray-900 hover:bg-gray-100/50"
-                }`}
+                className={`flex items-center gap-2 px-6 py-4 text-xs sm:text-sm font-bold transition-all whitespace-nowrap border-b-2 ${activeTab === "reviews"
+                  ? "border-[#1D4ED8] bg-white text-[#1D4ED8]"
+                  : "border-transparent text-gray-500 hover:text-gray-900 hover:bg-gray-100/50"
+                  }`}
               >
-                <Star className="h-4 w-4" />
+                <span className="material-symbols-outlined text-[16px]">star</span>
                 <span>Ulasan Saya</span>
               </button>
 
               <button
                 onClick={() => setActiveTab("settings")}
-                className={`flex items-center gap-2 px-6 py-4 text-xs sm:text-sm font-bold transition-all whitespace-nowrap border-b-2 ${
-                  activeTab === "settings"
-                    ? "border-[#0B4F37] bg-white text-[#0B4F37]"
-                    : "border-transparent text-gray-500 hover:text-gray-900 hover:bg-gray-100/50"
-                }`}
+                className={`flex items-center gap-2 px-6 py-4 text-xs sm:text-sm font-bold transition-all whitespace-nowrap border-b-2 ${activeTab === "settings"
+                  ? "border-[#1D4ED8] bg-white text-[#1D4ED8]"
+                  : "border-transparent text-gray-500 hover:text-gray-900 hover:bg-gray-100/50"
+                  }`}
               >
-                <User className="h-4 w-4" />
+                <span className="material-symbols-outlined text-[16px]">person</span>
                 <span>Pengaturan Profil</span>
               </button>
             </div>
 
             {/* BODY KONTEN TAB HASIL NAVIGASI */}
             <div className="p-6 sm:p-8 min-h-[400px]">
-              
+
               {/* TAB 1: PEMESANAN SAYA (BOOKINGS) */}
               {activeTab === "bookings" && (
                 <div className="space-y-6">
@@ -556,10 +528,10 @@ export default function UserDashboardPage() {
                     </div>
                     <Link
                       href="/kamar"
-                      className="inline-flex items-center gap-1 text-xs font-semibold text-[#0B4F37] hover:underline"
+                      className="inline-flex items-center gap-1 text-xs font-semibold text-[#1D4ED8] hover:underline"
                     >
                       <span>Cari Kamar Lain</span>
-                      <ChevronRight className="h-4 w-4" />
+                      <span className="material-symbols-outlined text-[16px]">chevron_right</span>
                     </Link>
                   </div>
 
@@ -583,7 +555,7 @@ export default function UserDashboardPage() {
                               className="object-cover"
                             />
                             <div className="absolute top-3 left-3">
-                              <span className="rounded-full bg-[#0B4F37] px-3 py-1 text-[11px] font-bold text-white shadow">
+                              <span className="rounded-full bg-[#1D4ED8] px-3 py-1 text-[11px] font-bold text-white shadow">
                                 {booking.room_type}
                               </span>
                             </div>
@@ -597,7 +569,7 @@ export default function UserDashboardPage() {
                                   <span className="text-[10px] font-mono text-gray-400 uppercase">ID: {booking.id}</span>
                                   <h3 className="text-lg font-bold text-gray-900">{booking.room_name}</h3>
                                   <div className="flex items-center gap-1 text-xs text-gray-500 mt-0.5">
-                                    <MapPin className="h-3.5 w-3.5 text-emerald-600 shrink-0" />
+                                    <span className="material-symbols-outlined text-[14px] text-emerald-600 shrink-0">location_on</span>
                                     <span>{booking.room_location}</span>
                                   </div>
                                 </div>
@@ -606,19 +578,19 @@ export default function UserDashboardPage() {
                                 <div>
                                   {booking.status === "confirmed" && (
                                     <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700 border border-emerald-200">
-                                      <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600" />
+                                      <span className="material-symbols-outlined text-[14px] text-emerald-600">check_circle</span>
                                       Terverifikasi (Lunas)
                                     </span>
                                   )}
                                   {booking.status === "pending" && (
                                     <span className="inline-flex items-center gap-1 rounded-full bg-amber-50 px-3 py-1 text-xs font-semibold text-amber-700 border border-amber-200">
-                                      <Clock className="h-3.5 w-3.5 text-amber-600" />
+                                      <span className="material-symbols-outlined text-[14px] text-amber-600">schedule</span>
                                       Menunggu Bayar
                                     </span>
                                   )}
                                   {booking.status === "completed" && (
                                     <span className="inline-flex items-center gap-1 rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700 border border-blue-200">
-                                      <CheckCircle2 className="h-3.5 w-3.5 text-blue-600" />
+                                      <span className="material-symbols-outlined text-[14px] text-blue-600">check_circle</span>
                                       Selesai Menginap
                                     </span>
                                   )}
@@ -648,7 +620,7 @@ export default function UserDashboardPage() {
                             <div className="mt-6 flex items-center justify-between border-t border-gray-100 pt-4">
                               <div>
                                 <span className="block text-[10px] text-gray-400 font-bold uppercase">Total Tagihan</span>
-                                <span className="text-lg font-extrabold text-[#0B4F37]">
+                                <span className="text-lg font-extrabold text-[#1D4ED8]">
                                   Rp {booking.total_price.toLocaleString("id-ID")}
                                 </span>
                               </div>
@@ -657,7 +629,7 @@ export default function UserDashboardPage() {
                                 {booking.status === "pending" && (
                                   <Link
                                     href="/checkout"
-                                    className="rounded-xl bg-[#0B4F37] px-4 py-2 text-xs font-bold text-white shadow hover:bg-[#073524]"
+                                    className="rounded-xl bg-[#1D4ED8] px-4 py-2 text-xs font-bold text-white shadow hover:bg-[#1E3A8A]"
                                   >
                                     Bayar Sekarang
                                   </Link>
@@ -665,7 +637,7 @@ export default function UserDashboardPage() {
                                 {booking.status === "completed" && (
                                   <button
                                     onClick={() => setSelectedReviewBooking(booking)}
-                                    className="rounded-xl border border-[#0B4F37] px-4 py-2 text-xs font-bold text-[#0B4F37] hover:bg-emerald-50"
+                                    className="rounded-xl border border-[#1D4ED8] px-4 py-2 text-xs font-bold text-[#1D4ED8] hover:bg-emerald-50"
                                   >
                                     Beri Ulasan
                                   </button>
@@ -705,7 +677,7 @@ export default function UserDashboardPage() {
                           <tr key={p.id} className="hover:bg-gray-50/50">
                             <td className="p-4 font-mono font-medium text-gray-900">{p.id}</td>
                             <td className="p-4 font-semibold text-gray-800">{p.room_name}</td>
-                            <td className="p-4 font-extrabold text-[#0B4F37]">Rp {p.amount.toLocaleString("id-ID")}</td>
+                            <td className="p-4 font-extrabold text-[#1D4ED8]">Rp {p.amount.toLocaleString("id-ID")}</td>
                             <td className="p-4 uppercase font-bold text-gray-600">{p.payment_method}</td>
                             <td className="p-4">
                               {p.status === "settlement" || p.status === "success" ? (
@@ -743,15 +715,14 @@ export default function UserDashboardPage() {
                     {notifications.map((n) => (
                       <div
                         key={n.id}
-                        className={`flex items-start justify-between p-4 rounded-2xl border transition-all ${
-                          n.is_read
-                            ? "bg-white border-gray-200/80 text-gray-600"
-                            : "bg-emerald-50/40 border-emerald-200 text-gray-900 shadow-sm"
-                        }`}
+                        className={`flex items-start justify-between p-4 rounded-2xl border transition-all ${n.is_read
+                          ? "bg-white border-gray-200/80 text-gray-600"
+                          : "bg-emerald-50/40 border-emerald-200 text-gray-900 shadow-sm"
+                          }`}
                       >
                         <div className="flex items-start gap-3">
-                          <div className={`p-2 rounded-xl mt-0.5 ${n.is_read ? "bg-gray-100 text-gray-500" : "bg-[#0B4F37] text-white"}`}>
-                            <Bell className="h-4 w-4" />
+                          <div className={`p-2 rounded-xl mt-0.5 ${n.is_read ? "bg-gray-100 text-gray-500" : "bg-[#1D4ED8] text-white"}`}>
+                            <span className="material-symbols-outlined text-[16px]">notifications</span>
                           </div>
                           <div>
                             <p className="text-xs sm:text-sm font-medium leading-relaxed">{n.message}</p>
@@ -764,7 +735,7 @@ export default function UserDashboardPage() {
                         {!n.is_read && (
                           <button
                             onClick={() => handleMarkAsRead(n.id)}
-                            className="text-[11px] font-bold text-[#0B4F37] hover:underline shrink-0 ml-4"
+                            className="text-[11px] font-bold text-[#1D4ED8] hover:underline shrink-0 ml-4"
                           >
                             Tandai dibaca
                           </button>
@@ -795,10 +766,10 @@ export default function UserDashboardPage() {
                             <h3 className="font-bold text-sm text-gray-900">{r.room_name}</h3>
                             <div className="flex items-center gap-1 text-amber-500">
                               {Array.from({ length: 5 }).map((_, i) => (
-                                <Star
-                                  key={i}
-                                  className={`h-4 w-4 ${i < r.rating ? "fill-amber-400" : "text-gray-300"}`}
-                                />
+                                  <span
+                                    key={i}
+                                    className={`material-symbols-outlined text-[16px] ${i < r.rating ? "text-amber-400" : "text-gray-300"}`}
+                                  >star</span>
                               ))}
                             </div>
                           </div>
@@ -828,7 +799,7 @@ export default function UserDashboardPage() {
                         type="text"
                         value={profileName}
                         onChange={(e) => setProfileName(e.target.value)}
-                        className="w-full rounded-xl border border-gray-300 p-3 text-xs font-semibold text-gray-900 focus:border-[#0B4F37] focus:outline-none"
+                        className="w-full rounded-xl border border-gray-300 p-3 text-xs font-semibold text-gray-900 focus:border-[#1D4ED8] focus:outline-none"
                         required
                       />
                     </div>
@@ -839,14 +810,14 @@ export default function UserDashboardPage() {
                         type="email"
                         value={profileEmail}
                         onChange={(e) => setProfileEmail(e.target.value)}
-                        className="w-full rounded-xl border border-gray-300 p-3 text-xs font-semibold text-gray-900 focus:border-[#0B4F37] focus:outline-none"
+                        className="w-full rounded-xl border border-gray-300 p-3 text-xs font-semibold text-gray-900 focus:border-[#1D4ED8] focus:outline-none"
                         required
                       />
                     </div>
 
                     <button
                       type="submit"
-                      className="rounded-full bg-[#0B4F37] px-6 py-2.5 text-xs font-bold text-white shadow hover:bg-[#073524]"
+                      className="rounded-full bg-[#1D4ED8] px-6 py-2.5 text-xs font-bold text-white shadow hover:bg-[#1E3A8A]"
                     >
                       Simpan Perubahan
                     </button>
@@ -867,7 +838,7 @@ export default function UserDashboardPage() {
               onClick={() => setSelectedReviewBooking(null)}
               className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
             >
-              <X className="h-5 w-5" />
+              <span className="material-symbols-outlined text-[20px]">close</span>
             </button>
 
             <h3 className="text-lg font-bold text-gray-900">Beri Ulasan & Rating</h3>
@@ -884,11 +855,10 @@ export default function UserDashboardPage() {
                       onClick={() => setReviewRating(star)}
                       className="p-1 transition-transform hover:scale-125"
                     >
-                      <Star
-                        className={`h-7 w-7 ${
-                          star <= reviewRating ? "text-amber-400 fill-amber-400" : "text-gray-300"
-                        }`}
-                      />
+                      <span
+                        className={`material-symbols-outlined text-[28px] ${star <= reviewRating ? "text-amber-400" : "text-gray-300"
+                          }`}
+                      >star</span>
                     </button>
                   ))}
                 </div>
@@ -901,14 +871,14 @@ export default function UserDashboardPage() {
                   onChange={(e) => setReviewComment(e.target.value)}
                   rows={4}
                   placeholder="Tulis ulasan Anda di sini..."
-                  className="w-full rounded-xl border border-gray-300 p-3 text-xs text-gray-900 focus:border-[#0B4F37] focus:outline-none"
+                  className="w-full rounded-xl border border-gray-300 p-3 text-xs text-gray-900 focus:border-[#1D4ED8] focus:outline-none"
                   required
                 />
               </div>
 
               <button
                 type="submit"
-                className="w-full rounded-full bg-[#0B4F37] py-3 text-xs font-bold text-white shadow hover:bg-[#073524]"
+                className="w-full rounded-full bg-[#1D4ED8] py-3 text-xs font-bold text-white shadow hover:bg-[#1E3A8A]"
               >
                 Kirim Ulasan
               </button>

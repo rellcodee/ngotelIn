@@ -1,4 +1,10 @@
-import { IsDateString, IsEnum, IsNotEmpty, IsOptional, IsUUID } from 'class-validator';
+import {
+  IsDateString,
+  IsEnum,
+  IsNotEmpty,
+  IsOptional,
+  IsUUID,
+} from 'class-validator';
 import { ScheduleStatus } from 'src/common/enums';
 export class CreateScheduleDto {
   @IsUUID()

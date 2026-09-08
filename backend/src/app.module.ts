@@ -32,14 +32,14 @@ import { createKeyv } from '@keyv/redis';
     PaymentsModule,
     CacheModule.registerAsync({
       isGlobal: true,
+      // eslint-disable-next-line @typescript-eslint/require-await
       useFactory: async () => ({
         stores: [createKeyv('redis://localhost:6379')],
         ttl: 60 * 60 * 1000,
       }),
     }),
-
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule { }
+export class AppModule {}

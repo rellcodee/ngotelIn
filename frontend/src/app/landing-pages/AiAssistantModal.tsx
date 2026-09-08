@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
-import { Bot, X, Send, User, AlertCircle, RefreshCcw } from "lucide-react";
+
 import RoomCard from "./components/RoomCard";
 import ReactMarkdown from "react-markdown";
 import { usePathname } from "next/navigation";
@@ -22,7 +22,7 @@ export default function AiAssistantModal() {
   const [isCooldown, setIsCooldown] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const MAX_INPUT_LENGTH = 300;
-  
+
   const pathname = usePathname();
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -44,12 +44,12 @@ export default function AiAssistantModal() {
       const token = localStorage.getItem("token");
       setIsLoggedIn(!!token);
     };
-    
+
     checkLoginStatus(); // Pengecekan pertama kali
-    
+
     // Polling setiap 1 detik untuk mengecek apakah user baru saja login/logout
     const intervalId = setInterval(checkLoginStatus, 1000);
-    
+
     return () => clearInterval(intervalId); // Cleanup saat unmount
   }, []);
 
@@ -176,11 +176,11 @@ export default function AiAssistantModal() {
       {!isOpen && (
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="fixed bottom-6 right-6 z-50 flex items-center gap-2.5 rounded-full bg-[#0B4F37] px-5 py-3 text-white shadow-2xl transition-all duration-300 hover:scale-105 hover:bg-[#073524] active:scale-95 border-2 border-emerald-400/40 animate-pulse-ring"
+          className="fixed bottom-6 right-6 z-50 flex items-center gap-2.5 rounded-full bg-[#1D4ED8] px-5 py-3 text-white shadow-2xl transition-all duration-300 hover:scale-105 hover:bg-[#1E3A8A] active:scale-95 border-2 border-emerald-400/40 animate-pulse-ring"
           aria-label="Toggle AI Assistant"
         >
           <div className="flex h-7 w-7 items-center justify-center rounded-full bg-emerald-500/30 text-emerald-200">
-            <Bot className="h-4 w-4" />
+            <span className="material-symbols-outlined text-[16px]">smart_toy</span>
           </div>
           <span className="text-sm font-bold tracking-wide">TiniBot</span>
         </button>
@@ -195,8 +195,8 @@ export default function AiAssistantModal() {
           <div className="flex items-center justify-between border-b border-gray-100 bg-white px-4 py-3 shadow-sm">
             <div className="flex items-center gap-2.5">
               {/* Avatar Bot AI dengan latar hijau lingkaran */}
-              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#0B4F37] text-white shadow-sm">
-                <Bot className="h-5 w-5" />
+              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#1D4ED8] text-white shadow-sm">
+                <span className="material-symbols-outlined text-[20px]">smart_toy</span>
               </div>
               <div>
                 {/* Judul AI Assistant */}
@@ -218,7 +218,7 @@ export default function AiAssistantModal() {
                 title="Reset Percakapan"
                 className="rounded-full p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition-colors"
               >
-                <RefreshCcw className="h-4 w-4" />
+                <span className="material-symbols-outlined text-[16px]">refresh</span>
               </button>
 
               {/* Tombol Tutup Window (X) */}
@@ -226,7 +226,7 @@ export default function AiAssistantModal() {
                 onClick={() => setIsOpen(false)}
                 className="rounded-full p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition-colors"
               >
-                <X className="h-5 w-5" />
+                <span className="material-symbols-outlined text-[20px]">close</span>
               </button>
             </div>
 
@@ -244,15 +244,15 @@ export default function AiAssistantModal() {
                   >
                     {/* Avatar AI (tampil jika pengirim adalah AI) */}
                     {msg.sender === "ai" && (
-                      <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#0B4F37] text-white text-xs mt-0.5">
-                        <Bot className="h-4 w-4" />
+                      <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#1D4ED8] text-white text-xs mt-0.5">
+                        <span className="material-symbols-outlined text-[16px]">smart_toy</span>
                       </div>
                     )}
 
                     {/* Bubble Balon Teks Pesan */}
                     <div
                       className={`max-w-[80%] rounded-2xl px-3.5 py-2.5 text-xs sm:text-sm shadow-sm ${msg.sender === "user"
-                        ? "bg-[#0B4F37] text-white rounded-br-none" // Gaya bubble pengguna (Hijau Tua)
+                        ? "bg-[#1D4ED8] text-white rounded-br-none" // Gaya bubble pengguna (Hijau Tua)
                         : "bg-white text-gray-800 border border-gray-100 rounded-bl-none" // Gaya bubble AI (Putih Bersih)
                         }`}
                     >
@@ -301,7 +301,7 @@ export default function AiAssistantModal() {
                     {/* Avatar User (tampil jika pengirim adalah User) */}
                     {msg.sender === "user" && (
                       <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-gray-700 text-white text-xs mt-0.5">
-                        <User className="h-4 w-4" />
+                        <span className="material-symbols-outlined text-[16px]">person</span>
                       </div>
                     )}
                   </div>
@@ -310,8 +310,8 @@ export default function AiAssistantModal() {
                 {/* Indikator Typing saat AI sedang memikirkan balasan */}
                 {isTyping && (
                   <div className="flex items-center gap-2 text-xs text-gray-400">
-                    <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[#0B4F37] text-white">
-                      <Bot className="h-4 w-4 animate-bounce" />
+                    <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[#1D4ED8] text-white">
+                      <span className="material-symbols-outlined text-[16px] animate-bounce">smart_toy</span>
                     </div>
                     <span className="italic">AI Assistant sedang mengetik...</span>
                   </div>
@@ -327,7 +327,7 @@ export default function AiAssistantModal() {
                           key={idx}
                           disabled={isCooldown || isTyping}
                           onClick={() => handleSendMessage(suggestion)}
-                          className="rounded-full border border-emerald-200 bg-white px-3 py-1 text-[11px] font-medium text-[#0B4F37] shadow-sm transition-all hover:bg-[#0B4F37] hover:text-white hover:border-[#0B4F37] disabled:opacity-50 disabled:cursor-not-allowed"
+                          className="rounded-full border border-emerald-200 bg-white px-3 py-1 text-[11px] font-medium text-[#1D4ED8] shadow-sm transition-all hover:bg-[#1D4ED8] hover:text-white hover:border-[#1D4ED8] disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                           {suggestion}
                         </button>
@@ -344,7 +344,7 @@ export default function AiAssistantModal() {
                 {/* NOTIFIKASI ERROR VALIDASI (Tampil jika ada kesalahan input / batas karakter) */}
                 {errorMessage && (
                   <div className="mb-2 flex items-center gap-1.5 rounded-lg bg-rose-50 px-2.5 py-1.5 text-[11px] font-medium text-rose-600 border border-rose-200 animate-fade-in">
-                    <AlertCircle className="h-3.5 w-3.5 shrink-0" />
+                    <span className="material-symbols-outlined text-[14px] shrink-0">error</span>
                     <span>{errorMessage}</span>
                   </div>
                 )}
@@ -372,7 +372,7 @@ export default function AiAssistantModal() {
                           ? "Harap tunggu sebentar..."
                           : "Tanyakan sesuatu tentang hotel..."
                       }
-                      className={`w-full rounded-xl bg-gray-100 px-3.5 py-2 text-xs text-gray-800 placeholder-gray-400 focus:bg-white focus:outline-none focus:ring-1 focus:ring-[#0B4F37] transition-all ${isTyping || isCooldown ? "opacity-60 cursor-not-allowed" : ""
+                      className={`w-full rounded-xl bg-gray-100 px-3.5 py-2 text-xs text-gray-800 placeholder-gray-400 focus:bg-white focus:outline-none focus:ring-1 focus:ring-[#1D4ED8] transition-all ${isTyping || isCooldown ? "opacity-60 cursor-not-allowed" : ""
                         }`}
                     />
                   </div>
@@ -382,12 +382,12 @@ export default function AiAssistantModal() {
                     type="submit"
                     disabled={isTyping || isCooldown || !inputText.trim()}
                     aria-label="Kirim Pesan"
-                    className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-[#0B4F37] text-white shadow transition-all hover:bg-[#073524] active:scale-95 ${isTyping || isCooldown || !inputText.trim()
-                      ? "opacity-40 cursor-not-allowed hover:bg-[#0B4F37]"
+                    className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-[#1D4ED8] text-white shadow transition-all hover:bg-[#1E3A8A] active:scale-95 ${isTyping || isCooldown || !inputText.trim()
+                      ? "opacity-40 cursor-not-allowed hover:bg-[#1D4ED8]"
                       : ""
                       }`}
                   >
-                    <Send className="h-3.5 w-3.5" />
+                    <span className="material-symbols-outlined text-[14px]">send</span>
                   </button>
                 </form>
 

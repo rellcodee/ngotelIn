@@ -1,7 +1,16 @@
 import {
-  Controller, Get, Post, Body, Patch, Param, Delete, Query, UseInterceptors,
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Query,
+  UseInterceptors,
   UploadedFiles,
-  BadRequestException, UseGuards
+  BadRequestException,
+  UseGuards,
 } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { ResourcesService } from './resources.service';
@@ -12,21 +21,23 @@ import { Roles } from '../common/decorators/roles.decorator';
 import { RolesGuard } from '../common/guards/roles.guard';
 import { Role } from '../common/enums';
 
-
 @Controller('resources')
 export class ResourcesController {
-  constructor(private readonly resourcesService: ResourcesService) { }
+  constructor(private readonly resourcesService: ResourcesService) {}
 
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles(Role.ADMIN)
   @Post()
   @UseInterceptors(
-    FilesInterceptor('files', 5, { // maksimal 5 gambar
+    FilesInterceptor('files', 5, {
+      // maksimal 5 gambar
       limits: { fileSize: 5 * 1024 * 1024 }, // Limit 5MB per file
       fileFilter: (req, file, callback) => {
         // Ambil ekstensi dari nama file asli (misal: "kamar.PNG" -> ".png")
         const ext = file.originalname
-          ? file.originalname.toLowerCase().slice(file.originalname.lastIndexOf('.'))
+          ? file.originalname
+              .toLowerCase()
+              .slice(file.originalname.lastIndexOf('.'))
           : '';
 
         const allowedExtensions = ['.jpg', '.jpeg', '.png', '.webp'];
@@ -68,7 +79,8 @@ export class ResourcesController {
 
   @Get()
   findAll(
-    @Query() query: {
+    @Query()
+    query: {
       search?: string;
       location?: string;
       type?: string;
@@ -80,8 +92,7 @@ export class ResourcesController {
   }
 
   @Get('facilities')
-  async getFacilities(
-  ) {
+  async getFacilities() {
     return this.resourcesService.getFacilities();
   }
 
@@ -114,12 +125,15 @@ export class ResourcesController {
   @Roles(Role.ADMIN)
   @Patch(':id')
   @UseInterceptors(
-    FilesInterceptor('files', 5, { // Upload gambar baru jika ada
+    FilesInterceptor('files', 5, {
+      // Upload gambar baru jika ada
       limits: { fileSize: 5 * 1024 * 1024 },
       fileFilter: (req, file, callback) => {
         // Ambil ekstensi dari nama file asli (misal: "kamar.PNG" -> ".png")
         const ext = file.originalname
-          ? file.originalname.toLowerCase().slice(file.originalname.lastIndexOf('.'))
+          ? file.originalname
+              .toLowerCase()
+              .slice(file.originalname.lastIndexOf('.'))
           : '';
 
         const allowedExtensions = ['.jpg', '.jpeg', '.png', '.webp'];
@@ -167,7 +181,13 @@ export class ResourcesController {
       deleteImageIds = deleteImageIdsRaw;
     }
 
-    return this.resourcesService.update(id, updateResourceDto, files, deleteImageIds, primaryImageId);
+    return this.resourcesService.update(
+      id,
+      updateResourceDto,
+      files,
+      deleteImageIds,
+      primaryImageId,
+    );
   }
 
   @UseGuards(AuthGuard('jwt'), RolesGuard)

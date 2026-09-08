@@ -16,7 +16,7 @@ export interface MidtransNotification {
 
 @Injectable()
 export class PaymentsService {
-  constructor(private prisma: PrismaService) { }
+  constructor(private prisma: PrismaService) {}
 
   async handleMidtransWebhook(payload: MidtransNotification) {
     const {

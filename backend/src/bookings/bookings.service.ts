@@ -1,18 +1,29 @@
-import { Injectable, ConflictException, NotFoundException, BadRequestException, ForbiddenException } from '@nestjs/common';
+import {
+  Injectable,
+  ConflictException,
+  NotFoundException,
+  BadRequestException,
+  ForbiddenException,
+} from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { CreateBookingDto } from './dto/create-booking.dto';
 import { UpdateBookingDto } from './dto/update-booking.dto';
-import { ScheduleStatus, BookingStatus, PaymentStatus, Role } from '../common/enums';
+import {
+  ScheduleStatus,
+  BookingStatus,
+  PaymentStatus,
+  Role,
+} from '../common/enums';
 import { BookingStatusUpdatedEvent } from '../notifications/events/booking-status-updated.event';
 import * as midtransClient from 'midtrans-client';
 
-
 @Injectable()
 export class BookingsService {
-  constructor(private readonly prisma: PrismaService,
-    private readonly eventEmitter: EventEmitter2
-  ) { }
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly eventEmitter: EventEmitter2,
+  ) {}
 
   // Midtrans
   private snap = new midtransClient.Snap({
@@ -37,9 +48,12 @@ export class BookingsService {
   }
 
   private extractWibDateString(dateInput: string | Date): string {
-    const date = typeof dateInput === 'string' ? new Date(dateInput) : dateInput;
+    const date =
+      typeof dateInput === 'string' ? new Date(dateInput) : dateInput;
     // standar YYYY-MM-DD
-    return new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Jakarta' }).format(date);
+    return new Intl.DateTimeFormat('en-CA', {
+      timeZone: 'Asia/Jakarta',
+    }).format(date);
   }
 
   async createBooking(dto: CreateBookingDto) {
@@ -52,7 +66,9 @@ export class BookingsService {
     const endTime = new Date(`${endDateStr}T05:00:00.000Z`);
 
     if (endTime <= startTime) {
-      throw new BadRequestException('Waktu check-out harus minimal 1 hari setelah check-in!');
+      throw new BadRequestException(
+        'Waktu check-out harus minimal 1 hari setelah check-in!',
+      );
     }
 
     const startMs = new Date(startDateStr).getTime();
@@ -74,14 +90,22 @@ export class BookingsService {
       });
 
       if (overlappingSchedule) {
-        throw new ConflictException('Resource/Ruangan sudah dibooking pada tanggal tersebut!');
+        throw new ConflictException(
+          'Resource/Ruangan sudah dibooking pada tanggal tersebut!',
+        );
       }
 
-      const resource = await tx.resources.findUnique({ where: { id: dto.resource_id } });
-      if (!resource) throw new NotFoundException('Resource/kamar tidak ditemukan!');
+      const resource = await tx.resources.findUnique({
+        where: { id: dto.resource_id },
+      });
+      if (!resource)
+        throw new NotFoundException('Resource/kamar tidak ditemukan!');
 
-      const user = await tx.users.findUnique({ where: { id: dto.user_id as string } });
-      if (!user) throw new NotFoundException('User tidak ditemukan di database!');
+      const user = await tx.users.findUnique({
+        where: { id: dto.user_id as string },
+      });
+      if (!user)
+        throw new NotFoundException('User tidak ditemukan di database!');
 
       const totalPrice = resource.price_per_night * totalNights;
 
@@ -129,14 +153,17 @@ export class BookingsService {
     };
 
     if (process.env.MIDTRANS_NOTIFICATION_URL) {
-      parameter.override_notification_url = process.env.MIDTRANS_NOTIFICATION_URL;
+      parameter.override_notification_url =
+        process.env.MIDTRANS_NOTIFICATION_URL;
     }
 
     let transaction;
     try {
       transaction = await this.snap.createTransaction(parameter);
     } catch (error) {
-      throw new BadRequestException('Gagal membuat transaksi Midtrans: ' + error.message);
+      throw new BadRequestException(
+        'Gagal membuat transaksi Midtrans: ' + error.message,
+      );
     }
 
     // 3. Emit Event Notifikasi (Fitur Tambahan Kamu)
@@ -144,7 +171,7 @@ export class BookingsService {
       user_id: result.newBooking.user_id,
       booking_id: result.newBooking.id,
       status: BookingStatus.PENDING,
-    } as BookingStatusUpdatedEvent);
+    });
 
     return {
       message: 'Booking dan invoice pembayaran berhasil dibuat!',
@@ -199,7 +226,7 @@ export class BookingsService {
 
       if (
         booking.payment &&
-        (booking.payment.status) === (PaymentStatus.PENDING as string)
+        booking.payment.status === (PaymentStatus.PENDING as string)
       ) {
         await tx.payments.update({
           where: { id: booking.payment.id },
@@ -212,16 +239,14 @@ export class BookingsService {
         user_id: updatedBooking.user_id,
         booking_id: updatedBooking.id,
         status: BookingStatus.CANCELED,
-      } as BookingStatusUpdatedEvent);
+      });
 
       return {
         message: 'Booking berhasil dibatalkan. Kamar telah tersedia kembali.',
         booking_id: updatedBooking.id,
         booking_status: updatedBooking.status,
       };
-
     });
-
   }
 
   async findAll(
@@ -276,7 +301,10 @@ export class BookingsService {
     if (!booking) throw new NotFoundException('Data booking tidak ditemukan!');
 
     // 1. BATALKAN TRANSAKSI MIDTRANS (DI LUAR DB TRANSACTION)
-    if (dto.status === BookingStatus.CANCELED || dto.status === BookingStatus.REJECTED) {
+    if (
+      dto.status === BookingStatus.CANCELED ||
+      dto.status === BookingStatus.REJECTED
+    ) {
       try {
         // Cast ke 'any' untuk melewati isu type definition pada package midtrans-client
         await (this.snap as any).transaction.cancel(id);
@@ -290,7 +318,10 @@ export class BookingsService {
 
     const updatedBooking = await this.prisma.$transaction(async (tx) => {
       // A. JIKA REJECTED ATAU CANCELED
-      if (dto.status === BookingStatus.CANCELED || dto.status === BookingStatus.REJECTED) {
+      if (
+        dto.status === BookingStatus.CANCELED ||
+        dto.status === BookingStatus.REJECTED
+      ) {
         // Bebaskan schedule jika ada
         if (booking.schedule_id) {
           await tx.schedules.update({
@@ -330,7 +361,7 @@ export class BookingsService {
         user_id: updatedBooking.user_id,
         booking_id: updatedBooking.id,
         status: updatedBooking.status as BookingStatus,
-      } as BookingStatusUpdatedEvent);
+      });
     }
 
     return {

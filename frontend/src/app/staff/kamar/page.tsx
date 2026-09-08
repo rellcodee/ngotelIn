@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
-import { Search, Filter, BedDouble, Users, MapPin } from "lucide-react";
+
 
 interface RoomImage {
   id: string;
@@ -83,7 +83,7 @@ export default function StaffKamarPage() {
       {/* Filter Section */}
       <div className="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex flex-col sm:flex-row gap-4 items-center">
         <div className="relative flex-1 w-full">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
+          <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[20px] text-gray-400">search</span>
           <input
             type="text"
             placeholder="Cari nama kamar..."
@@ -93,7 +93,7 @@ export default function StaffKamarPage() {
           />
         </div>
         <div className="relative w-full sm:w-64 flex-shrink-0">
-          <Filter className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
+          <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-[20px] text-gray-400">filter_list</span>
           <select
             value={selectedType}
             onChange={(e) => setSelectedType(e.target.value)}
@@ -117,7 +117,7 @@ export default function StaffKamarPage() {
       ) : rooms.length === 0 ? (
         <div className="bg-white rounded-2xl p-16 text-center shadow-sm border border-gray-100">
           <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-            <Search className="w-8 h-8 text-gray-400" />
+            <span className="material-symbols-outlined text-[32px] text-gray-400">search</span>
           </div>
           <h3 className="text-lg font-bold text-gray-900 mb-1">Kamar tidak ditemukan</h3>
           <p className="text-gray-500">Coba ubah kata kunci atau filter pencarian Anda.</p>
@@ -141,7 +141,7 @@ export default function StaffKamarPage() {
                   />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center bg-slate-100">
-                    <BedDouble className="w-10 h-10 text-slate-300" />
+                    <span className="material-symbols-outlined text-[40px] text-slate-300">bed</span>
                   </div>
                 )}
                 {/* Overlay Gradient */}
@@ -160,18 +160,18 @@ export default function StaffKamarPage() {
 
                 <div className="flex flex-wrap gap-2 mb-4">
                   <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-emerald-50 text-emerald-700 text-[10px] font-bold uppercase tracking-wider rounded-lg border border-emerald-100/50">
-                    <BedDouble className="w-3 h-3" />
+                    <span className="material-symbols-outlined text-[12px]">bed</span>
                     {room.type.replace("_", " ")}
                   </span>
                   <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-slate-50 text-slate-700 text-[10px] font-bold uppercase tracking-wider rounded-lg border border-slate-200/50">
-                    <Users className="w-3 h-3" />
+                    <span className="material-symbols-outlined text-[12px]">group</span>
                     Max {room.capacity} Org
                   </span>
                 </div>
 
                 <div className="mt-auto">
                   <div className="flex items-center gap-1.5 text-gray-500 text-sm">
-                    <MapPin className="w-4 h-4 text-emerald-500" />
+                    <span className="material-symbols-outlined text-[16px] text-emerald-500">location_on</span>
                     <span className="truncate">{room.location}</span>
                   </div>
                 </div>
