@@ -1,16 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import {
-  Plus,
-  Edit2,
-  Trash2,
-  MapPin,
-  Users,
-  X,
-  UploadCloud,
-  Star,
-} from "lucide-react";
+
 import CustomModal from "@/components/CustomModal";
 
 interface RoomImage {
@@ -472,7 +463,7 @@ export default function KamarPage() {
           }}
           className="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-xl font-medium shadow-sm transition-all hover:-translate-y-0.5 active:scale-95"
         >
-          <Plus className="w-4 h-4" /> Tambah Kamar Baru
+          <span className="material-symbols-outlined text-[16px]">add</span> Tambah Kamar Baru
         </button>
       </div>
 
@@ -488,7 +479,7 @@ export default function KamarPage() {
       ) : rooms.length === 0 ? (
         <div className="p-12 text-center text-gray-500 bg-white rounded-xl border border-gray-100 shadow-sm flex flex-col items-center justify-center">
           <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mb-4">
-            <MapPin className="w-8 h-8 text-gray-300" />
+            <span className="material-symbols-outlined text-[32px] text-gray-300">location_on</span>
           </div>
           <p className="font-medium text-gray-900">Belum Ada Kamar</p>
         </div>
@@ -522,11 +513,11 @@ export default function KamarPage() {
                 </h3>
                 <div className="flex flex-col gap-2 mt-3 text-sm text-gray-600">
                   <div className="flex items-center gap-2">
-                    <MapPin className="w-4 h-4 text-emerald-600 shrink-0" />
+                    <span className="material-symbols-outlined text-[16px] text-emerald-600 shrink-0">location_on</span>
                     <span className="truncate">{room.location}</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <Users className="w-4 h-4 text-emerald-600 shrink-0" />
+                    <span className="material-symbols-outlined text-[16px] text-emerald-600 shrink-0">group</span>
                     <span>Maksimal {room.capacity} Orang</span>
                   </div>
                 </div>
@@ -545,13 +536,13 @@ export default function KamarPage() {
                         onClick={() => openEditModal(room)}
                         className="p-2 text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors shadow-sm"
                       >
-                        <Edit2 className="w-4 h-4" />
+                        <span className="material-symbols-outlined text-[16px]">edit</span>
                       </button>
                       <button
                         onClick={() => handleDelete(room.id, room.name)}
                         className="p-2 text-rose-600 bg-rose-50 hover:bg-rose-100 rounded-lg transition-colors shadow-sm"
                       >
-                        <Trash2 className="w-4 h-4" />
+                        <span className="material-symbols-outlined text-[16px]">delete</span>
                       </button>
                     </div>
                   </div>
@@ -579,7 +570,7 @@ export default function KamarPage() {
                 }}
                 className="text-gray-400 hover:text-gray-600 p-1"
               >
-                <X className="w-5 h-5" />
+                <span className="material-symbols-outlined text-[20px]">close</span>
               </button>
             </div>
 
@@ -741,7 +732,7 @@ export default function KamarPage() {
                         htmlFor="file-upload"
                         className="cursor-pointer flex flex-col items-center justify-center"
                       >
-                        <UploadCloud className="w-8 h-8 text-gray-400 group-hover:text-emerald-500 transition-colors mb-2" />
+                        <span className="material-symbols-outlined text-[32px] text-gray-400 group-hover:text-emerald-500 transition-colors mb-2">cloud_upload</span>
                         <span className="text-sm font-semibold text-emerald-600">
                           Upload Foto Baru
                         </span>
@@ -786,7 +777,7 @@ export default function KamarPage() {
                                       className="bg-amber-500 text-white p-1 rounded hover:bg-amber-600"
                                       title="Jadikan Cover"
                                     >
-                                      <Star className="w-3.5 h-3.5 fill-current" />
+                                      <span className="material-symbols-outlined text-[14px]">star</span>
                                     </button>
                                   )}
                                   <button
@@ -796,7 +787,7 @@ export default function KamarPage() {
                                     }
                                     className="bg-rose-500 text-white p-1 rounded hover:bg-rose-600 ml-auto"
                                   >
-                                    <Trash2 className="w-3.5 h-3.5" />
+                                    <span className="material-symbols-outlined text-[14px]">delete</span>
                                   </button>
                                 </div>
                               )}
@@ -838,7 +829,7 @@ export default function KamarPage() {
                                   className="bg-amber-500 text-white p-1 rounded hover:bg-amber-600"
                                   title="Jadikan Cover"
                                 >
-                                  <Star className="w-3.5 h-3.5 fill-current" />
+                                  <span className="material-symbols-outlined text-[14px]">star</span>
                                 </button>
                               )}
                               <button
@@ -846,7 +837,7 @@ export default function KamarPage() {
                                 onClick={() => removeNewFile(idx)}
                                 className="bg-rose-500 text-white p-1 rounded hover:bg-rose-600 ml-auto"
                               >
-                                <Trash2 className="w-3.5 h-3.5" />
+                                <span className="material-symbols-outlined text-[14px]">delete</span>
                               </button>
                             </div>
 

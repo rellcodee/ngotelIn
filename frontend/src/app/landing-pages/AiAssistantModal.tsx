@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
-import { Bot, X, Send, User, AlertCircle, RefreshCcw } from "lucide-react";
+
 import RoomCard from "./components/RoomCard";
 import ReactMarkdown from "react-markdown";
 import { usePathname } from "next/navigation";
@@ -180,7 +180,7 @@ export default function AiAssistantModal() {
           aria-label="Toggle AI Assistant"
         >
           <div className="flex h-7 w-7 items-center justify-center rounded-full bg-emerald-500/30 text-emerald-200">
-            <Bot className="h-4 w-4" />
+            <span className="material-symbols-outlined text-[16px]">smart_toy</span>
           </div>
           <span className="text-sm font-bold tracking-wide">TiniBot</span>
         </button>
@@ -196,7 +196,7 @@ export default function AiAssistantModal() {
             <div className="flex items-center gap-2.5">
               {/* Avatar Bot AI dengan latar hijau lingkaran */}
               <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#1D4ED8] text-white shadow-sm">
-                <Bot className="h-5 w-5" />
+                <span className="material-symbols-outlined text-[20px]">smart_toy</span>
               </div>
               <div>
                 {/* Judul AI Assistant */}
@@ -218,7 +218,7 @@ export default function AiAssistantModal() {
                 title="Reset Percakapan"
                 className="rounded-full p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition-colors"
               >
-                <RefreshCcw className="h-4 w-4" />
+                <span className="material-symbols-outlined text-[16px]">refresh</span>
               </button>
 
               {/* Tombol Tutup Window (X) */}
@@ -226,7 +226,7 @@ export default function AiAssistantModal() {
                 onClick={() => setIsOpen(false)}
                 className="rounded-full p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition-colors"
               >
-                <X className="h-5 w-5" />
+                <span className="material-symbols-outlined text-[20px]">close</span>
               </button>
             </div>
 
@@ -245,7 +245,7 @@ export default function AiAssistantModal() {
                     {/* Avatar AI (tampil jika pengirim adalah AI) */}
                     {msg.sender === "ai" && (
                       <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#1D4ED8] text-white text-xs mt-0.5">
-                        <Bot className="h-4 w-4" />
+                        <span className="material-symbols-outlined text-[16px]">smart_toy</span>
                       </div>
                     )}
 
@@ -301,7 +301,7 @@ export default function AiAssistantModal() {
                     {/* Avatar User (tampil jika pengirim adalah User) */}
                     {msg.sender === "user" && (
                       <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-gray-700 text-white text-xs mt-0.5">
-                        <User className="h-4 w-4" />
+                        <span className="material-symbols-outlined text-[16px]">person</span>
                       </div>
                     )}
                   </div>
@@ -311,7 +311,7 @@ export default function AiAssistantModal() {
                 {isTyping && (
                   <div className="flex items-center gap-2 text-xs text-gray-400">
                     <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[#1D4ED8] text-white">
-                      <Bot className="h-4 w-4 animate-bounce" />
+                      <span className="material-symbols-outlined text-[16px] animate-bounce">smart_toy</span>
                     </div>
                     <span className="italic">AI Assistant sedang mengetik...</span>
                   </div>
@@ -344,7 +344,7 @@ export default function AiAssistantModal() {
                 {/* NOTIFIKASI ERROR VALIDASI (Tampil jika ada kesalahan input / batas karakter) */}
                 {errorMessage && (
                   <div className="mb-2 flex items-center gap-1.5 rounded-lg bg-rose-50 px-2.5 py-1.5 text-[11px] font-medium text-rose-600 border border-rose-200 animate-fade-in">
-                    <AlertCircle className="h-3.5 w-3.5 shrink-0" />
+                    <span className="material-symbols-outlined text-[14px] shrink-0">error</span>
                     <span>{errorMessage}</span>
                   </div>
                 )}
@@ -387,7 +387,7 @@ export default function AiAssistantModal() {
                       : ""
                       }`}
                   >
-                    <Send className="h-3.5 w-3.5" />
+                    <span className="material-symbols-outlined text-[14px]">send</span>
                   </button>
                 </form>
 

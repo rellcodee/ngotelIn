@@ -3,7 +3,7 @@
 import React, { useState } from "react"; // Mengimpor React dan useState untuk mengelola state halaman
 import Image from "next/image"; // Komponen Image Next.js untuk optimasi loading gambar kamar
 import Link from "next/link"; // Komponen Link Next.js untuk berpindah ke halaman detail kamar
-import { Search, X, SlidersHorizontal, PhoneCall } from "lucide-react"; // Mengimpor ikon-ikon modern dari Lucide React
+
 
 // Mengimpor komponen layout utama (Header, Footer)
 import Header from "../landing-pages/Header";
@@ -112,7 +112,7 @@ export default function KamarPage() {
       {/* Toast Kontak Resepsionis */}
       {showContactToast && (
         <div className="fixed top-24 right-6 z-50 flex items-center gap-3 rounded-2xl bg-primary px-5 py-3.5 text-sm font-medium text-on-primary shadow-2xl backdrop-blur-md">
-          <PhoneCall className="h-5 w-5 text-secondary-fixed" />
+          <span className="material-symbols-outlined text-[20px] text-secondary-fixed">phone_in_talk</span>
           <span>
             Resepsionis Siaga: <strong>+62 21 555 7890</strong>
           </span>
@@ -120,7 +120,7 @@ export default function KamarPage() {
             onClick={() => setShowContactToast(false)}
             className="ml-2 text-on-primary/70 hover:text-on-primary"
           >
-            <X className="h-4 w-4" />
+            <span className="material-symbols-outlined text-[16px]">close</span>
           </button>
         </div>
       )}
@@ -159,7 +159,7 @@ export default function KamarPage() {
         <section className="w-full max-w-container-max mx-auto px-4 md:px-8 mb-6 sticky top-[100px] md:top-[104px] z-30">
           <div className="bg-surface rounded-2xl py-4 px-5 md:px-6 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between shadow-sm border border-surface-container-low">
             <div className="relative flex-1 max-w-md">
-              <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-on-surface-variant" />
+              <span className="material-symbols-outlined absolute left-4 top-1/2 text-[20px] -translate-y-1/2 text-on-surface-variant">search</span>
               <input
                 type="text"
                 placeholder="Cari kamar atau fasilitas..."
@@ -174,7 +174,7 @@ export default function KamarPage() {
 
             <div className="flex items-center justify-between lg:justify-end gap-4 w-full lg:w-auto">
               <div className="flex items-center gap-2 overflow-x-auto pb-1 md:pb-0 scrollbar-none flex-1 lg:flex-initial">
-                <SlidersHorizontal className="h-5 w-5 text-on-surface-variant shrink-0 mr-2 hidden sm:block" />
+                <span className="material-symbols-outlined text-[20px] text-on-surface-variant shrink-0 mr-2 hidden sm:block">tune</span>
                 {dynamicCategories.map((cat) => (
                   <button
                     key={cat}
@@ -223,7 +223,7 @@ export default function KamarPage() {
               </div>
             ) : filteredRooms.length === 0 ? (
               <div className="rounded-3xl bg-surface p-12 text-center shadow-sm border border-surface-container-low max-w-lg mx-auto">
-                <Search className="mx-auto h-12 w-12 text-on-surface-variant mb-3" />
+                <span className="material-symbols-outlined mx-auto text-[48px] text-on-surface-variant mb-3 block">search</span>
                 <h3 className="font-headline-sm text-on-surface">
                   Kamar Tidak Ditemukan
                 </h3>

@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { Menu, X } from "lucide-react";
+
 import Image from "next/image";
 import CustomModal from "@/components/CustomModal";
 
@@ -306,9 +306,9 @@ export default function Header({ activePage = "home" }: HeaderProps) {
             aria-label="Toggle menu"
           >
             {isMobileMenuOpen ? (
-              <X className="h-5 w-5" />
+              <span className="material-symbols-outlined text-[20px]">close</span>
             ) : (
-              <Menu className="h-5 w-5" />
+              <span className="material-symbols-outlined text-[20px]">menu</span>
             )}
           </button>
         </div>

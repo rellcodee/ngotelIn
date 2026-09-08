@@ -5,7 +5,7 @@ import { GoogleLogin } from '@react-oauth/google';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Mail, Lock, User, ArrowLeft, Eye, EyeOff, CheckCircle2 } from 'lucide-react';
+
 import CustomModal from '@/components/CustomModal';
 
 export default function RegisterPage() {
@@ -210,15 +210,15 @@ export default function RegisterPage() {
 
                     <div className="space-y-4 pt-4">
                         <div className="flex items-center gap-3">
-                            <CheckCircle2 className="h-5 w-5 text-amber-400 shrink-0" />
+                            <span className="material-symbols-outlined text-[20px] text-amber-400 shrink-0">check_circle</span>
                             <span className="text-sm font-medium">Reservasi instan dan pelacakan pesanan real-time</span>
                         </div>
                         <div className="flex items-center gap-3">
-                            <CheckCircle2 className="h-5 w-5 text-amber-400 shrink-0" />
+                            <span className="material-symbols-outlined text-[20px] text-amber-400 shrink-0">check_circle</span>
                             <span className="text-sm font-medium">Rekomendasi kamar cerdas berbasis AI</span>
                         </div>
                         <div className="flex items-center gap-3">
-                            <CheckCircle2 className="h-5 w-5 text-amber-400 shrink-0" />
+                            <span className="material-symbols-outlined text-[20px] text-amber-400 shrink-0">check_circle</span>
                             <span className="text-sm font-medium">Diskon eksklusif hingga 30% untuk pengguna baru</span>
                         </div>
                     </div>
@@ -235,7 +235,7 @@ export default function RegisterPage() {
                 {/* Back to Home Link */}
                 <div className="absolute top-6 left-6">
                     <Link href="/" className="group flex items-center gap-2 text-sm font-semibold text-gray-600 transition-colors hover:text-[#1D4ED8]">
-                        <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
+                        <span className="material-symbols-outlined text-[16px] transition-transform group-hover:-translate-x-1">arrow_back</span>
                         <span>Kembali ke Beranda</span>
                     </Link>
                 </div>
@@ -282,7 +282,7 @@ export default function RegisterPage() {
                             </label>
                             <div className="relative rounded-xl shadow-sm">
                                 <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                                    <User className="h-4 w-4 text-gray-400" />
+                                    <span className="material-symbols-outlined text-[16px] text-gray-400">person</span>
                                 </div>
                                 <input
                                     type="text"
@@ -304,7 +304,7 @@ export default function RegisterPage() {
                             </label>
                             <div className="relative rounded-xl shadow-sm">
                                 <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                                    <Mail className="h-4 w-4 text-gray-400" />
+                                    <span className="material-symbols-outlined text-[16px] text-gray-400">mail</span>
                                 </div>
                                 <input
                                     type="email"
@@ -326,7 +326,7 @@ export default function RegisterPage() {
                             </label>
                             <div className="relative rounded-xl shadow-sm">
                                 <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                                    <Lock className="h-4 w-4 text-gray-400" />
+                                    <span className="material-symbols-outlined text-[16px] text-gray-400">lock</span>
                                 </div>
                                 <input
                                     type={showPassword ? 'text' : 'password'}
@@ -343,7 +343,7 @@ export default function RegisterPage() {
                                     onClick={() => setShowPassword(!showPassword)}
                                     className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-gray-600"
                                 >
-                                    {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                                    {showPassword ? <span className="material-symbols-outlined text-[16px]">visibility_off</span> : <span className="material-symbols-outlined text-[16px]">visibility</span>}
                                 </button>
                             </div>
                         </div>

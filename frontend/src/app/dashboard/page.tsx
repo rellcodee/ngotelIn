@@ -4,30 +4,7 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import {
-  Calendar,
-  CreditCard,
-  Bell,
-  Star,
-  User,
-  LogOut,
-  CheckCircle2,
-  Clock,
-  AlertCircle,
-  Building2,
-  ShieldCheck,
-  MapPin,
-  Users,
-  Search,
-  ChevronRight,
-  Sparkles,
-  ArrowLeft,
-  X,
-  Edit3,
-  Check,
-  MessageSquare,
-  Lock,
-} from "lucide-react";
+
 
 import Header from "../landing-pages/Header";
 import Footer from "../landing-pages/Footer";
@@ -436,7 +413,7 @@ export default function UserDashboardPage() {
                   onClick={handleLogout}
                   className="flex items-center gap-1.5 rounded-full border border-red-400/50 px-4 py-2.5 text-xs font-semibold text-red-200 transition-all hover:bg-red-500/20 hover:text-white"
                 >
-                  <LogOut className="h-4 w-4" />
+                  <span className="material-symbols-outlined text-[16px]">logout</span>
                   <span>Keluar</span>
                 </button>
               </div>
@@ -481,7 +458,7 @@ export default function UserDashboardPage() {
                   : "border-transparent text-gray-500 hover:text-gray-900 hover:bg-gray-100/50"
                   }`}
               >
-                <Calendar className="h-4 w-4" />
+                <span className="material-symbols-outlined text-[16px]">calendar_today</span>
                 <span>Pemesanan Saya</span>
                 <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] text-emerald-800">
                   {bookings.length}
@@ -495,7 +472,7 @@ export default function UserDashboardPage() {
                   : "border-transparent text-gray-500 hover:text-gray-900 hover:bg-gray-100/50"
                   }`}
               >
-                <CreditCard className="h-4 w-4" />
+                <span className="material-symbols-outlined text-[16px]">credit_card</span>
                 <span>Riwayat Pembayaran</span>
               </button>
 
@@ -506,7 +483,7 @@ export default function UserDashboardPage() {
                   : "border-transparent text-gray-500 hover:text-gray-900 hover:bg-gray-100/50"
                   }`}
               >
-                <Bell className="h-4 w-4" />
+                <span className="material-symbols-outlined text-[16px]">notifications</span>
                 <span>Notifikasi</span>
                 {unreadNotifCount > 0 && (
                   <span className="rounded-full bg-rose-500 px-2 py-0.5 text-[10px] text-white font-bold animate-pulse">
@@ -522,7 +499,7 @@ export default function UserDashboardPage() {
                   : "border-transparent text-gray-500 hover:text-gray-900 hover:bg-gray-100/50"
                   }`}
               >
-                <Star className="h-4 w-4" />
+                <span className="material-symbols-outlined text-[16px]">star</span>
                 <span>Ulasan Saya</span>
               </button>
 
@@ -533,7 +510,7 @@ export default function UserDashboardPage() {
                   : "border-transparent text-gray-500 hover:text-gray-900 hover:bg-gray-100/50"
                   }`}
               >
-                <User className="h-4 w-4" />
+                <span className="material-symbols-outlined text-[16px]">person</span>
                 <span>Pengaturan Profil</span>
               </button>
             </div>
@@ -554,7 +531,7 @@ export default function UserDashboardPage() {
                       className="inline-flex items-center gap-1 text-xs font-semibold text-[#1D4ED8] hover:underline"
                     >
                       <span>Cari Kamar Lain</span>
-                      <ChevronRight className="h-4 w-4" />
+                      <span className="material-symbols-outlined text-[16px]">chevron_right</span>
                     </Link>
                   </div>
 
@@ -592,7 +569,7 @@ export default function UserDashboardPage() {
                                   <span className="text-[10px] font-mono text-gray-400 uppercase">ID: {booking.id}</span>
                                   <h3 className="text-lg font-bold text-gray-900">{booking.room_name}</h3>
                                   <div className="flex items-center gap-1 text-xs text-gray-500 mt-0.5">
-                                    <MapPin className="h-3.5 w-3.5 text-emerald-600 shrink-0" />
+                                    <span className="material-symbols-outlined text-[14px] text-emerald-600 shrink-0">location_on</span>
                                     <span>{booking.room_location}</span>
                                   </div>
                                 </div>
@@ -601,19 +578,19 @@ export default function UserDashboardPage() {
                                 <div>
                                   {booking.status === "confirmed" && (
                                     <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700 border border-emerald-200">
-                                      <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600" />
+                                      <span className="material-symbols-outlined text-[14px] text-emerald-600">check_circle</span>
                                       Terverifikasi (Lunas)
                                     </span>
                                   )}
                                   {booking.status === "pending" && (
                                     <span className="inline-flex items-center gap-1 rounded-full bg-amber-50 px-3 py-1 text-xs font-semibold text-amber-700 border border-amber-200">
-                                      <Clock className="h-3.5 w-3.5 text-amber-600" />
+                                      <span className="material-symbols-outlined text-[14px] text-amber-600">schedule</span>
                                       Menunggu Bayar
                                     </span>
                                   )}
                                   {booking.status === "completed" && (
                                     <span className="inline-flex items-center gap-1 rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700 border border-blue-200">
-                                      <CheckCircle2 className="h-3.5 w-3.5 text-blue-600" />
+                                      <span className="material-symbols-outlined text-[14px] text-blue-600">check_circle</span>
                                       Selesai Menginap
                                     </span>
                                   )}
@@ -745,7 +722,7 @@ export default function UserDashboardPage() {
                       >
                         <div className="flex items-start gap-3">
                           <div className={`p-2 rounded-xl mt-0.5 ${n.is_read ? "bg-gray-100 text-gray-500" : "bg-[#1D4ED8] text-white"}`}>
-                            <Bell className="h-4 w-4" />
+                            <span className="material-symbols-outlined text-[16px]">notifications</span>
                           </div>
                           <div>
                             <p className="text-xs sm:text-sm font-medium leading-relaxed">{n.message}</p>
@@ -789,10 +766,10 @@ export default function UserDashboardPage() {
                             <h3 className="font-bold text-sm text-gray-900">{r.room_name}</h3>
                             <div className="flex items-center gap-1 text-amber-500">
                               {Array.from({ length: 5 }).map((_, i) => (
-                                <Star
-                                  key={i}
-                                  className={`h-4 w-4 ${i < r.rating ? "fill-amber-400" : "text-gray-300"}`}
-                                />
+                                  <span
+                                    key={i}
+                                    className={`material-symbols-outlined text-[16px] ${i < r.rating ? "text-amber-400" : "text-gray-300"}`}
+                                  >star</span>
                               ))}
                             </div>
                           </div>
@@ -861,7 +838,7 @@ export default function UserDashboardPage() {
               onClick={() => setSelectedReviewBooking(null)}
               className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
             >
-              <X className="h-5 w-5" />
+              <span className="material-symbols-outlined text-[20px]">close</span>
             </button>
 
             <h3 className="text-lg font-bold text-gray-900">Beri Ulasan & Rating</h3>
@@ -878,10 +855,10 @@ export default function UserDashboardPage() {
                       onClick={() => setReviewRating(star)}
                       className="p-1 transition-transform hover:scale-125"
                     >
-                      <Star
-                        className={`h-7 w-7 ${star <= reviewRating ? "text-amber-400 fill-amber-400" : "text-gray-300"
+                      <span
+                        className={`material-symbols-outlined text-[28px] ${star <= reviewRating ? "text-amber-400" : "text-gray-300"
                           }`}
-                      />
+                      >star</span>
                     </button>
                   ))}
                 </div>

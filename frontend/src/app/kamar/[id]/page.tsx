@@ -4,18 +4,7 @@ import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
-import {
-  Users,
-  MapPin,
-  CheckCircle2,
-  Lock,
-  ArrowLeft,
-  X,
-  SearchX,
-  Building2,
-  ChevronLeft,
-  ChevronRight,
-} from "lucide-react";
+
 
 import Header from "../../landing-pages/Header";
 import Footer from "../../landing-pages/Footer";
@@ -158,7 +147,7 @@ export default function DetailKamarPage() {
         <main className="flex-1 flex items-center justify-center p-6 pt-32">
           <div className="rounded-3xl bg-surface p-10 sm:p-12 text-center shadow-sm border border-surface-container-low max-w-lg w-full">
             <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-error/10 text-error mb-4 shadow-inner">
-              <SearchX className="h-8 w-8" />
+              <span className="material-symbols-outlined text-[32px]">search_off</span>
             </div>
             <h1 className="font-headline-sm text-on-surface">
               Maaf, Tipe Kamar Tidak Ditemukan
@@ -174,7 +163,7 @@ export default function DetailKamarPage() {
               href="/kamar"
               className="mt-6 inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-[14px] font-bold text-on-primary shadow-sm transition-all hover:bg-primary/90"
             >
-              <ArrowLeft className="h-4 w-4" />
+              <span className="material-symbols-outlined text-[16px]">arrow_back</span>
               <span>Kembali ke Katalog Kamar</span>
             </Link>
           </div>
@@ -199,7 +188,7 @@ export default function DetailKamarPage() {
               href="/kamar"
               className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-[14px] font-bold text-on-primary shadow-sm transition-all duration-300 hover:bg-primary/90 hover:shadow-md hover:-translate-y-0.5 active:scale-95 group"
             >
-              <ArrowLeft className="h-4 w-4 transition-transform duration-300 group-hover:-translate-x-1" />
+              <span className="material-symbols-outlined text-[16px] transition-transform duration-300 group-hover:-translate-x-1">arrow_back</span>
               <span>Kembali ke Katalog Kamar</span>
             </Link>
 
@@ -264,7 +253,7 @@ export default function DetailKamarPage() {
                     {room.type}
                   </span>
                   <span className="flex items-center gap-1 text-[13px] font-medium text-on-surface-variant">
-                    <MapPin className="h-3.5 w-3.5 text-primary" />
+                    <span className="material-symbols-outlined text-[14px] text-primary">location_on</span>
                     <span>{room.location}</span>
                   </span>
                 </div>
@@ -276,7 +265,7 @@ export default function DetailKamarPage() {
               {/* Highlights (Kapasitas & Lokasi) */}
               <div className="flex flex-wrap items-center gap-8 sm:gap-20">
                 <div className="flex items-center gap-4">
-                  <Users className="w-6 h-6 text-primary" />
+                  <span className="material-symbols-outlined text-[24px] text-primary">group</span>
                   <div className="flex flex-col">
                     <span className="text-[12px] font-bold text-on-surface-variant uppercase tracking-wider mb-0.5">
                       Kapasitas
@@ -288,7 +277,7 @@ export default function DetailKamarPage() {
                 </div>
                 <div className="hidden sm:block w-px h-10 bg-surface-container"></div>
                 <div className="flex items-center gap-4">
-                  <MapPin className="w-6 h-6 text-primary" />
+                  <span className="material-symbols-outlined text-[24px] text-primary">location_on</span>
                   <div className="flex flex-col">
                     <span className="text-[12px] font-bold text-on-surface-variant uppercase tracking-wider mb-0.5">
                       Lokasi
@@ -333,7 +322,7 @@ export default function DetailKamarPage() {
               {room.description && (
                 <section className="rounded-[2rem] border border-surface-container bg-surface-container-lowest p-8 md:p-10 shadow-sm flex flex-col h-full transition-all duration-300 hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] hover:-translate-y-1.5 hover:border-primary/20 group">
                   <h2 className="font-display-sm text-[24px] font-bold text-on-surface mb-6 pb-6 border-b border-surface-container flex items-center gap-3">
-                    <Building2 className="w-6 h-6 text-primary" />
+                    <span className="material-symbols-outlined text-[24px] text-primary">apartment</span>
                     Tentang Kamar Ini
                   </h2>
                   <p className="text-[15px] text-on-surface-variant leading-relaxed whitespace-pre-line flex-grow">
@@ -345,7 +334,7 @@ export default function DetailKamarPage() {
               {/* KOLOM KANAN: FASILITAS KAMAR (CARD) */}
               <section className="rounded-[2rem] border border-surface-container bg-surface-container-lowest p-8 md:p-10 shadow-sm flex flex-col h-full transition-all duration-300 hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] hover:-translate-y-1.5 hover:border-primary/20">
                 <h2 className="font-display-sm text-[24px] font-bold text-on-surface mb-6 pb-6 border-b border-surface-container flex items-center gap-3">
-                  <CheckCircle2 className="w-6 h-6 text-primary" />
+                  <span className="material-symbols-outlined text-[24px] text-primary">check_circle</span>
                   Fasilitas Kamar
                 </h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 flex-grow content-start">
@@ -355,7 +344,7 @@ export default function DetailKamarPage() {
                       className="group flex items-center gap-3 p-3 rounded-2xl bg-surface-container-lowest border border-surface-container hover:border-primary/30 hover:bg-primary/5 hover:shadow-sm transition-all duration-300 cursor-default"
                     >
                       <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary transition-all duration-300 group-hover:scale-110 group-hover:bg-primary group-hover:text-on-primary">
-                        <CheckCircle2 className="h-4 w-4" />
+                        <span className="material-symbols-outlined text-[16px]">check_circle</span>
                       </div>
                       <span className="text-[14px] font-medium text-on-surface transition-colors group-hover:text-primary">
                         {facility}
@@ -380,7 +369,7 @@ export default function DetailKamarPage() {
             onClick={() => setLightboxIndex(null)}
             className="absolute top-4 right-4 sm:top-6 sm:right-6 z-50 text-white/70 hover:text-white bg-black/40 hover:bg-black/60 rounded-full p-2 transition-all"
           >
-            <X className="h-6 w-6" />
+            <span className="material-symbols-outlined text-[24px]">close</span>
           </button>
 
           {allImages.length > 1 && (
@@ -391,7 +380,7 @@ export default function DetailKamarPage() {
               }}
               className="absolute left-4 sm:left-10 z-50 text-white/70 hover:text-white bg-black/40 hover:bg-black/60 rounded-full p-3 transition-all"
             >
-              <ChevronLeft className="h-8 w-8" />
+              <span className="material-symbols-outlined text-[32px]">chevron_left</span>
             </button>
           )}
 
@@ -415,7 +404,7 @@ export default function DetailKamarPage() {
               }}
               className="absolute right-4 sm:right-10 z-50 text-white/70 hover:text-white bg-black/40 hover:bg-black/60 rounded-full p-3 transition-all"
             >
-              <ChevronRight className="h-8 w-8" />
+              <span className="material-symbols-outlined text-[32px]">chevron_right</span>
             </button>
           )}
           
@@ -438,11 +427,11 @@ export default function DetailKamarPage() {
               onClick={() => setIsLoginModalOpen(false)}
               className="absolute top-4 right-4 text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded-full p-1 transition-all"
             >
-              <X className="h-5 w-5" />
+              <span className="material-symbols-outlined text-[20px]">close</span>
             </button>
 
             <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-primary/10 text-primary mb-4">
-              <Lock className="h-7 w-7" />
+              <span className="material-symbols-outlined text-[28px]">lock</span>
             </div>
 
             <h3 className="font-headline-sm text-[20px] text-on-surface">

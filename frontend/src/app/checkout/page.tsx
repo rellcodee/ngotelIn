@@ -4,20 +4,7 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import {
-  Calendar,
-  CreditCard,
-  Building2,
-  ShieldCheck,
-  MapPin,
-  Users,
-  ArrowLeft,
-  CheckCircle2,
-  Lock,
-  Sparkles,
-  Info,
-  Clock,
-} from "lucide-react";
+
 
 import Header from "../landing-pages/Header";
 import Footer from "../landing-pages/Footer";
@@ -171,7 +158,7 @@ export default function CheckoutPage() {
               href="/kamar"
               className="inline-flex items-center gap-2 text-xs sm:text-sm font-semibold text-[#1D4ED8] hover:underline"
             >
-              <ArrowLeft className="h-4 w-4" />
+              <span className="material-symbols-outlined text-[16px]">arrow_back</span>
               <span>Kembali ke Katalog Kamar</span>
             </Link>
 
@@ -193,7 +180,7 @@ export default function CheckoutPage() {
           {isSuccess ? (
             <div className="rounded-3xl bg-white p-12 text-center shadow-xl border border-emerald-100 max-w-lg mx-auto my-12 animate-in zoom-in duration-300">
               <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-emerald-100 text-emerald-600 mb-4 shadow-inner">
-                <CheckCircle2 className="h-10 w-10" />
+                <span className="material-symbols-outlined text-[40px]">check_circle</span>
               </div>
               <h2 className="text-2xl font-bold text-gray-900">Pemesanan Berhasil Dikirim!</h2>
               <p className="mt-2 text-xs text-gray-600 leading-relaxed">
@@ -214,7 +201,7 @@ export default function CheckoutPage() {
                 {/* Card Data Pemesan */}
                 <div className="rounded-3xl border border-gray-200/80 bg-white p-6 sm:p-7 shadow-sm">
                   <h2 className="text-base font-bold text-gray-900 mb-4 flex items-center gap-2">
-                    <Users className="h-5 w-5 text-[#1D4ED8]" />
+                    <span className="material-symbols-outlined text-[20px] text-[#1D4ED8]">group</span>
                     <span>Data Diri Pemesan (Tamu)</span>
                   </h2>
 
@@ -234,7 +221,7 @@ export default function CheckoutPage() {
                 {/* Card Tanggal & Catatan Pemesanan (Prisma: `bookings.notes`) */}
                 <div className="rounded-3xl border border-gray-200/80 bg-white p-6 sm:p-7 shadow-sm">
                   <h2 className="text-base font-bold text-gray-900 mb-4 flex items-center gap-2">
-                    <Calendar className="h-5 w-5 text-[#1D4ED8]" />
+                    <span className="material-symbols-outlined text-[20px] text-[#1D4ED8]">calendar_today</span>
                     <span>Jadwal Menginap & Catatan</span>
                   </h2>
 
@@ -294,7 +281,7 @@ export default function CheckoutPage() {
                 {/* Card Metode Pembayaran (Prisma: `payments.payment_method`) */}
                 <div className="rounded-3xl border border-gray-200/80 bg-white p-6 sm:p-7 shadow-sm">
                   <h2 className="text-base font-bold text-gray-900 mb-4 flex items-center gap-2">
-                    <CreditCard className="h-5 w-5 text-[#1D4ED8]" />
+                    <span className="material-symbols-outlined text-[20px] text-[#1D4ED8]">credit_card</span>
                     <span>Pilih Metode Pembayaran</span>
                   </h2>
 
@@ -368,7 +355,7 @@ export default function CheckoutPage() {
                     </span>
                     <h3 className="text-lg font-bold text-gray-900 mt-2">{selectedRoom.name}</h3>
                     <span className="text-xs text-gray-500 flex items-center gap-1 mt-1">
-                      <MapPin className="h-3.5 w-3.5 text-emerald-600" />
+                      <span className="material-symbols-outlined text-[14px] text-emerald-600">location_on</span>
                       <span>{selectedRoom.location}</span>
                     </span>
                   </div>
@@ -409,7 +396,7 @@ export default function CheckoutPage() {
                   </button>
 
                   <div className="flex items-center justify-center gap-1.5 text-[11px] text-gray-400 font-light">
-                    <Lock className="h-3.5 w-3.5" />
+                    <span className="material-symbols-outlined text-[14px]">lock</span>
                     <span>Transaksi terenkripsi & 100% aman</span>
                   </div>
                 </div>
