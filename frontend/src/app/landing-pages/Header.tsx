@@ -19,10 +19,39 @@ export default function Header({ activePage = "home" }: HeaderProps) {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userName, setUserName] = useState("");
 
-  if (activePage !== prevActivePage) {
-    setPrevActivePage(activePage);
-    setActiveNav(activePage);
-  }
+  useEffect(() => {
+    if (activePage !== prevActivePage) {
+      setPrevActivePage(activePage);
+      setActiveNav(activePage);
+    }
+  }, [activePage, prevActivePage]);
+
+  // Sync active nav with window location on mount and hash changes
+  useEffect(() => {
+    const handleLocationChange = () => {
+      if (typeof window !== "undefined") {
+        const path = window.location.pathname;
+        const hash = window.location.hash;
+        
+        if (path === "/") {
+          if (hash === "#fasilitas") setActiveNav("fasilitas");
+          else if (hash === "#tentang-kami") setActiveNav("tentang-kami");
+          else if (hash === "#ulasan") setActiveNav("ulasan");
+          else if (hash === "#kontak") setActiveNav("kontak");
+          else if (!hash) setActiveNav("home");
+        } else if (path.startsWith("/kamar")) {
+          setActiveNav("kamar");
+        }
+      }
+    };
+
+    // Run on mount
+    handleLocationChange();
+
+    // Listen for hash changes
+    window.addEventListener("hashchange", handleLocationChange);
+    return () => window.removeEventListener("hashchange", handleLocationChange);
+  }, []);
   const [modal, setModal] = useState({
     isOpen: false,
     type: "confirm" as "success" | "error" | "warning" | "info" | "confirm",
@@ -92,7 +121,12 @@ export default function Header({ activePage = "home" }: HeaderProps) {
         <nav className="hidden lg:flex items-center gap-space-xs">
           <Link
             href="/"
-            onClick={() => setActiveNav("home")}
+            onClick={(e) => {
+              setActiveNav("home");
+              if (typeof window !== "undefined" && window.location.pathname === "/") {
+                window.scrollTo({ top: 0, behavior: "smooth" });
+              }
+            }}
             className={`px-space-md py-space-xs rounded-full transition-all font-label-lg text-label-lg ${
               activeNav === "home"
                 ? "bg-primary-container text-on-primary font-bold"
@@ -286,7 +320,13 @@ export default function Header({ activePage = "home" }: HeaderProps) {
             <Link
               href="/"
               className={`rounded-xl px-space-md py-space-sm font-label-lg text-label-lg ${activeNav === "home" ? "bg-primary-container text-on-primary font-bold" : "text-on-surface hover:bg-surface-container"}`}
-              onClick={() => { setActiveNav("home"); setIsMobileMenuOpen(false); }}
+              onClick={(e) => { 
+                setActiveNav("home"); 
+                setIsMobileMenuOpen(false); 
+                if (typeof window !== "undefined" && window.location.pathname === "/") {
+                  window.scrollTo({ top: 0, behavior: "smooth" });
+                }
+              }}
             >
               Beranda
             </Link>
