@@ -164,8 +164,13 @@ export default function AiAssistantModal() {
     setIsOpen(false);
   };
 
-  // Sembunyikan bot jika berada di halaman admin atau staff
-  if (pathname?.startsWith("/admin") || pathname?.startsWith("/staff")) {
+  // Sembunyikan bot jika berada di halaman admin, staff, login, atau register
+  if (
+    pathname?.startsWith("/admin") || 
+    pathname?.startsWith("/staff") ||
+    pathname === "/login" ||
+    pathname === "/register"
+  ) {
     return null;
   }
 
