@@ -153,10 +153,17 @@ export class UserService {
     // Mengecek apakah yang request ini punya hak atas akun ini
     this.checkAccountOwnership(id, currentUser);
 
-    const payload = { ...updateUserDto };
+    const { password, ...rest } = updateUserDto;
+
+    const payload: any = { ...rest };
 
     if (currentUser.role !== Role.ADMIN) {
       delete payload.role;
+    }
+
+    // Hash password baru sebelum disimpan ke DB
+    if (password) {
+      payload.password_hash = await bcrypt.hash(password, 10);
     }
 
     try {

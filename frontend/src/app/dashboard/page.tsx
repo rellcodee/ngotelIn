@@ -5,7 +5,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
-
 import Header from "../landing-pages/Header";
 import Footer from "../landing-pages/Footer";
 
@@ -39,16 +38,6 @@ interface BookingItem {
   created_at: string;
 }
 
-// Model Prisma: `payments`
-interface PaymentItem {
-  id: string;
-  booking_id: string;
-  room_name: string;
-  amount: number;
-  payment_method: string; // "gopay" | "bank_transfer" | "qris" | "credit_card"
-  status: "pending" | "success" | "settlement" | "expire";
-  paid_at?: string;
-}
 
 // Model Prisma: `notifications`
 interface NotificationItem {
@@ -71,118 +60,7 @@ interface ReviewItem {
   created_at: string;
 }
 
-// ============================================================================
-// INITIAL MOCK DATA (PRESISI DENGAN DATA DATABASE PRISMA)
-// ============================================================================
 
-const MOCK_BOOKINGS: BookingItem[] = [
-  {
-    id: "bk-9823-uuid-01",
-    user_id: "usr-101",
-    schedule_id: "sch-01",
-    room_name: "Deluxe Ocean View",
-    room_type: "Deluxe",
-    room_location: "Gedung Utama - Lantai 5",
-    room_image:
-      "https://images.unsplash.com/photo-1611892440504-42a792e24d32?auto=format&fit=crop&w=800&q=80",
-    check_in: "2026-08-25",
-    check_out: "2026-08-27",
-    status: "confirmed",
-    notes: "Minta kamar lantai tinggi dan pemandangan laut bersih.",
-    total_price: 1700000,
-    created_at: "2026-08-20T10:30:00Z",
-  },
-  {
-    id: "bk-4512-uuid-02",
-    user_id: "usr-101",
-    schedule_id: "sch-02",
-    room_name: "Executive King Suite",
-    room_type: "Suite",
-    room_location: "Wing Barat - Lantai 8",
-    room_image:
-      "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=800&q=80",
-    check_in: "2026-09-01",
-    check_out: "2026-09-03",
-    status: "pending",
-    notes: "Late check-in sekitar jam 7 malam.",
-    total_price: 2700000,
-    created_at: "2026-08-21T08:15:00Z",
-  },
-  {
-    id: "bk-1102-uuid-03",
-    user_id: "usr-101",
-    schedule_id: "sch-03",
-    room_name: "Superior Room",
-    room_type: "Superior",
-    room_location: "Gedung Utama - Lantai 3",
-    room_image:
-      "https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=800&q=80",
-    check_in: "2026-07-10",
-    check_out: "2026-07-12",
-    status: "completed",
-    notes: "Kamar bersih dan sarapan enak.",
-    total_price: 1360000,
-    created_at: "2026-07-08T14:20:00Z",
-  },
-];
-
-const MOCK_PAYMENTS: PaymentItem[] = [
-  {
-    id: "pay-7711-uuid-01",
-    booking_id: "bk-9823-uuid-01",
-    room_name: "Deluxe Ocean View",
-    amount: 1700000,
-    payment_method: "gopay",
-    status: "settlement",
-    paid_at: "2026-08-20T10:35:12Z",
-  },
-  {
-    id: "pay-8822-uuid-02",
-    booking_id: "bk-4512-uuid-02",
-    room_name: "Executive King Suite",
-    amount: 2700000,
-    payment_method: "bank_transfer",
-    status: "pending",
-  },
-  {
-    id: "pay-3344-uuid-03",
-    booking_id: "bk-1102-uuid-03",
-    room_name: "Superior Room",
-    amount: 1360000,
-    payment_method: "qris",
-    status: "settlement",
-    paid_at: "2026-07-08T14:22:00Z",
-  },
-];
-
-const MOCK_NOTIFICATIONS: NotificationItem[] = [
-  {
-    id: "notif-01",
-    user_id: "usr-101",
-    booking_id: "bk-9823-uuid-01",
-    type: "payment_success",
-    message: "Pembayaran pemesanan Deluxe Ocean View sebesar Rp 1.700.000 telah sukses dikonfirmasi!",
-    is_read: false,
-    created_at: "2026-08-20T10:35:12Z",
-  },
-  {
-    id: "notif-02",
-    user_id: "usr-101",
-    booking_id: "bk-4512-uuid-02",
-    type: "booking_confirmation",
-    message: "Pemesanan Executive King Suite telah dibuat. Silakan selesaikan pembayaran sebelum 24 jam.",
-    is_read: false,
-    created_at: "2026-08-21T08:15:00Z",
-  },
-  {
-    id: "notif-03",
-    user_id: "usr-101",
-    type: "promo",
-    message: "Selamat! Anda mendapatkan voucher promo diskon 20% untuk pemesanan kamar bulan depan.",
-    is_read: true,
-    created_at: "2026-08-15T12:00:00Z",
-  },
-];
 
 const MOCK_REVIEWS: ReviewItem[] = [
   {
@@ -190,7 +68,8 @@ const MOCK_REVIEWS: ReviewItem[] = [
     booking_id: "bk-1102-uuid-03",
     room_name: "Superior Room",
     rating: 5,
-    comment: "Pelayanan dari resepsionis sangat ramah dan proses check-in sangat cepat. Kamarnya bersih sekali!",
+    comment:
+      "Pelayanan dari resepsionis sangat ramah dan proses check-in sangat cepat. Kamarnya bersih sekali!",
     created_at: "2026-07-13T09:00:00Z",
   },
 ];
@@ -200,7 +79,7 @@ export default function UserDashboardPage() {
 
   // State Tab Navigasi Active
   const [activeTab, setActiveTab] = useState<
-    "bookings" | "payments" | "notifications" | "reviews" | "settings"
+    "bookings" | "notifications" | "reviews" | "settings"
   >("bookings");
 
   // State Authenticated User (Decode dari JWT token localStorage)
@@ -208,19 +87,20 @@ export default function UserDashboardPage() {
   const [isLoadingAuth, setIsLoadingAuth] = useState(true);
 
   // State Data Interaktif
-  const [bookings, setBookings] = useState<BookingItem[]>(MOCK_BOOKINGS);
-  const [payments, setPayments] = useState<PaymentItem[]>(MOCK_PAYMENTS);
-  const [notifications, setNotifications] = useState<NotificationItem[]>(MOCK_NOTIFICATIONS);
-  const [reviews, setReviews] = useState<ReviewItem[]>(MOCK_REVIEWS);
+  const [bookings, setBookings] = useState<BookingItem[]>([]);
+  const [notifications, setNotifications] = useState<NotificationItem[]>([]);
+  const [reviews, setReviews] = useState<ReviewItem[]>([]);
 
   // State Modal Beri Ulasan
-  const [selectedReviewBooking, setSelectedReviewBooking] = useState<BookingItem | null>(null);
+  const [selectedReviewBooking, setSelectedReviewBooking] =
+    useState<BookingItem | null>(null);
   const [reviewRating, setReviewRating] = useState<number>(5);
   const [reviewComment, setReviewComment] = useState<string>("");
 
   // State Form Settings Profile
   const [profileName, setProfileName] = useState("");
   const [profileEmail, setProfileEmail] = useState("");
+  const [profilePassword, setProfilePassword] = useState("");
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
   // Function Tampilkan Toast Notifikasi Sementara
@@ -247,7 +127,7 @@ export default function UserDashboardPage() {
           .atob(base64)
           .split("")
           .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
-          .join("")
+          .join(""),
       );
       const payload = JSON.parse(jsonPayload);
 
@@ -281,6 +161,90 @@ export default function UserDashboardPage() {
     }
   }, [router]);
 
+  // Fetch Riwayat Pesanan (Bookings)
+  useEffect(() => {
+    const fetchBookings = async () => {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+
+      try {
+        const res = await fetch("http://localhost:3001/bookings", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (res.ok) {
+          const rawData = await res.json();
+
+          // Mapping data dari struktur Prisma Backend ke struktur BookingItem Frontend
+          const mappedBookings: BookingItem[] = rawData.map((b: any) => ({
+            id: b.id,
+            user_id: b.user_id,
+            schedule_id: b.schedule_id,
+            room_name: b.schedules?.resources?.name || "Kamar tidak diketahui",
+            room_type: b.schedules?.resources?.type || "Standard",
+            room_location: b.schedules?.resources?.location || "-",
+            // Ambil gambar dari DB atau pakai fallback default
+            room_image:
+              b.schedules?.resources?.image_url ||
+              "https://images.unsplash.com/photo-1611892440504-42a792e24d32?auto=format&fit=crop&w=800&q=80",
+            // Format ISO date DB (contoh: 2026-08-25T00:00:00.000Z) ke format YYYY-MM-DD
+            check_in: b.schedules?.start_time
+              ? new Date(b.schedules.start_time).toISOString().split("T")[0]
+              : "-",
+            check_out: b.schedules?.end_time
+              ? new Date(b.schedules.end_time).toISOString().split("T")[0]
+              : "-",
+            status: b.status,
+            notes: b.notes || "-",
+            total_price: b.payment?.amount || 0,
+            created_at: b.created_at,
+          }));
+
+          setBookings(mappedBookings);
+        } else {
+          console.error("Gagal fetch data bookings, status:", res.status);
+        }
+      } catch (error) {
+        console.error("Error fetching bookings:", error);
+      }
+    };
+
+    // Eksekusi fungsi fetch kalau user berhasil ter-autentikasi
+    if (!isLoadingAuth && user) {
+      fetchBookings();
+    }
+  }, [isLoadingAuth, user]);
+
+  // Fetch Notifikasi
+  useEffect(() => {
+    const fetchNotifs = async () => {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+
+      try {
+        const res = await fetch("http://localhost:3001/notifications", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (res.ok) {
+          const rawData = await res.json();
+          // Backend me-return array notifikasi sesuai struktur Prisma
+          setNotifications(rawData);
+        }
+      } catch (error) {
+        console.error("Error fetching notifications:", error);
+      }
+    };
+
+    if (!isLoadingAuth && user) {
+      fetchNotifs();
+    }
+  }, [isLoadingAuth, user]);
+
   // Handler Logout User
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -291,39 +255,142 @@ export default function UserDashboardPage() {
   };
 
   // Handler Tandai Notifikasi Sudah Dibaca (`is_read: true`)
-  const handleMarkAsRead = (id: string) => {
-    setNotifications((prev) =>
-      prev.map((n) => (n.id === id ? { ...n, is_read: true } : n))
-    );
-    showToast("Notifikasi ditandai sudah dibaca.");
+  const handleMarkAsRead = async (id: string) => {
+    const token = localStorage.getItem("token");
+    if (!token) return;
+
+    try {
+      const res = await fetch(
+        `http://localhost:3001/notifications/${id}/read`,
+        {
+          method: "PATCH",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+
+      if (res.ok) {
+        setNotifications((prev) =>
+          prev.map((n) => (n.id === id ? { ...n, is_read: true } : n)),
+        );
+        showToast("Notifikasi ditandai sudah dibaca.");
+      }
+    } catch (error) {
+      console.error("Error marking notif as read:", error);
+    }
+  };
+
+  // Handler Tandai Semua Notifikasi Sudah Dibaca
+  const handleMarkAllAsRead = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) return;
+
+    try {
+      const res = await fetch(`http://localhost:3001/notifications/read-all`, {
+        method: "PATCH",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (res.ok) {
+        setNotifications((prev) => prev.map((n) => ({ ...n, is_read: true })));
+        showToast("Semua notifikasi ditandai sudah dibaca.");
+      }
+    } catch (error) {
+      console.error("Error marking all notifs as read:", error);
+    }
   };
 
   // Handler Submit Ulasan Baru
-  const handleSubmitReview = (e: React.FormEvent) => {
+  const handleSubmitReview = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedReviewBooking) return;
 
-    const newRev: ReviewItem = {
-      id: `rev-${Date.now()}`,
-      booking_id: selectedReviewBooking.id,
-      room_name: selectedReviewBooking.room_name,
-      rating: reviewRating,
-      comment: reviewComment,
-      created_at: new Date().toISOString(),
-    };
+    const token = localStorage.getItem("token");
+    if (!token) return;
 
-    setReviews((prev) => [newRev, ...prev]);
-    setSelectedReviewBooking(null);
-    setReviewComment("");
-    showToast("⭐ Ulasan dan rating berhasil dikirim!");
+    try {
+      const res = await fetch("http://localhost:3001/reviews", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          booking_id: selectedReviewBooking.id,
+          rating: reviewRating,
+          comment: reviewComment,
+        }),
+      });
+
+      if (res.ok) {
+        // Masukin ulasan ke list sementara di UI biar kelihatan langsung
+        const newRev: ReviewItem = {
+          id: `rev-${Date.now()}`,
+          booking_id: selectedReviewBooking.id,
+          room_name: selectedReviewBooking.room_name,
+          rating: reviewRating,
+          comment: reviewComment,
+          created_at: new Date().toISOString(),
+        };
+
+        setReviews((prev) => [newRev, ...prev]);
+        setSelectedReviewBooking(null);
+        setReviewComment("");
+        showToast("Ulasan dan rating berhasil dikirim!");
+      } else {
+        // Kalau error (misal udah pernah kasih ulasan)
+        const errorData = await res.json();
+        showToast(`Gagal: ${errorData.message || "Ulasan gagal dikirim"}`);
+      }
+    } catch (error) {
+      console.error("Error submitting review:", error);
+      showToast("Terjadi kesalahan sistem.");
+    }
   };
 
   // Handler Update Profil User
-  const handleSaveProfile = (e: React.FormEvent) => {
+  const handleSaveProfile = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (user) {
-      setUser({ ...user, name: profileName, email: profileEmail });
-      showToast(" Profil akun berhasil diperbarui!");
+    if (!user) return;
+
+    const token = localStorage.getItem("token");
+    if (!token) return;
+
+    try {
+      // Kita siapin data nama dan email
+      const bodyPayload: any = {
+        name: profileName,
+        email: profileEmail,
+      };
+
+      // Kalau user ngisi kolom password, baru kita ikutin buat di-update
+      if (profilePassword.trim() !== "") {
+        bodyPayload.password = profilePassword;
+      }
+
+      const res = await fetch(`http://localhost:3001/user/${user.id}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(bodyPayload),
+      });
+
+      if (res.ok) {
+        setUser({ ...user, name: profileName, email: profileEmail });
+        setProfilePassword("");
+        showToast("Profil akun berhasil diperbarui!");
+      } else {
+        const errorData = await res.json();
+        showToast(`Gagal: ${errorData.message || "Gagal memperbarui profil"}`);
+      }
+    } catch (error) {
+      console.error("Error updating profile:", error);
+      showToast("Terjadi kesalahan sistem.");
     }
   };
 
@@ -332,8 +399,20 @@ export default function UserDashboardPage() {
       <div className="min-h-screen bg-slate-50 flex items-center justify-center">
         <div className="flex items-center gap-3 text-[#1D4ED8] font-semibold">
           <svg className="animate-spin h-6 w-6" viewBox="0 0 24 24">
-            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
-            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+            <circle
+              className="opacity-25"
+              cx="12"
+              cy="12"
+              r="10"
+              stroke="currentColor"
+              strokeWidth="4"
+              fill="none"
+            />
+            <path
+              className="opacity-75"
+              fill="currentColor"
+              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+            />
           </svg>
           <span>Memuat Dashboard Member...</span>
         </div>
@@ -343,10 +422,12 @@ export default function UserDashboardPage() {
 
   // Menghitung statistik untuk ringkasan kartu
   const unreadNotifCount = notifications.filter((n) => !n.is_read).length;
-  const activeBookingsCount = bookings.filter((b) => b.status === "confirmed" || b.status === "pending").length;
-  const totalSettledPayments = payments
-    .filter((p) => p.status === "settlement")
-    .reduce((acc, curr) => acc + curr.amount, 0);
+  const activeBookingsCount = bookings.filter(
+    (b) => b.status === "confirmed" || b.status === "pending",
+  ).length;
+  const totalSettledPayments = bookings
+    .filter((b: any) => b.payment?.status === "settlement" || b.payment?.status === "success")
+    .reduce((acc: number, b: any) => acc + (b.payment?.amount || 0), 0);
 
   return (
     <div className="min-h-screen bg-slate-50 font-sans text-gray-900 selection:bg-[#1D4ED8] selection:text-white flex flex-col">
@@ -368,7 +449,8 @@ export default function UserDashboardPage() {
             <Image
               src="https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1920&q=80"
               alt="SiniBook Hotel Outer View"
-              fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              fill
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
               priority
               className="object-cover opacity-20"
             />
@@ -413,7 +495,9 @@ export default function UserDashboardPage() {
                   onClick={handleLogout}
                   className="flex items-center gap-1.5 rounded-full border border-red-400/50 px-4 py-2.5 text-xs font-semibold text-red-200 transition-all hover:bg-red-500/20 hover:text-white"
                 >
-                  <span className="material-symbols-outlined text-[16px]">logout</span>
+                  <span className="material-symbols-outlined text-[16px]">
+                    logout
+                  </span>
                   <span>Keluar</span>
                 </button>
               </div>
@@ -422,25 +506,39 @@ export default function UserDashboardPage() {
             {/* KARTU RINGKASAN STATISTIK DASAR */}
             <div className="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-4">
               <div className="rounded-2xl border border-white/10 bg-white/10 p-4 backdrop-blur-md">
-                <span className="block text-[11px] font-medium text-emerald-200 uppercase tracking-wider">Total Booking</span>
-                <span className="mt-1 block text-2xl sm:text-3xl font-extrabold text-white">{bookings.length}</span>
+                <span className="block text-[11px] font-medium text-emerald-200 uppercase tracking-wider">
+                  Total Booking
+                </span>
+                <span className="mt-1 block text-2xl sm:text-3xl font-extrabold text-white">
+                  {bookings.length}
+                </span>
               </div>
 
               <div className="rounded-2xl border border-white/10 bg-white/10 p-4 backdrop-blur-md">
-                <span className="block text-[11px] font-medium text-emerald-200 uppercase tracking-wider">Booking Aktif</span>
-                <span className="mt-1 block text-2xl sm:text-3xl font-extrabold text-amber-300">{activeBookingsCount}</span>
+                <span className="block text-[11px] font-medium text-emerald-200 uppercase tracking-wider">
+                  Booking Aktif
+                </span>
+                <span className="mt-1 block text-2xl sm:text-3xl font-extrabold text-amber-300">
+                  {activeBookingsCount}
+                </span>
               </div>
 
               <div className="rounded-2xl border border-white/10 bg-white/10 p-4 backdrop-blur-md">
-                <span className="block text-[11px] font-medium text-emerald-200 uppercase tracking-wider">Total Transaksi</span>
+                <span className="block text-[11px] font-medium text-emerald-200 uppercase tracking-wider">
+                  Total Transaksi
+                </span>
                 <span className="mt-1 block text-lg sm:text-xl font-extrabold text-emerald-300 truncate">
                   Rp {totalSettledPayments.toLocaleString("id-ID")}
                 </span>
               </div>
 
               <div className="rounded-2xl border border-white/10 bg-white/10 p-4 backdrop-blur-md">
-                <span className="block text-[11px] font-medium text-emerald-200 uppercase tracking-wider">Notifikasi Baru</span>
-                <span className="mt-1 block text-2xl sm:text-3xl font-extrabold text-rose-300">{unreadNotifCount}</span>
+                <span className="block text-[11px] font-medium text-emerald-200 uppercase tracking-wider">
+                  Notifikasi Baru
+                </span>
+                <span className="mt-1 block text-2xl sm:text-3xl font-extrabold text-rose-300">
+                  {unreadNotifCount}
+                </span>
               </div>
             </div>
           </div>
@@ -453,12 +551,15 @@ export default function UserDashboardPage() {
             <div className="flex border-b border-gray-100 bg-gray-50/70 overflow-x-auto scrollbar-none">
               <button
                 onClick={() => setActiveTab("bookings")}
-                className={`flex items-center gap-2 px-6 py-4 text-xs sm:text-sm font-bold transition-all whitespace-nowrap border-b-2 ${activeTab === "bookings"
-                  ? "border-[#1D4ED8] bg-white text-[#1D4ED8]"
-                  : "border-transparent text-gray-500 hover:text-gray-900 hover:bg-gray-100/50"
-                  }`}
+                className={`flex items-center gap-2 px-6 py-4 text-xs sm:text-sm font-bold transition-all whitespace-nowrap border-b-2 ${
+                  activeTab === "bookings"
+                    ? "border-[#1D4ED8] bg-white text-[#1D4ED8]"
+                    : "border-transparent text-gray-500 hover:text-gray-900 hover:bg-gray-100/50"
+                }`}
               >
-                <span className="material-symbols-outlined text-[16px]">calendar_today</span>
+                <span className="material-symbols-outlined text-[16px]">
+                  calendar_today
+                </span>
                 <span>Pemesanan Saya</span>
                 <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] text-emerald-800">
                   {bookings.length}
@@ -466,24 +567,16 @@ export default function UserDashboardPage() {
               </button>
 
               <button
-                onClick={() => setActiveTab("payments")}
-                className={`flex items-center gap-2 px-6 py-4 text-xs sm:text-sm font-bold transition-all whitespace-nowrap border-b-2 ${activeTab === "payments"
-                  ? "border-[#1D4ED8] bg-white text-[#1D4ED8]"
-                  : "border-transparent text-gray-500 hover:text-gray-900 hover:bg-gray-100/50"
-                  }`}
-              >
-                <span className="material-symbols-outlined text-[16px]">credit_card</span>
-                <span>Riwayat Pembayaran</span>
-              </button>
-
-              <button
                 onClick={() => setActiveTab("notifications")}
-                className={`flex items-center gap-2 px-6 py-4 text-xs sm:text-sm font-bold transition-all whitespace-nowrap border-b-2 relative ${activeTab === "notifications"
-                  ? "border-[#1D4ED8] bg-white text-[#1D4ED8]"
-                  : "border-transparent text-gray-500 hover:text-gray-900 hover:bg-gray-100/50"
-                  }`}
+                className={`flex items-center gap-2 px-6 py-4 text-xs sm:text-sm font-bold transition-all whitespace-nowrap border-b-2 relative ${
+                  activeTab === "notifications"
+                    ? "border-[#1D4ED8] bg-white text-[#1D4ED8]"
+                    : "border-transparent text-gray-500 hover:text-gray-900 hover:bg-gray-100/50"
+                }`}
               >
-                <span className="material-symbols-outlined text-[16px]">notifications</span>
+                <span className="material-symbols-outlined text-[16px]">
+                  notifications
+                </span>
                 <span>Notifikasi</span>
                 {unreadNotifCount > 0 && (
                   <span className="rounded-full bg-rose-500 px-2 py-0.5 text-[10px] text-white font-bold animate-pulse">
@@ -494,50 +587,62 @@ export default function UserDashboardPage() {
 
               <button
                 onClick={() => setActiveTab("reviews")}
-                className={`flex items-center gap-2 px-6 py-4 text-xs sm:text-sm font-bold transition-all whitespace-nowrap border-b-2 ${activeTab === "reviews"
-                  ? "border-[#1D4ED8] bg-white text-[#1D4ED8]"
-                  : "border-transparent text-gray-500 hover:text-gray-900 hover:bg-gray-100/50"
-                  }`}
+                className={`flex items-center gap-2 px-6 py-4 text-xs sm:text-sm font-bold transition-all whitespace-nowrap border-b-2 ${
+                  activeTab === "reviews"
+                    ? "border-[#1D4ED8] bg-white text-[#1D4ED8]"
+                    : "border-transparent text-gray-500 hover:text-gray-900 hover:bg-gray-100/50"
+                }`}
               >
-                <span className="material-symbols-outlined text-[16px]">star</span>
+                <span className="material-symbols-outlined text-[16px]">
+                  star
+                </span>
                 <span>Ulasan Saya</span>
               </button>
 
               <button
                 onClick={() => setActiveTab("settings")}
-                className={`flex items-center gap-2 px-6 py-4 text-xs sm:text-sm font-bold transition-all whitespace-nowrap border-b-2 ${activeTab === "settings"
-                  ? "border-[#1D4ED8] bg-white text-[#1D4ED8]"
-                  : "border-transparent text-gray-500 hover:text-gray-900 hover:bg-gray-100/50"
-                  }`}
+                className={`flex items-center gap-2 px-6 py-4 text-xs sm:text-sm font-bold transition-all whitespace-nowrap border-b-2 ${
+                  activeTab === "settings"
+                    ? "border-[#1D4ED8] bg-white text-[#1D4ED8]"
+                    : "border-transparent text-gray-500 hover:text-gray-900 hover:bg-gray-100/50"
+                }`}
               >
-                <span className="material-symbols-outlined text-[16px]">person</span>
+                <span className="material-symbols-outlined text-[16px]">
+                  person
+                </span>
                 <span>Pengaturan Profil</span>
               </button>
             </div>
 
             {/* BODY KONTEN TAB HASIL NAVIGASI */}
             <div className="p-6 sm:p-8 min-h-[400px]">
-
               {/* TAB 1: PEMESANAN SAYA (BOOKINGS) */}
               {activeTab === "bookings" && (
                 <div className="space-y-6">
                   <div className="flex items-center justify-between border-b border-gray-100 pb-4">
                     <div>
-                      <h2 className="text-lg font-bold text-gray-900">Daftar Pemesanan Kamar</h2>
-                      <p className="text-xs text-gray-500">Kelola reservasi kamar aktif dan riwayat menginap Anda.</p>
+                      <h2 className="text-lg font-bold text-gray-900">
+                        Daftar Pemesanan Kamar
+                      </h2>
+                      <p className="text-xs text-gray-500">
+                        Kelola reservasi kamar aktif dan riwayat menginap Anda.
+                      </p>
                     </div>
                     <Link
                       href="/kamar"
                       className="inline-flex items-center gap-1 text-xs font-semibold text-[#1D4ED8] hover:underline"
                     >
                       <span>Cari Kamar Lain</span>
-                      <span className="material-symbols-outlined text-[16px]">chevron_right</span>
+                      <span className="material-symbols-outlined text-[16px]">
+                        chevron_right
+                      </span>
                     </Link>
                   </div>
 
                   {bookings.length === 0 ? (
                     <div className="text-center py-12 text-gray-500 text-xs">
-                      Belum ada reservasi kamar. Silakan pesan kamar impian Anda!
+                      Belum ada reservasi kamar. Silakan pesan kamar impian
+                      Anda!
                     </div>
                   ) : (
                     <div className="grid grid-cols-1 gap-6">
@@ -551,7 +656,8 @@ export default function UserDashboardPage() {
                             <Image
                               src={booking.room_image}
                               alt={booking.room_name}
-                              fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                              fill
+                              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                               className="object-cover"
                             />
                             <div className="absolute top-3 left-3">
@@ -566,10 +672,16 @@ export default function UserDashboardPage() {
                             <div>
                               <div className="flex items-start justify-between gap-4">
                                 <div>
-                                  <span className="text-[10px] font-mono text-gray-400 uppercase">ID: {booking.id}</span>
-                                  <h3 className="text-lg font-bold text-gray-900">{booking.room_name}</h3>
+                                  <span className="text-[10px] font-mono text-gray-400 uppercase">
+                                    ID: {booking.id}
+                                  </span>
+                                  <h3 className="text-lg font-bold text-gray-900">
+                                    {booking.room_name}
+                                  </h3>
                                   <div className="flex items-center gap-1 text-xs text-gray-500 mt-0.5">
-                                    <span className="material-symbols-outlined text-[14px] text-emerald-600 shrink-0">location_on</span>
+                                    <span className="material-symbols-outlined text-[14px] text-emerald-600 shrink-0">
+                                      location_on
+                                    </span>
                                     <span>{booking.room_location}</span>
                                   </div>
                                 </div>
@@ -578,19 +690,25 @@ export default function UserDashboardPage() {
                                 <div>
                                   {booking.status === "confirmed" && (
                                     <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700 border border-emerald-200">
-                                      <span className="material-symbols-outlined text-[14px] text-emerald-600">check_circle</span>
+                                      <span className="material-symbols-outlined text-[14px] text-emerald-600">
+                                        check_circle
+                                      </span>
                                       Terverifikasi (Lunas)
                                     </span>
                                   )}
                                   {booking.status === "pending" && (
                                     <span className="inline-flex items-center gap-1 rounded-full bg-amber-50 px-3 py-1 text-xs font-semibold text-amber-700 border border-amber-200">
-                                      <span className="material-symbols-outlined text-[14px] text-amber-600">schedule</span>
+                                      <span className="material-symbols-outlined text-[14px] text-amber-600">
+                                        schedule
+                                      </span>
                                       Menunggu Bayar
                                     </span>
                                   )}
                                   {booking.status === "completed" && (
                                     <span className="inline-flex items-center gap-1 rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700 border border-blue-200">
-                                      <span className="material-symbols-outlined text-[14px] text-blue-600">check_circle</span>
+                                      <span className="material-symbols-outlined text-[14px] text-blue-600">
+                                        check_circle
+                                      </span>
                                       Selesai Menginap
                                     </span>
                                   )}
@@ -600,12 +718,20 @@ export default function UserDashboardPage() {
                               {/* Tanggal Check-in / Out */}
                               <div className="mt-4 grid grid-cols-2 gap-4 rounded-xl bg-slate-50 p-3 text-xs">
                                 <div>
-                                  <span className="block text-[10px] text-gray-400 font-semibold uppercase">Check-in</span>
-                                  <span className="font-bold text-gray-800">{booking.check_in}</span>
+                                  <span className="block text-[10px] text-gray-400 font-semibold uppercase">
+                                    Check-in
+                                  </span>
+                                  <span className="font-bold text-gray-800">
+                                    {booking.check_in}
+                                  </span>
                                 </div>
                                 <div>
-                                  <span className="block text-[10px] text-gray-400 font-semibold uppercase">Check-out</span>
-                                  <span className="font-bold text-gray-800">{booking.check_out}</span>
+                                  <span className="block text-[10px] text-gray-400 font-semibold uppercase">
+                                    Check-out
+                                  </span>
+                                  <span className="font-bold text-gray-800">
+                                    {booking.check_out}
+                                  </span>
                                 </div>
                               </div>
 
@@ -614,14 +740,36 @@ export default function UserDashboardPage() {
                                   &quot;{booking.notes}&quot;
                                 </p>
                               )}
+
+                              {/* Info Pembayaran (inline dalam card) */}
+                              {(booking as any).payment && (
+                                <div className="mt-3 flex flex-wrap items-center gap-2 rounded-xl bg-gray-50 border border-gray-100 px-3 py-2 text-xs">
+                                  <span className="material-symbols-outlined text-[14px] text-gray-400">credit_card</span>
+                                  <span className="font-semibold uppercase text-gray-600">{(booking as any).payment?.payment_method || "-"}</span>
+                                  <span className="text-gray-300">•</span>
+                                  {(booking as any).payment?.status === "settlement" || (booking as any).payment?.status === "success" ? (
+                                    <span className="rounded-full bg-emerald-100 px-2 py-0.5 font-bold text-emerald-700">LUNAS</span>
+                                  ) : (
+                                    <span className="rounded-full bg-amber-100 px-2 py-0.5 font-bold text-amber-700">PENDING</span>
+                                  )}
+                                  {(booking as any).payment?.paid_at && (
+                                    <span className="text-gray-400 ml-auto">
+                                      {new Date((booking as any).payment.paid_at).toLocaleDateString("id-ID")}
+                                    </span>
+                                  )}
+                                </div>
+                              )}
                             </div>
 
                             {/* Kaki Card: Harga & Tombol Aksi */}
-                            <div className="mt-6 flex items-center justify-between border-t border-gray-100 pt-4">
+                            <div className="mt-4 flex items-center justify-between border-t border-gray-100 pt-4">
                               <div>
-                                <span className="block text-[10px] text-gray-400 font-bold uppercase">Total Tagihan</span>
+                                <span className="block text-[10px] text-gray-400 font-bold uppercase">
+                                  Total Tagihan
+                                </span>
                                 <span className="text-lg font-extrabold text-[#1D4ED8]">
-                                  Rp {booking.total_price.toLocaleString("id-ID")}
+                                  Rp{" "}
+                                  {booking.total_price.toLocaleString("id-ID")}
                                 </span>
                               </div>
 
@@ -636,7 +784,9 @@ export default function UserDashboardPage() {
                                 )}
                                 {booking.status === "completed" && (
                                   <button
-                                    onClick={() => setSelectedReviewBooking(booking)}
+                                    onClick={() =>
+                                      setSelectedReviewBooking(booking)
+                                    }
                                     className="rounded-xl border border-[#1D4ED8] px-4 py-2 text-xs font-bold text-[#1D4ED8] hover:bg-emerald-50"
                                   >
                                     Beri Ulasan
@@ -652,97 +802,83 @@ export default function UserDashboardPage() {
                 </div>
               )}
 
-              {/* TAB 2: RIWAYAT PEMBAYARAN (PAYMENTS) */}
-              {activeTab === "payments" && (
-                <div className="space-y-6">
-                  <div className="border-b border-gray-100 pb-4">
-                    <h2 className="text-lg font-bold text-gray-900">Riwayat Pembayaran & Transaksi</h2>
-                    <p className="text-xs text-gray-500">Catatan pembayaran aman yang terdaftar di sistem.</p>
-                  </div>
 
-                  <div className="overflow-x-auto rounded-2xl border border-gray-200">
-                    <table className="w-full text-left text-xs">
-                      <thead className="bg-gray-50 text-gray-500 font-semibold border-b border-gray-200">
-                        <tr>
-                          <th className="p-4">ID Transaksi</th>
-                          <th className="p-4">Kamar</th>
-                          <th className="p-4">Nominal</th>
-                          <th className="p-4">Metode Bayar</th>
-                          <th className="p-4">Status</th>
-                          <th className="p-4">Waktu Bayar</th>
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-gray-100">
-                        {payments.map((p) => (
-                          <tr key={p.id} className="hover:bg-gray-50/50">
-                            <td className="p-4 font-mono font-medium text-gray-900">{p.id}</td>
-                            <td className="p-4 font-semibold text-gray-800">{p.room_name}</td>
-                            <td className="p-4 font-extrabold text-[#1D4ED8]">Rp {p.amount.toLocaleString("id-ID")}</td>
-                            <td className="p-4 uppercase font-bold text-gray-600">{p.payment_method}</td>
-                            <td className="p-4">
-                              {p.status === "settlement" || p.status === "success" ? (
-                                <span className="rounded-full bg-emerald-100 px-2.5 py-1 text-[11px] font-bold text-emerald-800">
-                                  SUKSES
-                                </span>
-                              ) : (
-                                <span className="rounded-full bg-amber-100 px-2.5 py-1 text-[11px] font-bold text-amber-800">
-                                  PENDING
-                                </span>
-                              )}
-                            </td>
-                            <td className="p-4 text-gray-500">
-                              {p.paid_at ? new Date(p.paid_at).toLocaleString("id-ID") : "-"}
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              )}
 
               {/* TAB 3: PUSAT NOTIFIKASI (NOTIFICATIONS) */}
               {activeTab === "notifications" && (
                 <div className="space-y-6">
                   <div className="border-b border-gray-100 pb-4 flex items-center justify-between">
                     <div>
-                      <h2 className="text-lg font-bold text-gray-900">Pusat Notifikasi</h2>
-                      <p className="text-xs text-gray-500">Pemberitahuan resmi seputar reservasi dan penawaran eksklusif.</p>
+                      <h2 className="text-lg font-bold text-gray-900">
+                        Pusat Notifikasi
+                      </h2>
+                      <p className="text-xs text-gray-500">
+                        Pemberitahuan resmi seputar reservasi dan penawaran
+                        eksklusif.
+                      </p>
                     </div>
+
+                    {/* Tombol Tandai Semua Dibaca */}
+                    <button
+                      onClick={handleMarkAllAsRead}
+                      className="text-xs font-semibold text-[#1D4ED8] hover:text-[#1e3a8a] flex items-center gap-1"
+                    >
+                      <span className="material-symbols-outlined text-[16px]">
+                        done_all
+                      </span>
+                      Tandai Semua Dibaca
+                    </button>
                   </div>
 
-                  <div className="space-y-3">
-                    {notifications.map((n) => (
-                      <div
-                        key={n.id}
-                        className={`flex items-start justify-between p-4 rounded-2xl border transition-all ${n.is_read
-                          ? "bg-white border-gray-200/80 text-gray-600"
-                          : "bg-emerald-50/40 border-emerald-200 text-gray-900 shadow-sm"
+                  {notifications.length === 0 ? (
+                    <div className="text-center py-12 text-gray-500 text-xs">
+                      Belum ada notifikasi baru.
+                    </div>
+                  ) : (
+                    <div className="space-y-3">
+                      {notifications.map((n) => (
+                        <div
+                          key={n.id}
+                          className={`flex items-start justify-between p-4 rounded-2xl border transition-all ${
+                            n.is_read
+                              ? "bg-white border-gray-200/80 text-gray-600"
+                              : "bg-emerald-50/40 border-emerald-200 text-gray-900 shadow-sm"
                           }`}
-                      >
-                        <div className="flex items-start gap-3">
-                          <div className={`p-2 rounded-xl mt-0.5 ${n.is_read ? "bg-gray-100 text-gray-500" : "bg-[#1D4ED8] text-white"}`}>
-                            <span className="material-symbols-outlined text-[16px]">notifications</span>
+                        >
+                          <div className="flex items-start gap-3">
+                            <div
+                              className={`p-2 rounded-xl mt-0.5 ${
+                                n.is_read
+                                  ? "bg-gray-100 text-gray-500"
+                                  : "bg-[#1D4ED8] text-white"
+                              }`}
+                            >
+                              <span className="material-symbols-outlined text-[16px]">
+                                notifications
+                              </span>
+                            </div>
+                            <div>
+                              <p className="text-xs sm:text-sm font-medium leading-relaxed">
+                                {n.message}
+                              </p>
+                              <span className="text-[10px] text-gray-400 mt-1 block">
+                                {new Date(n.created_at).toLocaleString("id-ID")}
+                              </span>
+                            </div>
                           </div>
-                          <div>
-                            <p className="text-xs sm:text-sm font-medium leading-relaxed">{n.message}</p>
-                            <span className="text-[10px] text-gray-400 mt-1 block">
-                              {new Date(n.created_at).toLocaleString("id-ID")}
-                            </span>
-                          </div>
-                        </div>
 
-                        {!n.is_read && (
-                          <button
-                            onClick={() => handleMarkAsRead(n.id)}
-                            className="text-[11px] font-bold text-[#1D4ED8] hover:underline shrink-0 ml-4"
-                          >
-                            Tandai dibaca
-                          </button>
-                        )}
-                      </div>
-                    ))}
-                  </div>
+                          {!n.is_read && (
+                            <button
+                              onClick={() => handleMarkAsRead(n.id)}
+                              className="text-[11px] font-bold text-[#1D4ED8] hover:underline shrink-0 ml-4"
+                            >
+                              Tandai dibaca
+                            </button>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               )}
 
@@ -750,32 +886,47 @@ export default function UserDashboardPage() {
               {activeTab === "reviews" && (
                 <div className="space-y-6">
                   <div className="border-b border-gray-100 pb-4">
-                    <h2 className="text-lg font-bold text-gray-900">Ulasan & Rating Saya</h2>
-                    <p className="text-xs text-gray-500">Ulasan yang telah Anda kirimkan untuk pengalaman menginap.</p>
+                    <h2 className="text-lg font-bold text-gray-900">
+                      Ulasan & Rating Saya
+                    </h2>
+                    <p className="text-xs text-gray-500">
+                      Ulasan yang telah Anda kirimkan untuk pengalaman menginap.
+                    </p>
                   </div>
 
                   {reviews.length === 0 ? (
                     <div className="text-center py-12 text-gray-500 text-xs">
-                      Belum ada ulasan yang diberikan. Berikan ulasan pada booking yang sudah selesai!
+                      Belum ada ulasan yang diberikan. Berikan ulasan pada
+                      booking yang sudah selesai!
                     </div>
                   ) : (
                     <div className="space-y-4">
                       {reviews.map((r) => (
-                        <div key={r.id} className="p-5 rounded-2xl border border-gray-200 bg-white shadow-sm space-y-2">
+                        <div
+                          key={r.id}
+                          className="p-5 rounded-2xl border border-gray-200 bg-white shadow-sm space-y-2"
+                        >
                           <div className="flex items-center justify-between">
-                            <h3 className="font-bold text-sm text-gray-900">{r.room_name}</h3>
+                            <h3 className="font-bold text-sm text-gray-900">
+                              {r.room_name}
+                            </h3>
                             <div className="flex items-center gap-1 text-amber-500">
                               {Array.from({ length: 5 }).map((_, i) => (
-                                  <span
-                                    key={i}
-                                    className={`material-symbols-outlined text-[16px] ${i < r.rating ? "text-amber-400" : "text-gray-300"}`}
-                                  >star</span>
+                                <span
+                                  key={i}
+                                  className={`material-symbols-outlined text-[16px] ${i < r.rating ? "text-amber-400" : "text-gray-300"}`}
+                                >
+                                  star
+                                </span>
                               ))}
                             </div>
                           </div>
-                          <p className="text-xs text-gray-600 leading-relaxed">&quot;{r.comment}&quot;</p>
+                          <p className="text-xs text-gray-600 leading-relaxed">
+                            &quot;{r.comment}&quot;
+                          </p>
                           <span className="text-[10px] text-gray-400 block pt-1">
-                            Dikirim pada: {new Date(r.created_at).toLocaleDateString("id-ID")}
+                            Dikirim pada:{" "}
+                            {new Date(r.created_at).toLocaleDateString("id-ID")}
                           </span>
                         </div>
                       ))}
@@ -788,13 +939,19 @@ export default function UserDashboardPage() {
               {activeTab === "settings" && (
                 <div className="space-y-6 max-w-xl">
                   <div className="border-b border-gray-100 pb-4">
-                    <h2 className="text-lg font-bold text-gray-900">Pengaturan Akun</h2>
-                    <p className="text-xs text-gray-500">Perbarui data informasi pribadi Anda.</p>
+                    <h2 className="text-lg font-bold text-gray-900">
+                      Pengaturan Akun
+                    </h2>
+                    <p className="text-xs text-gray-500">
+                      Perbarui data informasi pribadi Anda.
+                    </p>
                   </div>
 
                   <form onSubmit={handleSaveProfile} className="space-y-4">
                     <div>
-                      <label className="block text-xs font-bold text-gray-600 uppercase mb-1">Nama Lengkap</label>
+                      <label className="block text-xs font-bold text-gray-600 uppercase mb-1">
+                        Nama Lengkap
+                      </label>
                       <input
                         type="text"
                         value={profileName}
@@ -805,13 +962,28 @@ export default function UserDashboardPage() {
                     </div>
 
                     <div>
-                      <label className="block text-xs font-bold text-gray-600 uppercase mb-1">Email Terdaftar</label>
+                      <label className="block text-xs font-bold text-gray-600 uppercase mb-1">
+                        Email Terdaftar
+                      </label>
                       <input
                         type="email"
                         value={profileEmail}
                         onChange={(e) => setProfileEmail(e.target.value)}
                         className="w-full rounded-xl border border-gray-300 p-3 text-xs font-semibold text-gray-900 focus:border-[#1D4ED8] focus:outline-none"
                         required
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-bold text-gray-600 uppercase mb-1">
+                        Password Baru (Opsional)
+                      </label>
+                      <input
+                        type="password"
+                        value={profilePassword}
+                        onChange={(e) => setProfilePassword(e.target.value)}
+                        placeholder="Kosongkan jika tidak ingin mengubah password"
+                        className="w-full rounded-xl border border-gray-300 p-3 text-xs font-semibold text-gray-900 focus:border-[#1D4ED8] focus:outline-none placeholder:font-normal"
                       />
                     </div>
 
@@ -824,7 +996,6 @@ export default function UserDashboardPage() {
                   </form>
                 </div>
               )}
-
             </div>
           </div>
         </section>
@@ -838,15 +1009,24 @@ export default function UserDashboardPage() {
               onClick={() => setSelectedReviewBooking(null)}
               className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
             >
-              <span className="material-symbols-outlined text-[20px]">close</span>
+              <span className="material-symbols-outlined text-[20px]">
+                close
+              </span>
             </button>
 
-            <h3 className="text-lg font-bold text-gray-900">Beri Ulasan & Rating</h3>
-            <p className="text-xs text-gray-500 mt-1">Bagikan pengalaman Anda menginap di {selectedReviewBooking.room_name}.</p>
+            <h3 className="text-lg font-bold text-gray-900">
+              Beri Ulasan & Rating
+            </h3>
+            <p className="text-xs text-gray-500 mt-1">
+              Bagikan pengalaman Anda menginap di{" "}
+              {selectedReviewBooking.room_name}.
+            </p>
 
             <form onSubmit={handleSubmitReview} className="mt-5 space-y-4">
               <div>
-                <label className="block text-xs font-bold text-gray-700 mb-2">Rating Bintang</label>
+                <label className="block text-xs font-bold text-gray-700 mb-2">
+                  Rating Bintang
+                </label>
                 <div className="flex items-center gap-2">
                   {[1, 2, 3, 4, 5].map((star) => (
                     <button
@@ -856,16 +1036,23 @@ export default function UserDashboardPage() {
                       className="p-1 transition-transform hover:scale-125"
                     >
                       <span
-                        className={`material-symbols-outlined text-[28px] ${star <= reviewRating ? "text-amber-400" : "text-gray-300"
-                          }`}
-                      >star</span>
+                        className={`material-symbols-outlined text-[28px] ${
+                          star <= reviewRating
+                            ? "text-amber-400"
+                            : "text-gray-300"
+                        }`}
+                      >
+                        star
+                      </span>
                     </button>
                   ))}
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-gray-700 mb-1">Komentar Ulasan</label>
+                <label className="block text-xs font-bold text-gray-700 mb-1">
+                  Komentar Ulasan
+                </label>
                 <textarea
                   value={reviewComment}
                   onChange={(e) => setReviewComment(e.target.value)}

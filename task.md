@@ -29,6 +29,4 @@ Ini daftar tugas (Todo List) yang harus lu beresin di Frontend biar sistem hotel
 ## 5. 🔒 Autentikasi & Keamanan (`/login` & `/register`)
 - `[ ]` **Integrasi CAPTCHA:** Tambahin komponen *widget* CAPTCHA (reCAPTCHA/Turnstile) di UI halaman form biar terhindar dari *bot spam*. (Catatan: Butuh modifikasi juga di *Backend* untuk validasi token).
 
----
-> [!TIP]
-> **Cara Ngerjain:** Lu bisa mulai nyicil dari halaman `checkout` dulu, soalnya itu urat nadi utamanya. Kalau lu pengen gw bantu buatin logika `fetch` API-nya per komponen, lu tinggal kasih tau aja file mana yang mau gw eksekusi duluan. Gass! 🚀
+
