@@ -117,7 +117,7 @@ export default function DetailKamarPage() {
     e.preventDefault();
     const token = localStorage.getItem("token");
     if (token) {
-      router.push("/checkout");
+      router.push(`/checkout?roomId=${roomId}`);
     } else {
       setIsLoginModalOpen(true);
     }

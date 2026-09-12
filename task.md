@@ -19,9 +19,9 @@ Ini daftar tugas (Todo List) yang harus lu beresin di Frontend biar sistem hotel
 - `[x]` **Edit Profil (Opsional):** Backend lu udah nyediain fitur *edit* profil (`PATCH /user/:id`), tapi di *dashboard* belum kelihatan ada tombol buat ngubah nama atau *password* tamu.
 
 ## 3. 👨‍💼 Panel Admin & Staff (`/admin` & `/staff`)
-- `[ ]` **Manajemen Jadwal Kamar:** Pastiin Front Office / Housekeeping bisa ngunci kamar buat diperbaiki (nembak `POST /schedule` dengan status `maintenance`).
-- `[ ]` **Approval Booking Manual:** Kalau ada pembayaran manual, Pastiin staff bisa nembak `PATCH /bookings/:id` buat ngerubah status jadi `approved` atau `rejected`.
-- `[ ]` **Tambah Kamar (Admin):** Pastiin Admin beneran bisa *upload* form tambah kamar (termasuk foto) ke `POST /resources`.
+- `[x]` **Manajemen Jadwal Kamar:** Pastiin Front Office / Housekeeping bisa ngunci kamar buat diperbaiki (nembak `POST /schedule` dengan status `maintenance`).
+- `[x]` **Approval Booking Manual:** Kalau ada pembayaran manual, Pastiin staff bisa nembak `PATCH /bookings/:id` buat ngerubah status jadi `approved` atau `rejected`.
+- `[x]` **Tambah Kamar (Admin):** Pastiin Admin beneran bisa *upload* form tambah kamar (termasuk foto) ke `POST /resources`.
 
 ## 4. 🛏️ Halaman Detail Kamar (`/kamar/[id]`)
 - `[x]` **Daftar Ulasan (Reviews):** Bikin UI/komponen buat nampilin daftar *review* dari tamu sebelumnya. Komponen ini harus narik data asli ke API `GET /reviews/resource/:resourceId`.

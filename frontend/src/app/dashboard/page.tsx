@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 import Header from "../landing-pages/Header";
 import Footer from "../landing-pages/Footer";
@@ -26,6 +26,7 @@ interface BookingItem {
   id: string;
   user_id: string;
   schedule_id: string;
+  resource_id?: string;
   room_name: string;
   room_type: string;
   room_location: string;
@@ -96,6 +97,37 @@ export default function UserDashboardPage() {
     useState<BookingItem | null>(null);
   const [reviewRating, setReviewRating] = useState<number>(5);
   const [reviewComment, setReviewComment] = useState<string>("");
+  const [payingBookingId, setPayingBookingId] = useState<string | null>(null);
+
+  const handlePayNow = async (bookingId: string) => {
+    try {
+      setPayingBookingId(bookingId);
+      const token = localStorage.getItem("token");
+      const res = await fetch(
+        `http://localhost:3001/payments/${bookingId}/pay`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.message || "Gagal memproses pembayaran");
+      }
+
+      if (data.midtrans_redirect_url) {
+        window.location.href = data.midtrans_redirect_url;
+      }
+    } catch (err: any) {
+      alert("Error: " + err.message);
+    } finally {
+      setPayingBookingId(null);
+    }
+  };
 
   // State Form Settings Profile
   const [profileName, setProfileName] = useState("");
@@ -103,11 +135,21 @@ export default function UserDashboardPage() {
   const [profilePassword, setProfilePassword] = useState("");
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
+  const searchParams = useSearchParams();
+
   // Function Tampilkan Toast Notifikasi Sementara
   const showToast = (msg: string) => {
     setToastMessage(msg);
-    setTimeout(() => setToastMessage(null), 3000);
+    setTimeout(() => setToastMessage(null), 4000);
   };
+
+  useEffect(() => {
+    const paymentStatus =
+      searchParams.get("payment") || searchParams.get("transaction_status");
+    if (paymentStatus === "success" || paymentStatus === "settlement") {
+      showToast("Pembayaran Berhasil! Pesanan Anda telah terkonfirmasi.");
+    }
+  }, [searchParams]);
 
   // Check Authenticated User dari JWT Token
   useEffect(() => {
@@ -182,6 +224,7 @@ export default function UserDashboardPage() {
             id: b.id,
             user_id: b.user_id,
             schedule_id: b.schedule_id,
+            resource_id: b.schedules?.resource_id || b.schedules?.resources?.id || "",
             room_name: b.schedules?.resources?.name || "Kamar tidak diketahui",
             room_type: b.schedules?.resources?.type || "Standard",
             room_location: b.schedules?.resources?.location || "-",
@@ -423,7 +466,11 @@ export default function UserDashboardPage() {
   // Menghitung statistik untuk ringkasan kartu
   const unreadNotifCount = notifications.filter((n) => !n.is_read).length;
   const activeBookingsCount = bookings.filter(
-    (b) => b.status === "confirmed" || b.status === "pending",
+    (b) =>
+      b.status === "confirmed" ||
+      b.status === "approved" ||
+      b.status === "pending" ||
+      b.status === "checked_in",
   ).length;
   const totalSettledPayments = bookings
     .filter((b: any) => b.payment?.status === "settlement" || b.payment?.status === "success")
@@ -688,14 +735,6 @@ export default function UserDashboardPage() {
 
                                 {/* Status Badge */}
                                 <div>
-                                  {booking.status === "confirmed" && (
-                                    <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700 border border-emerald-200">
-                                      <span className="material-symbols-outlined text-[14px] text-emerald-600">
-                                        check_circle
-                                      </span>
-                                      Terverifikasi (Lunas)
-                                    </span>
-                                  )}
                                   {booking.status === "pending" && (
                                     <span className="inline-flex items-center gap-1 rounded-full bg-amber-50 px-3 py-1 text-xs font-semibold text-amber-700 border border-amber-200">
                                       <span className="material-symbols-outlined text-[14px] text-amber-600">
@@ -704,12 +743,45 @@ export default function UserDashboardPage() {
                                       Menunggu Bayar
                                     </span>
                                   )}
+                                  {(booking.status === "confirmed" ||
+                                    booking.status === "approved") && (
+                                    <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700 border border-emerald-200">
+                                      <span className="material-symbols-outlined text-[14px] text-emerald-600">
+                                        check_circle
+                                      </span>
+                                      Terverifikasi (Lunas)
+                                    </span>
+                                  )}
+                                  {booking.status === "checked_in" && (
+                                    <span className="inline-flex items-center gap-1 rounded-full bg-indigo-50 px-3 py-1 text-xs font-semibold text-indigo-700 border border-indigo-200">
+                                      <span className="material-symbols-outlined text-[14px] text-indigo-600">
+                                        sensor_door
+                                      </span>
+                                      Checked In (Menginap)
+                                    </span>
+                                  )}
                                   {booking.status === "completed" && (
                                     <span className="inline-flex items-center gap-1 rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700 border border-blue-200">
                                       <span className="material-symbols-outlined text-[14px] text-blue-600">
-                                        check_circle
+                                        task_alt
                                       </span>
                                       Selesai Menginap
+                                    </span>
+                                  )}
+                                  {booking.status === "rejected" && (
+                                    <span className="inline-flex items-center gap-1 rounded-full bg-rose-50 px-3 py-1 text-xs font-semibold text-rose-700 border border-rose-200">
+                                      <span className="material-symbols-outlined text-[14px] text-rose-600">
+                                        cancel
+                                      </span>
+                                      Ditolak
+                                    </span>
+                                  )}
+                                  {booking.status === "canceled" && (
+                                    <span className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600 border border-slate-200">
+                                      <span className="material-symbols-outlined text-[14px] text-slate-500">
+                                        block
+                                      </span>
+                                      Dibatalkan
                                     </span>
                                   )}
                                 </div>
@@ -775,12 +847,33 @@ export default function UserDashboardPage() {
 
                               <div className="flex items-center gap-2">
                                 {booking.status === "pending" && (
-                                  <Link
-                                    href="/checkout"
-                                    className="rounded-xl bg-[#1D4ED8] px-4 py-2 text-xs font-bold text-white shadow hover:bg-[#1E3A8A]"
+                                  <button
+                                    onClick={() => handlePayNow(booking.id)}
+                                    disabled={payingBookingId === booking.id}
+                                    className="rounded-xl bg-[#1D4ED8] px-4 py-2 text-xs font-bold text-white shadow hover:bg-[#1E3A8A] disabled:opacity-50 transition-all flex items-center gap-1.5"
                                   >
-                                    Bayar Sekarang
-                                  </Link>
+                                    {payingBookingId === booking.id ? (
+                                      <>
+                                        <span className="animate-spin rounded-full h-3 w-3 border-b-2 border-white"></span>
+                                        Memproses...
+                                      </>
+                                    ) : (
+                                      "Bayar Sekarang"
+                                    )}
+                                  </button>
+                                )}
+                                {(booking.status === "confirmed" ||
+                                  booking.status === "approved") && (
+                                  <span className="text-xs font-semibold text-emerald-700 bg-emerald-50 px-3 py-1.5 rounded-xl border border-emerald-200 flex items-center gap-1">
+                                    <span className="material-symbols-outlined text-[14px]">key</span>
+                                    Siap Check-in
+                                  </span>
+                                )}
+                                {booking.status === "checked_in" && (
+                                  <span className="text-xs font-semibold text-indigo-700 bg-indigo-50 px-3 py-1.5 rounded-xl border border-indigo-200 flex items-center gap-1">
+                                    <span className="material-symbols-outlined text-[14px]">door_open</span>
+                                    Sedang Menginap
+                                  </span>
                                 )}
                                 {booking.status === "completed" && (
                                   <button
@@ -791,6 +884,16 @@ export default function UserDashboardPage() {
                                   >
                                     Beri Ulasan
                                   </button>
+                                )}
+                                {booking.status === "rejected" && (
+                                  <span className="text-xs font-semibold text-rose-700 bg-rose-50 px-3 py-1.5 rounded-xl border border-rose-200">
+                                    Ditolak Admin
+                                  </span>
+                                )}
+                                {booking.status === "canceled" && (
+                                  <span className="text-xs font-semibold text-slate-500 bg-slate-100 px-3 py-1.5 rounded-xl border border-slate-200">
+                                    Dibatalkan
+                                  </span>
                                 )}
                               </div>
                             </div>

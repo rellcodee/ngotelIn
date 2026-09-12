@@ -150,6 +150,9 @@ export class BookingsService {
         first_name: result.user.name,
         email: result.user.email,
       },
+      callbacks: {
+        finish: `${process.env.FRONTEND_URL || 'http://localhost:3000'}/dashboard?payment=success`,
+      },
     };
 
     if (process.env.MIDTRANS_NOTIFICATION_URL) {
@@ -256,6 +259,75 @@ export class BookingsService {
   ) {
     if (currentUser.role === (Role.USER as string)) {
       userId = currentUser.userId;
+    }
+
+    // Auto-sync status pembayaran dengan Midtrans API jika ada booking status pending
+    try {
+      const pendingBookings = await this.prisma.bookings.findMany({
+        where: {
+          ...(userId && { user_id: userId }),
+          status: BookingStatus.PENDING,
+        },
+      });
+
+      for (const pb of pendingBookings) {
+        try {
+          let statusResponse: any = null;
+          try {
+            statusResponse = await (this.snap as any).transaction.status(pb.id);
+          } catch (e) {
+            // Silently ignore if transaction ID not found in Midtrans
+          }
+
+          if (statusResponse) {
+            const trStatus = statusResponse.transaction_status;
+            const isSuccess =
+              trStatus === 'settlement' ||
+              (trStatus === 'capture' &&
+                statusResponse.fraud_status === 'accept');
+
+            if (isSuccess) {
+              await this.prisma.$transaction(async (tx) => {
+                await tx.payments.updateMany({
+                  where: { booking_id: pb.id },
+                  data: {
+                    status: PaymentStatus.PAID,
+                    payment_method: statusResponse.payment_type || 'gopay',
+                    paid_at: statusResponse.settlement_time
+                      ? new Date(statusResponse.settlement_time)
+                      : new Date(),
+                  },
+                });
+
+                await tx.bookings.update({
+                  where: { id: pb.id },
+                  data: { status: BookingStatus.APPROVED },
+                });
+              });
+            } else if (
+              trStatus === 'expire' ||
+              trStatus === 'cancel' ||
+              trStatus === 'deny'
+            ) {
+              await this.prisma.$transaction(async (tx) => {
+                await tx.payments.updateMany({
+                  where: { booking_id: pb.id },
+                  data: { status: PaymentStatus.CANCELED },
+                });
+
+                await tx.bookings.update({
+                  where: { id: pb.id },
+                  data: { status: BookingStatus.CANCELED },
+                });
+              });
+            }
+          }
+        } catch (err) {
+          // Ignore individual sync errors
+        }
+      }
+    } catch (error) {
+      // Ignore global sync errors
     }
 
     return this.prisma.bookings.findMany({

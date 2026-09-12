@@ -67,12 +67,20 @@ export default function CheckoutPage() {
 
   // Fetch data kamar asli dari API berdasarkan roomId
   useEffect(() => {
-    if (!roomId) return;
+    if (!roomId) {
+      setIsLoadingRoom(false);
+      return;
+    }
     
     fetch(`http://localhost:3001/resources/${roomId}`)
       .then((res) => res.json())
       .then((data) => {
-        setRoomData(data);
+        if (data && !data.error && !data.message) {
+          setRoomData(data);
+          if (data.capacity) {
+            setGuestCount(String(data.capacity));
+          }
+        }
       })
       .catch((err) => console.error("Gagal ngambil data kamar:", err))
       .finally(() => setIsLoadingRoom(false));
@@ -326,10 +334,14 @@ export default function CheckoutPage() {
                         onChange={(e) => setGuestCount(e.target.value)}
                         className="w-full rounded-xl border border-gray-300 p-2.5 text-xs text-gray-900 focus:border-[#1D4ED8] focus:outline-none"
                       >
-                        <option value="1">1 Orang</option>
-                        <option value="2">2 Orang</option>
-                        <option value="3">3 Orang</option>
-                        <option value="4">4 Orang</option>
+                        {Array.from(
+                          { length: roomData?.capacity || 2 },
+                          (_, i) => i + 1,
+                        ).map((num) => (
+                          <option key={num} value={num}>
+                            {num} Orang {num === roomData?.capacity ? "(Maksimal)" : ""}
+                          </option>
+                        ))}
                       </select>
                     </div>
                   </div>
@@ -351,79 +363,35 @@ export default function CheckoutPage() {
 
                 {/* Card Metode Pembayaran (Prisma: `payments.payment_method`) */}
                 <div className="rounded-3xl border border-gray-200/80 bg-white p-6 sm:p-7 shadow-sm">
-                  <h2 className="text-base font-bold text-gray-900 mb-4 flex items-center gap-2">
+                  <h2 className="text-base font-bold text-gray-900 mb-1 flex items-center gap-2">
                     <span className="material-symbols-outlined text-[20px] text-[#1D4ED8]">
                       credit_card
                     </span>
-                    <span>Pilih Metode Pembayaran</span>
+                    <span>Metode Pembayaran</span>
                   </h2>
+                  <p className="text-xs text-gray-500 mb-4">
+                    Pembayaran diproses secara otomatis &amp; terverifikasi instan via Payment Gateway.
+                  </p>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                    <label
-                      className={`flex items-center justify-between p-4 rounded-2xl border cursor-pointer transition-all ${
-                        paymentMethod === "gopay"
-                          ? "border-[#1D4ED8] bg-emerald-50/50 ring-2 ring-[#1D4ED8]/20"
-                          : "border-gray-200 hover:bg-gray-50"
-                      }`}
-                    >
-                      <div className="flex items-center gap-2.5">
-                        <input
-                          type="radio"
-                          name="payment"
-                          value="gopay"
-                          checked={paymentMethod === "gopay"}
-                          onChange={(e) => setPaymentMethod(e.target.value)}
-                          className="h-4 w-4 text-[#1D4ED8]"
-                        />
-                        <span className="text-xs font-bold text-gray-800">
-                          GoPay / E-Wallet
-                        </span>
+                  <div className="rounded-2xl border-2 border-[#1D4ED8] bg-blue-50/40 p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                    <div className="flex items-center gap-3.5">
+                      <div className="h-11 w-11 shrink-0 rounded-xl bg-[#1D4ED8] text-white flex items-center justify-center font-bold shadow-md shadow-[#1D4ED8]/20">
+                        <span className="material-symbols-outlined text-[24px]">verified_user</span>
                       </div>
-                    </label>
-
-                    <label
-                      className={`flex items-center justify-between p-4 rounded-2xl border cursor-pointer transition-all ${
-                        paymentMethod === "bank_transfer"
-                          ? "border-[#1D4ED8] bg-emerald-50/50 ring-2 ring-[#1D4ED8]/20"
-                          : "border-gray-200 hover:bg-gray-50"
-                      }`}
-                    >
-                      <div className="flex items-center gap-2.5">
-                        <input
-                          type="radio"
-                          name="payment"
-                          value="bank_transfer"
-                          checked={paymentMethod === "bank_transfer"}
-                          onChange={(e) => setPaymentMethod(e.target.value)}
-                          className="h-4 w-4 text-[#1D4ED8]"
-                        />
-                        <span className="text-xs font-bold text-gray-800">
-                          Virtual Account
-                        </span>
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <h4 className="text-xs font-bold text-gray-900">
+                            Instant Payment
+                          </h4>
+                          <span className="inline-flex items-center gap-1 rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-bold text-emerald-800">
+                            Otomatis
+                          </span>
+                        </div>
+                        <p className="text-[11px] text-gray-600 mt-1 leading-relaxed">
+                          Mendukung QRIS (All Bank &amp; E-Wallet), GoPay, Virtual Account (BCA, Mandiri, BNI, BRI), &amp; Kartu Kredit.
+                        </p>
                       </div>
-                    </label>
-
-                    <label
-                      className={`flex items-center justify-between p-4 rounded-2xl border cursor-pointer transition-all ${
-                        paymentMethod === "qris"
-                          ? "border-[#1D4ED8] bg-emerald-50/50 ring-2 ring-[#1D4ED8]/20"
-                          : "border-gray-200 hover:bg-gray-50"
-                      }`}
-                    >
-                      <div className="flex items-center gap-2.5">
-                        <input
-                          type="radio"
-                          name="payment"
-                          value="qris"
-                          checked={paymentMethod === "qris"}
-                          onChange={(e) => setPaymentMethod(e.target.value)}
-                          className="h-4 w-4 text-[#1D4ED8]"
-                        />
-                        <span className="text-xs font-bold text-gray-800">
-                          QRIS Instant
-                        </span>
-                      </div>
-                    </label>
+                    </div>
                   </div>
                 </div>
               </div>

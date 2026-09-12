@@ -1,6 +1,7 @@
-import { Injectable, BadRequestException } from '@nestjs/common';
+import { Injectable, BadRequestException, NotFoundException, ForbiddenException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import * as crypto from 'crypto';
+import * as midtransClient from 'midtrans-client';
 import { BookingStatus, PaymentStatus, ScheduleStatus } from '../common/enums';
 
 export interface MidtransNotification {
@@ -17,6 +18,75 @@ export interface MidtransNotification {
 @Injectable()
 export class PaymentsService {
   constructor(private prisma: PrismaService) {}
+
+  async getPaymentUrl(
+    bookingId: string,
+    currentUser: { userId: string; role: string },
+  ) {
+    const booking = await this.prisma.bookings.findUnique({
+      where: { id: bookingId },
+      include: {
+        payment: true,
+        users: true,
+      },
+    });
+
+    if (!booking) {
+      throw new NotFoundException('Data booking tidak ditemukan!');
+    }
+
+    if (
+      currentUser.role !== 'admin' &&
+      currentUser.role !== 'staff' &&
+      booking.user_id !== currentUser.userId
+    ) {
+      throw new ForbiddenException('Akses ditolak!');
+    }
+
+    if (booking.status !== BookingStatus.PENDING) {
+      throw new BadRequestException('Booking ini tidak dalam status pending!');
+    }
+
+    const snap = new midtransClient.Snap({
+      isProduction: false,
+      serverKey: process.env.MIDTRANS_SERVER_KEY || '',
+      clientKey: process.env.MIDTRANS_CLIENT_KEY || '',
+    });
+
+    const amount = booking.payment?.amount || 0;
+    const midtransOrderId = `${booking.id}-${Date.now().toString().slice(-4)}`;
+
+    const parameter: any = {
+      transaction_details: {
+        order_id: midtransOrderId,
+        gross_amount: amount,
+      },
+      customer_details: {
+        first_name: booking.users?.name || 'Tamu',
+        email: booking.users?.email || 'user@example.com',
+      },
+      callbacks: {
+        finish: `${process.env.FRONTEND_URL || 'http://localhost:3000'}/dashboard?payment=success`,
+      },
+    };
+
+    if (process.env.MIDTRANS_NOTIFICATION_URL) {
+      parameter.override_notification_url =
+        process.env.MIDTRANS_NOTIFICATION_URL;
+    }
+
+    try {
+      const transaction = await snap.createTransaction(parameter);
+      return {
+        midtrans_redirect_url: transaction.redirect_url,
+        midtrans_token: transaction.token,
+      };
+    } catch (error) {
+      throw new BadRequestException(
+        'Gagal membuat transaksi Midtrans: ' + error.message,
+      );
+    }
+  }
 
   async handleMidtransWebhook(payload: MidtransNotification) {
     const {
@@ -41,9 +111,12 @@ export class PaymentsService {
       throw new BadRequestException('Invalid signature key');
     }
 
+    const realBookingId =
+      order_id && order_id.length >= 36 ? order_id.substring(0, 36) : order_id;
+
     // Cari booking untuk mengambil schedule_id
     const booking = await this.prisma.bookings.findUnique({
-      where: { id: order_id },
+      where: { id: realBookingId },
     });
 
     if (!booking) {
@@ -59,7 +132,7 @@ export class PaymentsService {
       await this.prisma.$transaction(async (tx) => {
         // Update status Payment
         await tx.payments.updateMany({
-          where: { booking_id: order_id },
+          where: { booking_id: realBookingId },
           data: {
             status: PaymentStatus.PAID,
             payment_method: payment_type,
@@ -69,7 +142,7 @@ export class PaymentsService {
 
         // Update status Booking
         await tx.bookings.update({
-          where: { id: order_id },
+          where: { id: realBookingId },
           data: { status: BookingStatus.APPROVED },
         });
       });
@@ -83,13 +156,13 @@ export class PaymentsService {
       await this.prisma.$transaction(async (tx) => {
         // Update status Payment menjadi CANCELED
         await tx.payments.updateMany({
-          where: { booking_id: order_id },
+          where: { booking_id: realBookingId },
           data: { status: PaymentStatus.CANCELED },
         });
 
         // Update status Booking menjadi CANCELED
         await tx.bookings.update({
-          where: { id: order_id },
+          where: { id: realBookingId },
           data: { status: BookingStatus.CANCELED },
         });
 
