@@ -8,6 +8,7 @@ import { useParams, useRouter } from "next/navigation";
 
 import Header from "../../landing-pages/Header";
 import Footer from "../../landing-pages/Footer";
+import ReviewSection from "@/components/ReviewSection";
 
 // Interface disamakan 100% dengan Prisma Schema (model resources + room_images)
 interface RoomDetail {
@@ -354,6 +355,10 @@ export default function DetailKamarPage() {
                 </div>
               </section>
 
+            </div>
+
+            <div className="mt-12">
+              <ReviewSection resourceId={room.id} />
             </div>
           </div>
         </div>

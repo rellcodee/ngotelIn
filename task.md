@@ -13,10 +13,10 @@ Ini daftar tugas (Todo List) yang harus lu beresin di Frontend biar sistem hotel
 > [!WARNING]
 > Seluruh tab di halaman dashboard saat ini masih pakai data bohongan (`MOCK_BOOKINGS`, `MOCK_PAYMENTS`, `MOCK_NOTIFICATIONS`, `MOCK_REVIEWS`). Ini prioritas buat di-refactor!
 
-- `[ ]` **Riwayat Pesanan (Bookings):** Sambungin ke `GET /bookings` pakai Token JWT dari localStorage.
-- `[ ]` **Sistem Notifikasi:** Sambungin *icon* lonceng dan halaman Notifikasi ke API `GET /notifications` (buat list) dan `PATCH /notifications/read-all` (buat tandai udah dibaca).
-- `[ ]` **Form Tulis Ulasan (Review):** Bikin fungsi nembak `POST /reviews` pas *user* kasih bintang dan ulasan ke kamar yang udah disewa.
-- `[ ]` **Edit Profil (Opsional):** Backend lu udah nyediain fitur *edit* profil (`PATCH /user/:id`), tapi di *dashboard* belum kelihatan ada tombol buat ngubah nama atau *password* tamu.
+- `[x]` **Riwayat Pesanan (Bookings):** Sambungin ke `GET /bookings` pakai Token JWT dari localStorage.
+- `[x]` **Sistem Notifikasi:** Sambungin *icon* lonceng dan halaman Notifikasi ke API `GET /notifications` (buat list) dan `PATCH /notifications/read-all` (buat tandai udah dibaca).
+- `[x]` **Form Tulis Ulasan (Review):** Bikin fungsi nembak `POST /reviews` pas *user* kasih bintang dan ulasan ke kamar yang udah disewa.
+- `[x]` **Edit Profil (Opsional):** Backend lu udah nyediain fitur *edit* profil (`PATCH /user/:id`), tapi di *dashboard* belum kelihatan ada tombol buat ngubah nama atau *password* tamu.
 
 ## 3. 👨‍💼 Panel Admin & Staff (`/admin` & `/staff`)
 - `[ ]` **Manajemen Jadwal Kamar:** Pastiin Front Office / Housekeeping bisa ngunci kamar buat diperbaiki (nembak `POST /schedule` dengan status `maintenance`).
@@ -24,7 +24,7 @@ Ini daftar tugas (Todo List) yang harus lu beresin di Frontend biar sistem hotel
 - `[ ]` **Tambah Kamar (Admin):** Pastiin Admin beneran bisa *upload* form tambah kamar (termasuk foto) ke `POST /resources`.
 
 ## 4. 🛏️ Halaman Detail Kamar (`/kamar/[id]`)
-- `[ ]` **Daftar Ulasan (Reviews):** Bikin UI/komponen buat nampilin daftar *review* dari tamu sebelumnya. Komponen ini harus narik data asli ke API `GET /reviews/resource/:resourceId`.
+- `[x]` **Daftar Ulasan (Reviews):** Bikin UI/komponen buat nampilin daftar *review* dari tamu sebelumnya. Komponen ini harus narik data asli ke API `GET /reviews/resource/:resourceId`.
 
 ## 5. 🔒 Autentikasi & Keamanan (`/login` & `/register`)
 - `[ ]` **Integrasi CAPTCHA:** Tambahin komponen *widget* CAPTCHA (reCAPTCHA/Turnstile) di UI halaman form biar terhindar dari *bot spam*. (Catatan: Butuh modifikasi juga di *Backend* untuk validasi token).
