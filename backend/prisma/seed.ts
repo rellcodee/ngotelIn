@@ -2,6 +2,7 @@ import { PrismaClient } from "@prisma/client";
 import { Pool } from "pg";
 import { PrismaPg } from "@prisma/adapter-pg";
 import * as dotenv from "dotenv";
+import * as bcrypt from "bcrypt";
 
 dotenv.config();
 
@@ -27,14 +28,57 @@ const roomTypes = [
 ];
 
 async function main() {
-  console.log("Menghapus data kamar lama...");
-  await prisma.resources.deleteMany({
-    where: {
-      type: {
-        in: ['Standard', 'Superior', 'Deluxe', 'Suite', 'Presidential_Suite', 'Presidential Suite']
+  console.log("Membuat/memperbarui data pengguna (Admin, Staff, User)...");
+  
+  const adminPasswordHash = await bcrypt.hash("admin123", 10);
+  const staffPasswordHash = await bcrypt.hash("staff123", 10);
+  const userPasswordHash = await bcrypt.hash("user123", 10);
+
+  const initialUsers = [
+    {
+      name: "Super Admin",
+      email: "admin@ngotelin.com",
+      password_hash: adminPasswordHash,
+      role: "admin",
+    },
+    {
+      name: "Staff Resepsionis",
+      email: "staff@ngotelin.com",
+      password_hash: staffPasswordHash,
+      role: "staff",
+    },
+    {
+      name: "Tamu Regular",
+      email: "user@ngotelin.com",
+      password_hash: userPasswordHash,
+      role: "user",
+    },
+  ];
+
+  for (const user of initialUsers) {
+    await prisma.users.upsert({
+      where: { email: user.email },
+      update: {
+        name: user.name,
+        role: user.role,
+        password_hash: user.password_hash,
+      },
+      create: user,
+    });
+    console.log(`User berhasil di-seed: ${user.email} (${user.role})`);
+  }
+
+  console.log("Memeriksa data kamar lama...");
+  try {
+    await prisma.room_images.deleteMany({});
+    await prisma.schedules.deleteMany({
+      where: {
+        bookings: { none: {} }
       }
-    }
-  });
+    });
+  } catch (e) {
+    // Ignore cleanup error if dependent records exist
+  }
 
   console.log("Memulai proses seeding 15 kamar...");
   
@@ -90,3 +134,4 @@ main()
   .finally(async () => {
     await prisma.$disconnect();
   });
+
