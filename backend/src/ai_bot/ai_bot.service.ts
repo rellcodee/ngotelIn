@@ -175,13 +175,22 @@ export class AiBotService implements OnModuleInit {
             finalAnswer = fallbacks[Math.floor(Math.random() * fallbacks.length)];
         }
 
-        await this.prisma.ai_chat_logs.create({
-            data: {
-                user_id: userId || null,
-                message: message,
-                response: finalAnswer,
-            },
-        });
+        if (userId) {
+            try {
+                const savedLog = await this.prisma.ai_chat_logs.create({
+                    data: {
+                        user_id: userId,
+                        message: message,
+                        response: finalAnswer,
+                    },
+                });
+                console.log('✅ CHAT LOG BERHASIL DISIMPAN KE DB:', savedLog);
+            } catch (dbError) {
+                console.error('❌ GAGAL SIMPAN CHAT LOG KE DB:', dbError);
+            }
+        }
+
+
 
         return {
             reply: finalAnswer,
@@ -213,6 +222,15 @@ export class AiBotService implements OnModuleInit {
         let last = footer ? footer : ""
 
         return `${header}${list}${last}`;
+    }
+
+    async clearChatHistory(userId?: string) {
+        if (userId) {
+            await this.prisma.ai_chat_logs.deleteMany({
+                where: { user_id: userId },
+            });
+        }
+        return { message: 'Riwayat percakapan berhasil di-reset.' };
     }
 }
 

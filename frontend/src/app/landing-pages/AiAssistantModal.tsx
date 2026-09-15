@@ -98,7 +98,7 @@ export default function AiAssistantModal() {
 
       const res = await fetch("http://localhost:3001/ai-bot/chat", {
         method: "POST",
-        // credentials: "include",
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${localStorage.getItem("token") || ""}`
@@ -112,19 +112,35 @@ export default function AiAssistantModal() {
         throw new Error(resData.message || "Gagal mendapatkan respon AI");
       }
 
-      // Tambahkan balasan asli dari Gemini ke state messages
-      const aiMessage: Message = {
-        id: Date.now(),
-        sender: "ai",
-        text: resData.reply, // Menerima respon dari backend NestJS
-        time: new Date().toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" }),
-      };
+      const fullReply = resData.reply || "";
+      const aiMessageId = Date.now();
+      const aiTime = new Date().toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" });
 
-      setMessages((prev) => [...prev, aiMessage]);
-      setIsTyping(false); // Tampilkan indikator AI sedang memproses balasan
+      // Matikan indikator "sedang mengetik", ganti dengan entri pesan AI baru
+      setIsTyping(false);
+      setMessages((prev) => [...prev, { id: aiMessageId, sender: "ai", text: "", time: aiTime }]);
+
+      // Simulasi Efek Typewriter: Tampilkan pesan kata demi kata (word-by-word)
+      const words = fullReply.split(" ");
+      let wordIdx = 0;
+
+      const typewriterInterval = setInterval(() => {
+        if (wordIdx < words.length) {
+          const currentChunk = words.slice(0, wordIdx + 1).join(" ");
+          setMessages((prev) =>
+            prev.map((msg) =>
+              msg.id === aiMessageId ? { ...msg, text: currentChunk } : msg
+            )
+          );
+          wordIdx++;
+        } else {
+          clearInterval(typewriterInterval);
+        }
+      }, 35); // Jeda 35ms per kata untuk animasi halus
 
     } catch (error) {
       console.error("Error saat chat:", error);
+      setIsTyping(false);
       setErrorMessage("Gagal terhubung ke AI Assistant. Coba lagi.");
       setTimeout(() => setErrorMessage(null), 3000);
     }
@@ -133,12 +149,12 @@ export default function AiAssistantModal() {
   const handleResetChat = async () => {
     try {
       setIsTyping(true);
-      await fetch("http://localhost:3001/ai/chat", {
+      await fetch("http://localhost:3001/ai-bot/chat", {
         method: "DELETE",
         credentials: "include",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InJpa29AbmdvdGVsaW4uY29tIiwic3ViIjoiMGZjMWQ2YjEtOWUwYS00NDc0LTk2NDUtNTdhZWE5OTIzOWRlIiwicm9sZSI6InVzZXIiLCJpYXQiOjE3ODY1MzUyNDAsImV4cCI6MTc4NjYyMTY0MH0.Y0saop6C3OOVJgwFDLw7Zfc4NwT2feL4hjzaRcekBAQ`
+          "Authorization": `Bearer ${localStorage.getItem("token") || ""}`
         }
       });
 
