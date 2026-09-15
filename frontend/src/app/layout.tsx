@@ -3,6 +3,8 @@ import { Plus_Jakarta_Sans, Outfit } from "next/font/google";
 import "./globals.css";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import AiAssistantModal from "./landing-pages/AiAssistantModal";
+import Script from 'next/script';
+
 
 const plusJakartaSans = Plus_Jakarta_Sans({
   variable: "--font-plus-jakarta-sans",
@@ -51,6 +53,10 @@ export default function RootLayout({
         >
           {children}
           {/* AI Assistant Widget */}
+          <Script
+            src={`https://www.google.com/recaptcha/api.js?render=${process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}`}
+            strategy="lazyOnload"
+          />
           <AiAssistantModal />
         </GoogleOAuthProvider>
       </body>
