@@ -119,53 +119,21 @@ export default function RegisterPage() {
                 throw new Error(regData.message || "Pendaftaran gagal");
             }
 
-            setSuccessMsg("Pendaftaran berhasil! Mencoba masuk secara otomatis...");
-
-            const loginResponse = await fetch("http://localhost:3001/auth/login", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
+            setModal({
+                isOpen: true,
+                type: "success",
+                title: "Pendaftaran Berhasil",
+                message:
+                    "Pendaftaran berhasil! Silakan masuk menggunakan akun baru Anda.",
+                confirmText: "Ya",
+                cancelText: "Batal",
+                onConfirm: undefined,
+                onClose: () => {
+                    setModal((prev) => ({ ...prev, isOpen: false }));
+                    router.push("/login");
                 },
-                body: JSON.stringify({
-                    email,
-                    password,
-                }),
             });
 
-            const loginData = await loginResponse.json();
-            if (loginResponse.ok) {
-                const { access_token, user } = loginData;
-                localStorage.setItem("token", access_token);
-                localStorage.setItem("userName", user?.name || username);
-                setModal({
-                    isOpen: true,
-                    type: "success",
-                    title: "Pendaftaran Berhasil",
-                    message: `Selamat datang, ${user?.name || username}!`,
-                    confirmText: "Ya",
-                    cancelText: "Batal",
-                    onConfirm: undefined,
-                    onClose: () => {
-                        setModal((prev) => ({ ...prev, isOpen: false }));
-                        router.push("/");
-                    },
-                });
-            } else {
-                setModal({
-                    isOpen: true,
-                    type: "success",
-                    title: "Pendaftaran Berhasil",
-                    message:
-                        "Pendaftaran berhasil! Silakan masuk menggunakan akun baru Anda.",
-                    confirmText: "Ya",
-                    cancelText: "Batal",
-                    onConfirm: undefined,
-                    onClose: () => {
-                        setModal((prev) => ({ ...prev, isOpen: false }));
-                        router.push("/login");
-                    },
-                });
-            }
         } catch (error: any) {
             console.error("Gagal registrasi:", error);
             setErrorMsg(error.message || "Pendaftaran gagal. Silakan coba lagi.");

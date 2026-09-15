@@ -10,12 +10,13 @@ import {
 import { AuthService } from './auth.service';
 import { AuthGuard } from '@nestjs/passport';
 import type { Response } from 'express';
+import { RecaptchaGuard } from 'src/common/guards/recaptcha.guard';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(private readonly authService: AuthService) { }
 
-  @UseGuards(AuthGuard('local'))
+  @UseGuards(RecaptchaGuard, AuthGuard('local'))
   @Post('login')
   async login(@Request() req: any, @Res({ passthrough: true }) res: Response) {
     const { access_token } = this.authService.login(req.user);
@@ -37,6 +38,7 @@ export class AuthController {
   }
 
   @Post('google')
+  @UseGuards(RecaptchaGuard)
   async googleLogin(@Body('id_token') idToken: string) {
     if (!idToken) {
       throw new UnauthorizedException('ID Token tidak ditemukan');

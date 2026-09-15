@@ -19,10 +19,10 @@ export class UserService {
   constructor(
     private prisma: PrismaService,
     @Inject(CACHE_MANAGER) private cacheManager: Cache,
-  ) {}
+  ) { }
 
   async create(createUserDto: CreateUserDto) {
-    const { password, ...userData } = createUserDto;
+    const { password, captchaToken, ...userData } = createUserDto;
     const hashedPassword = await bcrypt.hash(password, 10);
 
     try {
