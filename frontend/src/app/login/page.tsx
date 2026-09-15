@@ -140,9 +140,9 @@ export default function LoginPage() {
       <div className="absolute bottom-[-10%] right-[-10%] w-[600px] h-[600px] bg-gradient-to-tl from-emerald-500/15 to-teal-400/10 rounded-full blur-[120px] pointer-events-none animate-pulse duration-10000" />
 
       {/* Main Outer Container Card with 3D Depth Elevation & Soft Shadow */}
-      <div className="relative z-10 w-full px-4 sm:w-[80vw] lg:w-[90vw] min-h-[100dvh] lg:min-h-0 lg:h-[90vh] bg-transparent lg:bg-white/90 lg:backdrop-blur-xl rounded-none lg:rounded-[2.5rem] lg:shadow-[0_35px_90px_-20px_rgba(0,26,82,0.22),0_15px_35px_-15px_rgba(0,0,0,0.08)] lg:border border-white/80 p-0 lg:p-5 flex flex-col lg:flex-row gap-4 lg:gap-5 transition-all duration-700 lg:hover:shadow-[0_45px_110px_-20px_rgba(0,26,82,0.28)] justify-center items-center lg:items-stretch overflow-y-auto lg:overflow-hidden">
+      <div className="relative z-10 w-full px-4 sm:w-[85vw] lg:w-[90vw] max-w-[1440px] min-h-[100dvh] lg:min-h-[580px] lg:max-h-[92vh] lg:h-auto bg-transparent lg:bg-white/90 lg:backdrop-blur-xl rounded-none lg:rounded-[2.5rem] lg:shadow-[0_35px_90px_-20px_rgba(0,26,82,0.22),0_15px_35px_-15px_rgba(0,0,0,0.08)] lg:border border-white/80 p-0 lg:p-4 flex flex-col lg:flex-row gap-4 lg:gap-5 transition-all duration-700 lg:hover:shadow-[0_45px_110px_-20px_rgba(0,26,82,0.28)] justify-center items-center lg:items-stretch overflow-y-auto lg:overflow-hidden">
         {/* LEFT PANEL: 3D Inset Visual Hero Box */}
-        <div className="relative hidden lg:flex w-full lg:flex-1 rounded-[1.5rem] sm:rounded-[2rem] lg:rounded-[2.2rem] bg-[#001a52] p-5 sm:p-8 lg:p-10 xl:p-12 text-white flex-col justify-between overflow-hidden group min-h-[220px] sm:min-h-[300px] lg:min-h-0 shadow-[0_20px_50px_rgba(0,26,82,0.4)] border border-white/10 shrink-0 lg:shrink">
+        <div className="relative hidden lg:flex w-full lg:flex-1 rounded-[1.5rem] sm:rounded-[2rem] lg:rounded-[2.2rem] bg-[#001a52] p-5 sm:p-8 lg:p-8 xl:p-10 text-white flex-col justify-between overflow-hidden group min-h-[220px] sm:min-h-[300px] lg:min-h-0 shadow-[0_20px_50px_rgba(0,26,82,0.4)] border border-white/10 shrink-0 lg:shrink">
           {/* Hotel Background Image with 3D Zoom Effect */}
           <Image
             src="/images/hero-hotel.png"
@@ -201,7 +201,7 @@ export default function LoginPage() {
         </div>
 
         {/* RIGHT PANEL: 3D Form Container */}
-        <div className="relative flex w-full max-w-md sm:max-w-lg lg:max-w-none lg:w-[450px] xl:w-[500px] 2xl:w-[600px] shrink-0 flex-col justify-center bg-white/95 lg:bg-white p-5 sm:p-8 lg:p-10 xl:p-12 2xl:p-16 rounded-[1.5rem] sm:rounded-[2rem] lg:rounded-[2.2rem] my-auto lg:my-0 shadow-[0_20px_50px_rgba(0,26,82,0.1)] lg:shadow-[0_10px_30px_rgba(0,0,0,0.05)] backdrop-blur-xl lg:backdrop-blur-none border border-white/60 lg:border-none overflow-y-auto">
+        <div className="relative flex w-full max-w-md sm:max-w-lg lg:max-w-none lg:w-[450px] xl:w-[500px] 2xl:w-[600px] shrink-0 flex-col justify-start bg-white/95 lg:bg-white p-5 sm:p-6 lg:p-6 xl:p-8 2xl:p-12 rounded-[1.5rem] sm:rounded-[2rem] lg:rounded-[2.2rem] my-auto shadow-[0_20px_50px_rgba(0,26,82,0.1)] lg:shadow-[0_10px_30px_rgba(0,0,0,0.05)] backdrop-blur-xl lg:backdrop-blur-none border border-white/60 lg:border-none overflow-y-auto max-h-full">
           <div>
             {/* Top Utility Row: 3D Pill Switcher Right Aligned */}
             <div className="flex justify-between lg:justify-end items-center mb-6 2xl:mb-8 pb-3 2xl:pb-4 border-b border-slate-100/90">

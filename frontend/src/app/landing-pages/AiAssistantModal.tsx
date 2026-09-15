@@ -181,10 +181,10 @@ export default function AiAssistantModal() {
       {!isOpen && (
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="fixed bottom-6 right-6 z-50 flex items-center gap-2.5 rounded-full bg-[#1D4ED8] px-5 py-3 text-white shadow-2xl transition-all duration-300 hover:scale-105 hover:bg-[#1E3A8A] active:scale-95 border-2 border-emerald-400/40 animate-pulse-ring"
+          className="fixed bottom-6 right-6 z-50 flex items-center gap-2.5 rounded-full bg-gradient-to-r from-[#001a52] via-[#0e2f76] to-[#1D4ED8] px-5 py-3 text-white shadow-[0_10px_30px_rgba(0,26,82,0.4)] transition-all duration-300 hover:scale-105 hover:from-[#001440] hover:to-[#1E3A8A] active:scale-95 border border-blue-400/40 animate-pulse-ring"
           aria-label="Toggle AI Assistant"
         >
-          <div className="flex h-7 w-7 items-center justify-center rounded-full bg-emerald-500/30 text-emerald-200">
+          <div className="flex h-7 w-7 items-center justify-center rounded-full bg-blue-400/20 text-blue-200">
             <span className="material-symbols-outlined text-[16px]">smart_toy</span>
           </div>
           <span className="text-sm font-bold tracking-wide">TiniBot</span>
@@ -194,23 +194,23 @@ export default function AiAssistantModal() {
       {/* MODAL / POPUP CHAT AI ASSISTANT */}
       {isOpen && (
 
-        <div className="fixed bottom-20 right-4 z-50 w-full max-w-sm overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-2xl sm:right-6 transition-all duration-300">
+        <div className="fixed bottom-20 right-4 z-50 w-full max-w-sm overflow-hidden rounded-3xl border border-slate-200/90 bg-white shadow-[0_20px_50px_rgba(0,26,82,0.25)] sm:right-6 transition-all duration-300">
 
-          {/* HEADER CHAT WINDOW (Warna latar putih dengan ikon AI hijau & Tombol Tutup X) */}
-          <div className="flex items-center justify-between border-b border-gray-100 bg-white px-4 py-3 shadow-sm">
+          {/* HEADER CHAT WINDOW (Warna latar putih dengan ikon AI & Tombol Tutup X) */}
+          <div className="flex items-center justify-between border-b border-slate-100 bg-white px-4 py-3 shadow-sm">
             <div className="flex items-center gap-2.5">
-              {/* Avatar Bot AI dengan latar hijau lingkaran */}
-              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#1D4ED8] text-white shadow-sm">
+              {/* Avatar Bot AI */}
+              <div className="flex h-9 w-9 items-center justify-center rounded-2xl bg-gradient-to-br from-[#001a52] to-[#1D4ED8] text-white shadow-md shadow-blue-900/20">
                 <span className="material-symbols-outlined text-[20px]">smart_toy</span>
               </div>
               <div>
                 {/* Judul AI Assistant */}
-                <h4 className="text-sm font-bold text-gray-900 flex items-center gap-1">
+                <h4 className="text-sm font-bold text-slate-900 flex items-center gap-1 font-display">
                   <span>TiniBot</span>
                 </h4>
                 {/* Indikator Status Online */}
-                <span className="text-[10px] text-emerald-600 font-medium flex items-center gap-1">
-                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-ping" />
+                <span className="text-[10px] text-[#1D4ED8] font-bold flex items-center gap-1">
+                  <span className="h-1.5 w-1.5 rounded-full bg-blue-500 animate-ping" />
                   Ramah & Siap Membantu
                 </span>
               </div>
@@ -281,7 +281,7 @@ export default function AiAssistantModal() {
                                   href={href}
                                   target="_blank"
                                   rel="noopener noreferrer"
-                                  className="text-emerald-700 underline hover:text-emerald-900"
+                                  className="text-[#1D4ED8] underline hover:text-[#001a52]"
                                 >
                                   {children}
                                 </a>
@@ -296,7 +296,7 @@ export default function AiAssistantModal() {
                       )}
 
                       <span
-                        className={`mt-1 block text-[9px] ${msg.sender === "user" ? "text-emerald-200 text-right" : "text-gray-400"
+                        className={`mt-1 block text-[9px] ${msg.sender === "user" ? "text-blue-100 text-right" : "text-gray-400"
                           }`}
                       >
                         {msg.time}
@@ -332,7 +332,7 @@ export default function AiAssistantModal() {
                           key={idx}
                           disabled={isCooldown || isTyping}
                           onClick={() => handleSendMessage(suggestion)}
-                          className="rounded-full border border-emerald-200 bg-white px-3 py-1 text-[11px] font-medium text-[#1D4ED8] shadow-sm transition-all hover:bg-[#1D4ED8] hover:text-white hover:border-[#1D4ED8] disabled:opacity-50 disabled:cursor-not-allowed"
+                          className="rounded-full border border-blue-200 bg-white px-3 py-1 text-[11px] font-medium text-[#1D4ED8] shadow-sm transition-all hover:bg-[#1D4ED8] hover:text-white hover:border-[#1D4ED8] disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                           {suggestion}
                         </button>

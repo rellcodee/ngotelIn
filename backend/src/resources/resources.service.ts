@@ -141,8 +141,8 @@ export class ResourcesService {
       .join(':');
     const cacheKey = `resources:v${currentVersion}:${filterKey}`;
 
-    const cachedData = await this.cacheManager.get(cacheKey);
-    if (cachedData) {
+    const cachedData = await this.cacheManager.get<any>(cacheKey);
+    if (cachedData && Array.isArray(cachedData.data) && cachedData.data.length > 0) {
       return cachedData;
     }
 
@@ -159,7 +159,11 @@ export class ResourcesService {
       whereCondition.location = { contains: location, mode: 'insensitive' };
     }
     if (type) {
-      whereCondition.type = { equals: type, mode: 'insensitive' };
+      const normalizedType = type.replace(/_/g, ' ');
+      whereCondition.type = {
+        in: [type, normalizedType],
+        mode: 'insensitive',
+      };
     }
 
     const [totalItems, resources] = await this.prisma.$transaction([
@@ -189,7 +193,9 @@ export class ResourcesService {
       },
     };
 
-    await this.cacheManager.set(cacheKey, result, 3600000);
+    if (resources.length > 0) {
+      await this.cacheManager.set(cacheKey, result, 3600000);
+    }
 
     return result;
   }
