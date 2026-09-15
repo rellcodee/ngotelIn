@@ -96,14 +96,14 @@ export default function AiAssistantModal() {
       if (!textToSend) setInputText(""); // Clear input teks di form
       setIsTyping(true); // Tampilkan indikator AI sedang memproses balasan
 
-      const res = await fetch("http://localhost:3001/ai/chat", {
+      const res = await fetch("http://localhost:3001/ai-bot/chat", {
         method: "POST",
         // credentials: "include",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${localStorage.getItem("token")}`
+          "Authorization": `Bearer ${localStorage.getItem("token") || ""}`
         },
-        body: JSON.stringify({ message: cleanText }),
+        body: JSON.stringify({ message: cleanText, user_id: `${localStorage.getItem("user_id") || ""}` }),
       });
 
       const resData = await res.json();
@@ -116,7 +116,7 @@ export default function AiAssistantModal() {
       const aiMessage: Message = {
         id: Date.now(),
         sender: "ai",
-        text: resData.data.reply, // Menerima respon dari backend NestJS
+        text: resData.reply, // Menerima respon dari backend NestJS
         time: new Date().toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" }),
       };
 
