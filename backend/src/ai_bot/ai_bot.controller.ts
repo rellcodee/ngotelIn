@@ -1,24 +1,15 @@
-import { Controller, Post, Body, UseGuards, Req, Delete } from '@nestjs/common';
+import { Controller, Post, Body, UseGuards, Req } from '@nestjs/common';
 import { AiBotService } from './ai_bot.service';
-import { CreateChatDto } from './dto/create-chat.dto';
-import { AuthGuard } from '@nestjs/passport';
-import { Throttle } from '@nestjs/throttler';
-@Controller('ai')
+import { OptionalJwtAuthGuard } from 'src/common/guards/optional-jwt-auth.guard';
+
+@Controller('ai-bot')
 export class AiBotController {
-  constructor(private readonly aiBotService: AiBotService) {}
+  constructor(private readonly aiBotService: AiBotService) { }
 
-  @Throttle({ default: { limit: 10, ttl: 60000 } })
-  @UseGuards(AuthGuard('jwt'))
+  @UseGuards(OptionalJwtAuthGuard)
   @Post('chat')
-  async chat(@Req() req: any, @Body() createChatDto: CreateChatDto) {
-    const userId = req.user.userId || req.user.id;
-    return this.aiBotService.chatWithAi(createChatDto, userId);
-  }
-
-  @UseGuards(AuthGuard('jwt'))
-  @Delete('chat')
-  async resetChat(@Req() req: any) {
-    const userId = req.user.userId || req.user.id;
-    return this.aiBotService.clearChatHistory(userId);
+  async chatUser(@Req() req: any, @Body() body: { message: string }) {
+    const userId = req.user?.userId || null;
+    return this.aiBotService.processUserMessage(body.message, userId);
   }
 }
