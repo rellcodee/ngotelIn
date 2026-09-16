@@ -3,16 +3,30 @@ import { createParamDecorator, ExecutionContext } from '@nestjs/common';
 export const CurrentUser = createParamDecorator(
   (data: string, ctx: ExecutionContext) => {
     const request = ctx.switchToHttp().getRequest();
+    const user = request.user;
 
-    // 1. Ambil user_id dari Header HTTP 'x-user-id' saat ngetes
-    const mockUserId =
-      request.headers['x-user-id'] || '6210b2d2-175b-4f64-a184-51174d8e193a';
-
-    // Kalau controller minta spesifik prop misal @CurrentUser('id')
-    if (data === 'id') {
-      return mockUserId;
+    if (!user) {
+      // Fallback for custom testing header if no JWT present
+      const fallbackId = request.headers['x-user-id'];
+      if (fallbackId) {
+        if (data === 'id' || data === 'userId') return fallbackId;
+        return { id: fallbackId, userId: fallbackId, name: 'User Test' };
+      }
+      return null;
     }
 
-    return { id: mockUserId, name: 'User Test' };
+    if (data === 'id' || data === 'userId') {
+      return user.userId || user.id;
+    }
+
+    if (data) {
+      return user[data];
+    }
+
+    return {
+      ...user,
+      id: user.userId || user.id,
+      userId: user.userId || user.id,
+    };
   },
 );

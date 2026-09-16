@@ -25,6 +25,15 @@ export default function AiAssistantModal() {
 
   const pathname = usePathname();
 
+  const INITIAL_SUGGESTIONS = [
+    "Rekomendasi kamar",
+    "Jam Check-in & Out",
+    "Info Sarapan & Parkir",
+    "Lokasi & Kontak",
+  ];
+
+  const [currentSuggestions, setCurrentSuggestions] = useState<string[]>(INITIAL_SUGGESTIONS);
+
   const messagesEndRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -37,7 +46,6 @@ export default function AiAssistantModal() {
       .replace(/>/g, "&gt;") // Mengubah simbol '>' menjadi &gt;
       .trim(); // Menghapus spasi kosong berlebih di awal & akhir kalimat
   };
-
 
   useEffect(() => {
     const checkLoginStatus = () => {
@@ -85,14 +93,7 @@ export default function AiAssistantModal() {
     setIsCooldown(true);
     setTimeout(() => setIsCooldown(false), 1500);
 
-    // Mengambil jam saat ini dalam format HH:MM
-    const currentTime = new Date().toLocaleTimeString("id-ID", {
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-
     try {
-
       if (!textToSend) setInputText(""); // Clear input teks di form
       setIsTyping(true); // Tampilkan indikator AI sedang memproses balasan
 
@@ -115,6 +116,10 @@ export default function AiAssistantModal() {
       const fullReply = resData.reply || "";
       const aiMessageId = Date.now();
       const aiTime = new Date().toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" });
+
+      if (resData.suggestions && Array.isArray(resData.suggestions) && resData.suggestions.length > 0) {
+        setCurrentSuggestions(resData.suggestions);
+      }
 
       // Matikan indikator "sedang mengetik", ganti dengan entri pesan AI baru
       setIsTyping(false);
@@ -160,6 +165,7 @@ export default function AiAssistantModal() {
 
       // Kosongkan pesan di UI
       setMessages([]);
+      setCurrentSuggestions(INITIAL_SUGGESTIONS);
       setErrorMessage(null);
     } catch (err) {
       setErrorMessage("Gagal mereset riwayat percakapan.");
@@ -167,14 +173,6 @@ export default function AiAssistantModal() {
       setIsTyping(false);
     }
   };
-
-  // Quick suggestion pills (Tombol saran pertanyaan cepat)
-  const quickSuggestions = [
-    "Rekomendasi kamar",
-    "Harga promo hari ini",
-    "Fasilitas hotel",
-    "Lokasi & akses",
-  ];
 
   const closeBot = () => {
     setIsOpen(false);
@@ -325,100 +323,100 @@ export default function AiAssistantModal() {
                 </div>
               ))}
 
-                {/* Indikator Typing saat AI sedang memikirkan balasan */}
-                {isTyping && (
-                  <div className="flex items-center gap-2 text-xs text-gray-400">
-                    <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[#1D4ED8] text-white">
-                      <span className="material-symbols-outlined text-[16px] animate-bounce">smart_toy</span>
-                    </div>
-                    <span className="italic">AI Assistant sedang mengetik...</span>
+              {/* Indikator Typing saat AI sedang memikirkan balasan */}
+              {isTyping && (
+                <div className="flex items-center gap-2 text-xs text-gray-400">
+                  <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[#1D4ED8] text-white">
+                    <span className="material-symbols-outlined text-[16px] animate-bounce">smart_toy</span>
                   </div>
-                )}
-
-                {/* QUICK SUGGESTION PILLS: Pilihan Cepat Pertanyaan */}
-                {messages.length <= 3 && !isTyping && (
-                  <div className="pt-2">
-                    <p className="text-[11px] font-semibold text-gray-400 mb-2">Saran pertanyaan cepat:</p>
-                    <div className="flex flex-wrap gap-1.5">
-                      {quickSuggestions.map((suggestion, idx) => (
-                        <button
-                          key={idx}
-                          disabled={isCooldown || isTyping}
-                          onClick={() => handleSendMessage(suggestion)}
-                          className="rounded-full border border-blue-200 bg-white px-3 py-1 text-[11px] font-medium text-[#1D4ED8] shadow-sm transition-all hover:bg-[#1D4ED8] hover:text-white hover:border-[#1D4ED8] disabled:opacity-50 disabled:cursor-not-allowed"
-                        >
-                          {suggestion}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                <div ref={messagesEndRef} />
-              </div>
-
-              {/* FOOTER FORM INPUT CHAT DENGAN VALIDASI SEKURITAS FE */}
-              <div className="border-t border-gray-100 bg-white p-3">
-                {/* NOTIFIKASI ERROR VALIDASI (Tampil jika ada kesalahan input / batas karakter) */}
-                {errorMessage && (
-                  <div className="mb-2 flex items-center gap-1.5 rounded-lg bg-rose-50 px-2.5 py-1.5 text-[11px] font-medium text-rose-600 border border-rose-200 animate-fade-in">
-                    <span className="material-symbols-outlined text-[14px] shrink-0">error</span>
-                    <span>{errorMessage}</span>
-                  </div>
-                )}
-
-                <form
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    handleSendMessage();
-                  }}
-                  className="flex items-center gap-2"
-                >
-                  {/* Input field pertanyaan dengan batasan maxLength dan disabled saat cooldown */}
-                  <div className="relative w-full">
-                    <input
-                      type="text"
-                      value={inputText}
-                      onChange={(e) => {
-                        setInputText(e.target.value);
-                        if (errorMessage) setErrorMessage(null); // Clear error saat pengguna mengetik ulang
-                      }}
-                      maxLength={MAX_INPUT_LENGTH} // Proteksi FE 1: Batas Maksimal 300 Karakter
-                      disabled={isTyping || isCooldown} // Proteksi FE 2: Disabled saat cooldown / AI ngetik
-                      placeholder={
-                        isCooldown
-                          ? "Harap tunggu sebentar..."
-                          : "Tanyakan sesuatu tentang hotel..."
-                      }
-                      className={`w-full rounded-xl bg-gray-100 px-3.5 py-2 text-xs text-gray-800 placeholder-gray-400 focus:bg-white focus:outline-none focus:ring-1 focus:ring-[#1D4ED8] transition-all ${isTyping || isCooldown ? "opacity-60 cursor-not-allowed" : ""
-                        }`}
-                    />
-                  </div>
-
-                  {/* Tombol Kirim Pesan dengan Proteksi Spam / Disabled State */}
-                  <button
-                    type="submit"
-                    disabled={isTyping || isCooldown || !inputText.trim()}
-                    aria-label="Kirim Pesan"
-                    className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-[#1D4ED8] text-white shadow transition-all hover:bg-[#1E3A8A] active:scale-95 ${isTyping || isCooldown || !inputText.trim()
-                      ? "opacity-40 cursor-not-allowed hover:bg-[#1D4ED8]"
-                      : ""
-                      }`}
-                  >
-                    <span className="material-symbols-outlined text-[14px]">send</span>
-                  </button>
-                </form>
-
-                {/* HINT INDIKATOR MAKSIMAL KARAKTER */}
-                <div className="mt-1 flex items-center justify-end px-1">
-                  <span className="text-[9px] text-gray-400">
-                    {inputText.length}/{MAX_INPUT_LENGTH} karakter
-                  </span>
+                  <span className="italic">AI Assistant sedang mengetik...</span>
                 </div>
+              )}
+
+              {/* QUICK SUGGESTION PILLS: Pilihan Cepat Pertanyaan Dinamis */}
+              {!isTyping && currentSuggestions && currentSuggestions.length > 0 && (
+                <div className="pt-2">
+                  <p className="text-[11px] font-semibold text-gray-400 mb-2">Saran pertanyaan / pilihan:</p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {currentSuggestions.map((suggestion, idx) => (
+                      <button
+                        key={idx}
+                        disabled={isCooldown || isTyping}
+                        onClick={() => handleSendMessage(suggestion)}
+                        className="rounded-full border border-blue-200 bg-white px-3 py-1 text-[11px] font-medium text-[#1D4ED8] shadow-sm transition-all hover:bg-[#1D4ED8] hover:text-white hover:border-[#1D4ED8] disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        {suggestion}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              <div ref={messagesEndRef} />
+            </div>
+
+            {/* FOOTER FORM INPUT CHAT DENGAN VALIDASI SEKURITAS FE */}
+            <div className="border-t border-gray-100 bg-white p-3">
+              {/* NOTIFIKASI ERROR VALIDASI (Tampil jika ada kesalahan input / batas karakter) */}
+              {errorMessage && (
+                <div className="mb-2 flex items-center gap-1.5 rounded-lg bg-rose-50 px-2.5 py-1.5 text-[11px] font-medium text-rose-600 border border-rose-200 animate-fade-in">
+                  <span className="material-symbols-outlined text-[14px] shrink-0">error</span>
+                  <span>{errorMessage}</span>
+                </div>
+              )}
+
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  handleSendMessage();
+                }}
+                className="flex items-center gap-2"
+              >
+                {/* Input field pertanyaan dengan batasan maxLength dan disabled saat cooldown */}
+                <div className="relative w-full">
+                  <input
+                    type="text"
+                    value={inputText}
+                    onChange={(e) => {
+                      setInputText(e.target.value);
+                      if (errorMessage) setErrorMessage(null); // Clear error saat pengguna mengetik ulang
+                    }}
+                    maxLength={MAX_INPUT_LENGTH} // Proteksi FE 1: Batas Maksimal 300 Karakter
+                    disabled={isTyping || isCooldown} // Proteksi FE 2: Disabled saat cooldown / AI ngetik
+                    placeholder={
+                      isCooldown
+                        ? "Harap tunggu sebentar..."
+                        : "Tanyakan sesuatu tentang hotel..."
+                    }
+                    className={`w-full rounded-xl bg-gray-100 px-3.5 py-2 text-xs text-gray-800 placeholder-gray-400 focus:bg-white focus:outline-none focus:ring-1 focus:ring-[#1D4ED8] transition-all ${isTyping || isCooldown ? "opacity-60 cursor-not-allowed" : ""
+                      }`}
+                  />
+                </div>
+
+                {/* Tombol Kirim Pesan dengan Proteksi Spam / Disabled State */}
+                <button
+                  type="submit"
+                  disabled={isTyping || isCooldown || !inputText.trim()}
+                  aria-label="Kirim Pesan"
+                  className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-[#1D4ED8] text-white shadow transition-all hover:bg-[#1E3A8A] active:scale-95 ${isTyping || isCooldown || !inputText.trim()
+                    ? "opacity-40 cursor-not-allowed hover:bg-[#1D4ED8]"
+                    : ""
+                    }`}
+                >
+                  <span className="material-symbols-outlined text-[14px]">send</span>
+                </button>
+              </form>
+
+              {/* HINT INDIKATOR MAKSIMAL KARAKTER */}
+              <div className="mt-1 flex items-center justify-end px-1">
+                <span className="text-[9px] text-gray-400">
+                  {inputText.length}/{MAX_INPUT_LENGTH} karakter
+                </span>
               </div>
             </div>
           </div>
-        )}
+        </div>
+      )}
     </>
   );
 }

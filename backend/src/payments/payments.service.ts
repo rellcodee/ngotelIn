@@ -1,4 +1,5 @@
 import { Injectable, BadRequestException, NotFoundException, ForbiddenException } from '@nestjs/common';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { PrismaService } from '../prisma/prisma.service';
 import * as crypto from 'crypto';
 import * as midtransClient from 'midtrans-client';
@@ -17,7 +18,10 @@ export interface MidtransNotification {
 
 @Injectable()
 export class PaymentsService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private eventEmitter: EventEmitter2,
+  ) { }
 
   async getPaymentUrl(
     bookingId: string,
@@ -146,6 +150,12 @@ export class PaymentsService {
           data: { status: BookingStatus.APPROVED },
         });
       });
+
+      this.eventEmitter.emit('booking.status_updated', {
+        user_id: booking.user_id,
+        booking_id: booking.id,
+        status: BookingStatus.APPROVED,
+      });
     }
     // 3. JIKA PEMBAYARAN KEDALUWARSA / BATAL / DENY
     else if (
@@ -173,6 +183,12 @@ export class PaymentsService {
             data: { status: ScheduleStatus.CANCELED },
           });
         }
+      });
+
+      this.eventEmitter.emit('booking.status_updated', {
+        user_id: booking.user_id,
+        booking_id: booking.id,
+        status: BookingStatus.CANCELED,
       });
     }
 

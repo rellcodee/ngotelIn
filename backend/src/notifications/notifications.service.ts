@@ -7,28 +7,50 @@ import { QueryNotificationDto } from './dto/query-notification.dto';
 
 @Injectable()
 export class NotificationsService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService) { }
 
   // EVENT LISTENER (INTERNAL SYSTEM)
   @OnEvent('booking.status_updated')
   async handleBookingStatusUpdated(payload: BookingStatusUpdatedEvent) {
+    let roomName = payload.room_name;
+
+    if (!roomName && payload.booking_id) {
+      const booking = await this.prisma.bookings.findUnique({
+        where: { id: payload.booking_id },
+        include: {
+          schedules: {
+            include: {
+              resources: {
+                select: { name: true },
+              },
+            },
+          },
+        },
+      });
+
+      roomName = booking?.schedules?.resources?.name;
+    }
+
+    const roomLabel = roomName ? `kamar "${roomName}"` : 'kamar pilihanmu';
+
     const messageMap: Record<BookingStatus, string> = {
       [BookingStatus.PENDING]:
-        'Pesanan berhasil dibuat. Silakan lakukan pembayaran!',
+        `Pesanan untuk ${roomLabel} berhasil dibuat. Silakan segera lakukan pembayaran agar reservasi kamarmu tetap aman!`,
       [BookingStatus.APPROVED]:
-        'Pembayaran dikonfirmasi! Booking kamu resmi aman.',
+        `Pembayaran untuk ${roomLabel} telah berhasil dikonfirmasi! Kamar siap menyambut kedatanganmu.`,
       [BookingStatus.CHECKED_IN]:
-        'Proses check-in berhasil. Selamat menikmati layanan kami!',
+        `Proses check-in untuk ${roomLabel} berhasil. Selamat beristirahat dan menikmati layanan NgotelIn!`,
       [BookingStatus.COMPLETED]:
-        'Sewa telah selesai. Terima kasih! Jangan lupa berikan ulasan ya.',
+        `Masa menginap di ${roomLabel} telah selesai. Terima kasih banyak telah menginap bersama kami! Yuk, bagikan ulasan dan ratingmu.`,
       [BookingStatus.REJECTED]:
-        'Maaf, pengajuan booking kamu ditolak oleh staff.',
-      [BookingStatus.CANCELED]: 'Pesanan kamu telah dibatalkan.',
+        `Mohon maaf, pengajuan booking untuk ${roomLabel} ditolak oleh staff/admin.`,
+      [BookingStatus.CANCELED]:
+        `Pesanan untuk ${roomLabel} telah dibatalkan.`,
     };
 
     const message =
       messageMap[payload.status] ||
-      `Status pesanan kamu sekarang: ${payload.status}`;
+      `Status pesanan untuk ${roomLabel} sekarang: ${payload.status}`;
 
     return this.prisma.notifications.create({
       data: {
@@ -132,12 +154,6 @@ export class NotificationsService {
   }
 
   async deleteAll(userId: string) {
-    const notifications = await this.prisma.notifications.findMany({
-      where: { user_id: userId },
-    });
-    if (!notifications) {
-      throw new NotFoundException('Notifikasi tidak ditemukan');
-    }
     await this.prisma.notifications.deleteMany({
       where: { user_id: userId },
     });

@@ -388,6 +388,7 @@ export class BookingsService {
             },
           },
           payment: true,
+          reviews: true,
         },
         orderBy: { created_at: 'desc' },
       }),

@@ -4,9 +4,24 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { NlpManager } from 'node-nlp';
 
+interface ConversationState {
+    waitingFor?: 'kategori_kamar' | 'kapasitas_kamar' | null;
+    lastRoomId?: string;
+    updatedAt: number;
+}
+
+export interface ChatBotResponse {
+    reply: string;
+    intent: string;
+    score: number;
+    suggestions: string[];
+}
+
 @Injectable()
 export class AiBotService implements OnModuleInit {
     private manager: any;
+    private userStates: Map<string, ConversationState> = new Map();
+    private readonly CONFIDENCE_THRESHOLD = 0.65;
 
     constructor(private prisma: PrismaService) {
         this.manager = new NlpManager({ languages: ['id'], forceNER: true });
@@ -14,17 +29,15 @@ export class AiBotService implements OnModuleInit {
 
     async onModuleInit() {
         try {
-            // 1. Daftarin nama-nama tipe kamar sebagai Named Entity
-            // Supaya NLU bisa nangkep "kamar deluxe", "executive suite", dll dari kalimat user
+            // 1. Daftarkan nama kamar + alias sebagai Named Entity (NER)
             await this.registerRoomEntities();
 
             // 2. Load & training dari corpus.csv
             const csvPath = path.join(process.cwd(), 'corpus.csv');
             const csvData = fs.readFileSync(csvPath, 'utf-8');
-            const rows = csvData.split('\n');
+            const rows = csvData.split(/\r?\n/);
 
             for (const row of rows) {
-
                 if (!row.trim() || row.startsWith('intent')) continue;
                 const [intent, question, answer] = row.split(';');
 
@@ -38,165 +51,319 @@ export class AiBotService implements OnModuleInit {
 
             await this.manager.train();
             this.manager.save();
-            console.log('TiniBot final!');
+            console.log('TiniBot NLU Ready & Trained with SiniBook Knowledge!');
         } catch (error) {
-            console.error('Gagal memuat corpus.csv:', error);
+            console.error('Gagal memuat/mentraining corpus.csv:', error);
         }
     }
 
-    // Daftarin nama kamar dari DB sebagai entity biar NLU bisa extract
-    // mana yang dimaksud user waktu nanya "harga kamar deluxe" dll
+    // Daftarkan nama kamar dari DB dengan variasi alias agar deteksi NER fleksibel
     private async registerRoomEntities() {
         const rooms = await this.prisma.resources.findMany({
             select: { name: true },
         });
 
         for (const room of rooms) {
-            this.manager.addNamedEntityText(
-                'tipe_kamar',
-                room.name,
-                ['id'],
-                [room.name.toLowerCase()],
-            );
+            const baseName = room.name.toLowerCase();
+            const cleanName = baseName.replace(/kamar|room|tipe/gi, '').trim();
+
+            const aliases = Array.from(
+                new Set([
+                    baseName,
+                    cleanName,
+                    `kamar ${cleanName}`,
+                    `tipe ${cleanName}`,
+                    `${cleanName} room`,
+                ]),
+            ).filter(Boolean);
+
+            this.manager.addNamedEntityText('tipe_kamar', room.name, ['id'], aliases);
         }
     }
 
-    async processUserMessage(message: string, userId?: string) {
-        const nlpResult = await this.manager.process('id', message);
-        let finalAnswer = nlpResult.answer;
+    async processUserMessage(message: string, userId?: string): Promise<ChatBotResponse> {
+        const userKey = userId || 'guest';
+        const cleanMsg = message.trim().toLowerCase();
+        const currentState = this.userStates.get(userKey);
 
-        // Ambil entity tipe_kamar kalau kedetect (dipakai di beberapa case di bawah)
-        const roomEntity = nlpResult.entities.find(
-            (e: any) => e.entity === 'tipe_kamar',
-        );
+        // CONTEXT MEMORY CHECK (Menangani alur lanjutan ketika bot menunggu jawaban user)
+        if (currentState?.waitingFor === 'kategori_kamar') {
+            const detectedCategory = this.detectCategory(cleanMsg);
+            if (detectedCategory) {
+                this.userStates.delete(userKey);
+                return this.handleRoomRecommendation(detectedCategory, userId, message);
+            }
+        }
+
+        // PROSES DENGAN NLU ENGINE
+        const nlpResult = await this.manager.process('id', message);
+
+        // CONFIDENCE SCORE GUARD (Cegah halusinasi / pertanyaan melenceng)
+        if (nlpResult.score < this.CONFIDENCE_THRESHOLD || nlpResult.intent === 'None') {
+            return this.handleFallback(userId, message, nlpResult.score);
+        }
+
+        let finalAnswer = nlpResult.answer;
+        let dynamicSuggestions: string[] = this.getDefaultFollowUpSuggestions(nlpResult.intent);
+
+        // Ambil entity tipe_kamar jika terdeteksi
+        const roomEntity = nlpResult.entities.find((e: any) => e.entity === 'tipe_kamar');
         const roomName = roomEntity?.option;
 
+        // ROUTING LOGIKA DINAMIS KE DATABASE PRISMA
         switch (nlpResult.intent) {
-            case 'kamar.termurah': {
-                const room = await this.prisma.resources.findFirst({
-                    orderBy: { price_per_night: 'asc' },
+            // Sapaan awal rekomendasi kamar -> Bot tanya kriteria dan pasang Context Memory
+            case 'pertanyaan.spesifik.kamar': {
+                this.userStates.set(userKey, {
+                    waitingFor: 'kategori_kamar',
+                    updatedAt: Date.now(),
                 });
-                finalAnswer = this.formatRoomAnswer(
-                    room,
-                    (r) =>
-                        `Untuk opsi paling hemat, kami rekomendasikan ${r.name} dengan harga Rp${this.formatPrice(r.price_per_night)}/malam, Kak.`,
-                );
+                finalAnswer =
+                    'Dengan senang hati Kak! Biar Tini pilihkan kamar yang paling pas, Kakak lagi butuh kamar tipe apa nih? ✨\n\n' +
+                    '• **Hemat / Standard** (Paling terjangkau & nyaman)\n' +
+                    '• **Mewah / Presidential Suite** (Kelas sultan paling premium)\n' +
+                    '• **Keluarga** (Kapasitas besar & luas)\n' +
+                    '• **Pasangan / Honeymoon** (Suasana romantis berdua)\n\n' +
+                    '*Kakak bisa langsung ketik atau klik pilihan di bawah ya!*';
+
+                dynamicSuggestions = [
+                    'Hemat / Standard',
+                    'Mewah / Presidential',
+                    'Keluarga',
+                    'Pasangan / Honeymoon',
+                ];
                 break;
             }
 
-            case 'kamar.termahal_mewah': {
-                const room = await this.prisma.resources.findFirst({
-                    orderBy: { price_per_night: 'desc' },
-                });
-                finalAnswer = this.formatRoomAnswer(
-                    room,
-                    (r) =>
-                        `Kamar paling premium kami adalah ${r.name} dengan harga Rp${this.formatPrice(r.price_per_night)}/malam, Kak.`,
-                );
-                break;
-            }
+            case 'kamar.termurah':
+                return this.handleRoomRecommendation('hemat', userId, message);
 
-            case 'kamar.rekomendasi_umum':
+            case 'kamar.termahal_mewah':
+                return this.handleRoomRecommendation('mewah', userId, message);
+
             case 'kamar.untuk_keluarga':
+                return this.handleRoomRecommendation('keluarga', userId, message);
+
             case 'kamar.untuk_honeymoon':
-            case 'kamar.untuk_bisnis':
-            case 'kamar.untuk_solo': {
-                // NOTE: rekomendasi berbasis kategori (keluarga/honeymoon/dst) idealnya
-                // difilter dari kolom kategori/tag di tabel resources kalau datanya ada.
-                // Sementara ini fallback ke 3 kamar teratas kalau kolom tag belum tersedia.
+                return this.handleRoomRecommendation('honeymoon', userId, message);
+
+            case 'kamar.berdasarkan_kapasitas': {
+                const targetCapacity = this.extractCapacity(message);
+                if (!targetCapacity) {
+                    finalAnswer = 'Untuk kapasitas berapa orang Kakak mencari kamar? (Contoh: untuk 3 orang, berempat)';
+                    dynamicSuggestions = ['Untuk 2 orang', 'Untuk 3 orang', 'Untuk 4 orang', 'Untuk 5 orang'];
+                    break;
+                }
+
                 const rooms = await this.prisma.resources.findMany({
+                    where: { capacity: { gte: targetCapacity } },
+                    orderBy: [{ capacity: 'asc' }, { price_per_night: 'asc' }],
                     take: 3,
-                    orderBy: { price_per_night: 'asc' },
                 });
-                finalAnswer = this.formatRoomList(
-                    rooms,
-                    'Berikut Beberapa Kamar Rekomendasi Tini yang bisa Kakak Pertimbangkan:',
-                );
+
+                if (rooms.length === 0) {
+                    finalAnswer = `Mohon maaf Kak, saat ini belum ada kamar yang tersedia untuk kapasitas **${targetCapacity} orang** sekaligus. Kakak bisa memesan 2 kamar terpisah ya. 😊`;
+                    dynamicSuggestions = ['Lihat Semua Kamar', 'Kamar Paling Hemat', 'Hubungi CS'];
+                } else {
+                    finalAnswer = this.formatRoomList(
+                        rooms,
+                        `Berikut pilihan kamar yang cocok untuk kapasitas **${targetCapacity} orang**:`,
+                    );
+                    dynamicSuggestions = ['Cara Booking', 'Jam Check-in', 'Fasilitas Hotel'];
+                }
                 break;
             }
 
             case 'kamar.daftar_semua_tipe': {
                 const rooms = await this.prisma.resources.findMany({
                     take: 4,
-                    orderBy: { price_per_night: 'desc' }
+                    orderBy: { price_per_night: 'asc' },
                 });
                 finalAnswer = this.formatRoomList(
                     rooms,
-                    'Berikut Beberapa kamar yang tersedia di SiniBook:',
+                    'Berikut pilihan tipe kamar yang tersedia di SiniBook:',
                 );
+                dynamicSuggestions = ['Kamar Paling Hemat', 'Kamar Paling Mewah', 'Cara Booking'];
                 break;
             }
 
             case 'kamar.harga': {
                 if (!roomName) {
-                    finalAnswer =
-                        'Kamar tipe apa yang mau Kakak tanyakan harganya? Kami punya beberapa pilihan tipe kamar, Kak.';
+                    finalAnswer = 'Tipe kamar apa yang ingin Kakak tanyakan harganya? Kami menyediakan tipe Standard, Suite, dan Presidential Suite Kak.';
+                    dynamicSuggestions = ['Harga Standard', 'Harga Suite', 'Harga Presidential Suite'];
                     break;
                 }
                 const room = await this.prisma.resources.findFirst({
-                    where: { name: { equals: roomName, mode: 'insensitive' } },
+                    where: { name: { contains: roomName, mode: 'insensitive' } },
                 });
                 finalAnswer = this.formatRoomAnswer(
                     room,
                     (r) =>
-                        `Harga ${r.name} adalah Rp${this.formatPrice(r.price_per_night)}/malam, Kak.\n[Lihat Detail ${r.name}](/rooms/${r.id})`,
+                        `Harga untuk **${r.name}** adalah **Rp${this.formatPrice(r.price_per_night)}/malam** (Kapasitas ${r.capacity || 2} orang, sudah termasuk sarapan gratis 2 orang).\n\n👉 [Lihat Detail & Foto ${r.name}](/rooms/${r.id})`,
                 );
+                dynamicSuggestions = ['Fasilitas kamar ini', 'Cara Booking', 'Cek Kamar Lain'];
                 break;
             }
 
             case 'kamar.fasilitas': {
                 if (!roomName) {
-                    finalAnswer =
-                        'Apa Nama Kamar yang mau Kakak tanyakan fasilitasnya, Kak?';
+                    finalAnswer = 'Tipe kamar apa yang ingin Kakak tanyakan fasilitasnya? (Standard, Suite, atau Presidential Suite)';
+                    dynamicSuggestions = ['Fasilitas Standard', 'Fasilitas Suite', 'Fasilitas Presidential'];
                     break;
                 }
                 const room = await this.prisma.resources.findFirst({
-                    where: { name: { equals: roomName, mode: 'insensitive' } },
+                    where: { name: { contains: roomName, mode: 'insensitive' } },
                 });
                 finalAnswer = this.formatRoomAnswer(
                     room,
                     (r) =>
-                        `Untuk Fasilitas Kamar ${r.name} Di Antaranya: ${r.facilities ?? 'informasi fasilitas belum tersedia, silakan cek detail di aplikasi'}, Kak.\n[Lihat Detail ${r.name}](/rooms/${r.id})`,
+                        `Fasilitas untuk kamar **${r.name}** antara lain: ${r.facilities && r.facilities.length > 0 ? r.facilities.join(', ') : 'AC, Smart TV, Wi-Fi kencang, Kamar Mandi Pribadi dengan Air Panas'}.\n\n👉 [Lihat Detail ${r.name}](/rooms/${r.id})`,
                 );
+                dynamicSuggestions = ['Cek Harga Kamar', 'Cara Booking', 'Info Sarapan'];
                 break;
             }
-
-
         }
 
         if (!finalAnswer) {
-            const fallbacks = [
-                'Maaf Kak, Tini belum paham maksudnya. Boleh diperjelas pertanyaannya seputar hotel?',
-                'Waduh, Tini kurang mengerti nih Kak. Ada yang bisa Tini bantu terkait kamar atau fasilitas SiniBook?',
-                'Pertanyaan Kakak belum Tini pahami. Boleh coba tanyakan info tarif, reservasi, atau aturan hotel?',
-                'Maaf ya Kak, Tini cuma asisten info hotel SiniBook. Boleh ketik pertanyaan yang lebih spesifik?'
-            ];
-
-            finalAnswer = fallbacks[Math.floor(Math.random() * fallbacks.length)];
+            return this.handleFallback(userId, message, nlpResult.score);
         }
 
-        if (userId) {
-            try {
-                const savedLog = await this.prisma.ai_chat_logs.create({
-                    data: {
-                        user_id: userId,
-                        message: message,
-                        response: finalAnswer,
-                    },
-                });
-                console.log('✅ CHAT LOG BERHASIL DISIMPAN KE DB:', savedLog);
-            } catch (dbError) {
-                console.error('❌ GAGAL SIMPAN CHAT LOG KE DB:', dbError);
-            }
-        }
-
-
+        await this.logChat(userId, message, finalAnswer);
 
         return {
             reply: finalAnswer,
             intent: nlpResult.intent,
             score: nlpResult.score,
+            suggestions: dynamicSuggestions,
         };
+    }
+
+    // Helper deteksi kategori kata kunci
+    private detectCategory(text: string): string | null {
+        if (/hemat|murah|budget|standard|standar|ekonomis/i.test(text)) return 'hemat';
+        if (/mewah|presidential|sultan|suite|terbaik|eksklusif|premium/i.test(text)) return 'mewah';
+        if (/keluarga|family|anak|rombongan|banyak orang/i.test(text)) return 'keluarga';
+        if (/honeymoon|bulan madu|pasangan|berdua|romantis/i.test(text)) return 'honeymoon';
+        return null;
+    }
+
+    // Helper ekstraksi kapasitas orang dari kalimat bebas
+    private extractCapacity(text: string): number | null {
+        if (/sendiri|1 orang|satu orang/i.test(text)) return 1;
+        if (/berdua|pasangan|2 orang|dua orang/i.test(text)) return 2;
+        if (/bertiga|3 orang|tiga orang/i.test(text)) return 3;
+        if (/berempat|4 orang|empat orang/i.test(text)) return 4;
+        if (/berlima|5 orang|lima orang/i.test(text)) return 5;
+        if (/berenam|6 orang|enam orang/i.test(text)) return 6;
+
+        const match = text.match(/(\d+)\s*(orang|org|pax|guest|tamu)?/i);
+        if (match && match[1]) {
+            return parseInt(match[1], 10);
+        }
+
+        return null;
+    }
+
+    // dinamis DB
+    private async handleRoomRecommendation(
+        category: string,
+        userId: string | undefined,
+        message: string,
+    ): Promise<ChatBotResponse> {
+        let rooms: any[] = [];
+        let label = '';
+        let suggestions = ['Cara Booking', 'Jam Check-in', 'Fasilitas Hotel'];
+
+        if (category === 'hemat') {
+            rooms = await this.prisma.resources.findMany({
+                orderBy: { price_per_night: 'asc' },
+                take: 3,
+            });
+            label = 'Kamar paling hemat & terjangkau (Tipe Standard):';
+            suggestions = ['Kamar Mewah', 'Kamar Keluarga', 'Cara Booking'];
+        } else if (category === 'mewah') {
+            rooms = await this.prisma.resources.findMany({
+                orderBy: { price_per_night: 'desc' },
+                take: 2,
+            });
+            label = 'Kamar paling mewah & super premium (Tipe Presidential Suite):';
+            suggestions = ['Kamar Hemat', 'Fasilitas Kamar Ini', 'Cara Booking'];
+        } else if (category === 'keluarga') {
+            rooms = await this.prisma.resources.findMany({
+                where: { capacity: { gte: 3 } },
+                orderBy: { capacity: 'desc' },
+                take: 3,
+            });
+            if (rooms.length === 0) {
+                rooms = await this.prisma.resources.findMany({
+                    orderBy: { capacity: 'desc' },
+                    take: 2,
+                });
+            }
+            label = 'Rekomendasi kamar luas yang cocok untuk keluarga:';
+            suggestions = ['Kamar untuk 4 Orang', 'Info Sarapan', 'Cara Booking'];
+        } else if (category === 'honeymoon') {
+            rooms = await this.prisma.resources.findMany({
+                where: { capacity: 2 },
+                orderBy: { price_per_night: 'desc' },
+                take: 3,
+            });
+            label = 'Rekomendasi kamar romantis untuk pasangan:';
+            suggestions = ['Fasilitas Suite', 'Cara Booking', 'Jam Check-in'];
+        }
+
+        const reply = this.formatRoomList(rooms, `Siap Kak! Berikut ${label}`);
+        await this.logChat(userId, message, reply);
+
+        return {
+            reply,
+            intent: `kamar.rekomendasi.${category}`,
+            score: 1.0,
+            suggestions,
+        };
+    }
+
+    private handleFallback(userId: string | undefined, message: string, score: number): ChatBotResponse {
+        const reply =
+            'Maaf Kak, Tini belum begitu paham dengan pertanyaan tersebut 🙏\n\n' +
+            'Kakak bisa tanyakan hal seputar:\n' +
+            ' **Rekomendasi & harga kamar**\n' +
+            ' **Jadwal check-in / check-out**\n' +
+            ' **Info sarapan, parkir basement gratis, & area merokok**\n' +
+            ' Atau hubungi resepsionis kami di **+62 21 555 7890**';
+
+        this.logChat(userId, message, reply);
+
+        return {
+            reply,
+            intent: 'fallback',
+            score,
+            suggestions: [
+                'Rekomendasi kamar',
+                'Jam Check-in & Out',
+                'Info Sarapan',
+                'Fasilitas Hotel',
+            ],
+        };
+    }
+
+    private getDefaultFollowUpSuggestions(intent: string): string[] {
+        if (intent.startsWith('jadwal.')) {
+            return ['Bisa Early Check-in?', 'Late Check-out', 'Lokasi Hotel', 'Rekomendasi kamar'];
+        }
+        if (intent.startsWith('info.sarapan') || intent.startsWith('info.parkir')) {
+            return ['Fasilitas Hotel', 'Rekomendasi kamar', 'Jam Check-in', 'Cara Booking'];
+        }
+        if (intent.startsWith('info.merokok') || intent.startsWith('info.hewan')) {
+            return ['Fasilitas Hotel', 'Jam Check-in', 'Rekomendasi kamar', 'Hubungi CS'];
+        }
+        if (intent.startsWith('booking.pembayaran') || intent.startsWith('pembayaran.')) {
+            return ['Cara Booking', 'Reschedule/Batal', 'Hubungi CS', 'Rekomendasi kamar'];
+        }
+        if (intent.startsWith('info.alamat') || intent.startsWith('alamat.maps')) {
+            return ['Nomor Telepon CS', 'Jam Check-in', 'Parkir Basement', 'Rekomendasi kamar'];
+        }
+        return ['Rekomendasi kamar', 'Jam Check-in', 'Fasilitas Hotel', 'Lokasi & Akses'];
     }
 
     private formatPrice(price: number): string {
@@ -205,32 +372,48 @@ export class AiBotService implements OnModuleInit {
 
     private formatRoomAnswer(room: any, formatter: (r: any) => string): string {
         if (!room) {
-            return 'Maaf Kak, data kamar belum tersedia saat ini.';
+            return 'Maaf Kak, data kamar tersebut tidak ditemukan di sistem kami.';
         }
         return formatter(room);
     }
 
-    private formatRoomList(rooms: any[], header: string, footer?: string): string {
+    private formatRoomList(rooms: any[], header: string): string {
         if (!rooms || rooms.length === 0) {
-            return 'Maaf Kak, belum ada data kamar yang bisa ditampilkan saat ini.';
+            return 'Maaf Kak, belum ada data kamar yang tersedia untuk kriteria tersebut saat ini.';
         }
         let list = '';
         rooms.forEach((r) => {
-            list += `\n  - ${r.name} (Rp${this.formatPrice(r.price_per_night)}/malam)\n  [Lihat Detail ${r.name}](/rooms/${r.id})\n`;
+            list += `\n• **${r.name}** (Kapasitas: ${r.capacity || 2} orang)\n  💰 Rp${this.formatPrice(r.price_per_night)}/malam (Inc. Sarapan 2 org)\n  👉 [Lihat Detail ${r.name}](/rooms/${r.id})\n`;
         });
+        return `${header}\n${list}`;
+    }
 
-        let last = footer ? footer : ""
-
-        return `${header}${list}${last}`;
+    private async logChat(userId: string | undefined, message: string, response: string) {
+        if (userId && userId !== 'guest' && userId.trim() !== '') {
+            try {
+                await this.prisma.ai_chat_logs.create({
+                    data: {
+                        user_id: userId,
+                        message,
+                        response,
+                    },
+                });
+            } catch (err) {
+                console.error('Gagal simpan log chat ke DB:', err);
+            }
+        }
     }
 
     async clearChatHistory(userId?: string) {
-        if (userId) {
-            await this.prisma.ai_chat_logs.deleteMany({
-                where: { user_id: userId },
-            });
+        if (userId && userId !== 'guest' && userId.trim() !== '') {
+            try {
+                await this.prisma.ai_chat_logs.deleteMany({
+                    where: { user_id: userId },
+                });
+            } catch (err) {
+                console.error('Gagal reset log chat:', err);
+            }
         }
         return { message: 'Riwayat percakapan berhasil di-reset.' };
     }
 }
-

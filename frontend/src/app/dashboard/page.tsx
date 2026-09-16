@@ -36,6 +36,8 @@ interface BookingItem {
   status: string;
   notes?: string;
   total_price: number;
+  payment_status?: string;
+  review?: { id: string; rating: number; comment?: string } | null;
   created_at: string;
 }
 
@@ -183,9 +185,10 @@ export default function UserDashboardPage() {
         return;
       }
 
+      const storedUserName = localStorage.getItem("userName");
       const loadedUser: UserProfile = {
         id: payload.sub || "usr-101",
-        name: payload.name || payload.email?.split("@")[0] || "Tamu SiniBook",
+        name: storedUserName || payload.name || payload.email?.split("@")[0] || "Tamu SiniBook",
         email: payload.email || "user@sinibook.com",
         role: payload.role || "user",
         created_at: "2026-01-15",
@@ -194,6 +197,29 @@ export default function UserDashboardPage() {
       setUser(loadedUser);
       setProfileName(loadedUser.name);
       setProfileEmail(loadedUser.email);
+
+      // Sinkronisasi data profil terbaru langsung dari backend database
+      if (payload.sub) {
+        fetch(`http://localhost:3001/user/${payload.sub}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        })
+          .then((res) => (res.ok ? res.json() : null))
+          .then((freshUser) => {
+            if (freshUser) {
+              setUser({
+                id: freshUser.id,
+                name: freshUser.name,
+                email: freshUser.email,
+                role: freshUser.role || "user",
+                created_at: freshUser.created_at || "2026-01-15",
+              });
+              setProfileName(freshUser.name);
+              setProfileEmail(freshUser.email);
+              localStorage.setItem("userName", freshUser.name);
+            }
+          })
+          .catch((err) => console.error("Error fetching fresh profile:", err));
+      }
     } catch (err) {
       console.error("JWT Decode error:", err);
       localStorage.removeItem("token");
@@ -245,10 +271,24 @@ export default function UserDashboardPage() {
             notes: b.notes || "-",
             total_price: b.payment?.amount || 0,
             payment_status: b.payment?.status,
+            review: b.reviews || null,
             created_at: b.created_at,
           }));
 
           setBookings(mappedBookings);
+
+          // Ambil review yang sudah ada dari list booking untuk mengisi tab Ulasan Saya
+          const existingReviews: ReviewItem[] = bookingList
+            .filter((b: any) => b.reviews)
+            .map((b: any) => ({
+              id: b.reviews.id,
+              booking_id: b.id,
+              room_name: b.schedules?.resources?.name || "Kamar SiniBook",
+              rating: b.reviews.rating || 5,
+              comment: b.reviews.comment || "",
+              created_at: b.created_at || new Date().toISOString(),
+            }));
+          setReviews(existingReviews);
         } else {
           console.error("Gagal fetch data bookings, status:", res.status);
         }
@@ -349,6 +389,60 @@ export default function UserDashboardPage() {
     }
   };
 
+  // Handler Hapus 1 Notifikasi
+  const handleDeleteNotification = async (id: string) => {
+    const token = localStorage.getItem("token");
+    if (!token) return;
+
+    try {
+      const res = await fetch(`http://localhost:3001/notifications/${id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (res.ok) {
+        setNotifications((prev) => prev.filter((n) => n.id !== id));
+        showToast("Notifikasi berhasil dihapus.");
+      } else {
+        showToast("Gagal menghapus notifikasi.");
+      }
+    } catch (error) {
+      console.error("Error deleting notification:", error);
+    }
+  };
+
+  // Handler Hapus Semua Notifikasi
+  const handleDeleteAllNotifications = async () => {
+    if (!user) return;
+    const token = localStorage.getItem("token");
+    if (!token) return;
+
+    if (!confirm("Apakah Anda yakin ingin menghapus semua notifikasi?")) return;
+
+    try {
+      const res = await fetch(
+        `http://localhost:3001/notifications/user/${user.id}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+
+      if (res.ok) {
+        setNotifications([]);
+        showToast("Semua notifikasi berhasil dibersihkan.");
+      } else {
+        showToast("Gagal membersihkan notifikasi.");
+      }
+    } catch (error) {
+      console.error("Error deleting all notifications:", error);
+    }
+  };
+
   // Handler Submit Ulasan Baru
   const handleSubmitReview = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -383,6 +477,13 @@ export default function UserDashboardPage() {
         };
 
         setReviews((prev) => [newRev, ...prev]);
+        setBookings((prev) =>
+          prev.map((bk) =>
+            bk.id === selectedReviewBooking.id
+              ? { ...bk, review: { id: newRev.id, rating: reviewRating, comment: reviewComment } }
+              : bk
+          )
+        );
         setSelectedReviewBooking(null);
         setReviewComment("");
         showToast("Ulasan dan rating berhasil dikirim!");
@@ -427,7 +528,13 @@ export default function UserDashboardPage() {
       });
 
       if (res.ok) {
-        setUser({ ...user, name: profileName, email: profileEmail });
+        const updated = await res.json();
+        const updatedName = updated.name || profileName;
+        const updatedEmail = updated.email || profileEmail;
+        setUser((prev) => (prev ? { ...prev, name: updatedName, email: updatedEmail } : null));
+        setProfileName(updatedName);
+        setProfileEmail(updatedEmail);
+        localStorage.setItem("userName", updatedName);
         setProfilePassword("");
         showToast("Profil akun berhasil diperbarui!");
       } else {
@@ -476,8 +583,16 @@ export default function UserDashboardPage() {
       b.status === "checked_in",
   ).length;
   const totalSettledPayments = bookings
-    .filter((b: any) => b.payment?.status === "settlement" || b.payment?.status === "success")
-    .reduce((acc: number, b: any) => acc + (b.payment?.amount || 0), 0);
+    .filter(
+      (b) =>
+        b.payment_status === "paid" ||
+        b.payment_status === "settlement" ||
+        b.payment_status === "success" ||
+        b.status === "approved" ||
+        b.status === "checked_in" ||
+        b.status === "completed",
+    )
+    .reduce((acc, b) => acc + (Number(b.total_price) || 0), 0);
 
   return (
     <div className="min-h-screen bg-slate-50 font-sans text-gray-900 selection:bg-[#1D4ED8] selection:text-white flex flex-col">
@@ -875,14 +990,21 @@ export default function UserDashboardPage() {
                                   </span>
                                 )}
                                 {booking.status === "completed" && (
-                                  <button
-                                    onClick={() =>
-                                      setSelectedReviewBooking(booking)
-                                    }
-                                    className="rounded-xl border border-[#1D4ED8] px-4 py-2 text-xs font-bold text-[#1D4ED8] hover:bg-emerald-50"
-                                  >
-                                    Beri Ulasan
-                                  </button>
+                                  booking.review ? (
+                                    <span className="text-xs font-bold text-amber-700 bg-amber-50 px-3.5 py-1.5 rounded-xl border border-amber-200/80 flex items-center gap-1.5 shadow-sm">
+                                      <span className="material-symbols-outlined text-[16px] text-amber-500">star</span>
+                                      <span>{booking.review.rating}/5 Sudah Diulas</span>
+                                    </span>
+                                  ) : (
+                                    <button
+                                      onClick={() =>
+                                        setSelectedReviewBooking(booking)
+                                      }
+                                      className="rounded-xl bg-gradient-to-r from-[#001a52] to-[#1D4ED8] hover:from-[#001440] hover:to-[#1E3A8A] px-4 py-2 text-xs font-bold text-white shadow-sm hover:shadow active:scale-95 transition-all"
+                                    >
+                                      Beri Ulasan
+                                    </button>
+                                  )
                                 )}
                                 {booking.status === "rejected" && (
                                   <span className="text-xs font-semibold text-rose-700 bg-rose-50 px-3 py-1.5 rounded-xl border border-rose-200">
@@ -920,16 +1042,29 @@ export default function UserDashboardPage() {
                       </p>
                     </div>
 
-                    {/* Tombol Tandai Semua Dibaca */}
-                    <button
-                      onClick={handleMarkAllAsRead}
-                      className="text-xs font-semibold text-[#1D4ED8] hover:text-[#1e3a8a] flex items-center gap-1"
-                    >
-                      <span className="material-symbols-outlined text-[16px]">
-                        done_all
-                      </span>
-                      Tandai Semua Dibaca
-                    </button>
+                    {/* Tombol Aksi Notifikasi */}
+                    <div className="flex items-center gap-3">
+                      {notifications.length > 0 && (
+                        <button
+                          onClick={handleDeleteAllNotifications}
+                          className="text-xs font-semibold text-rose-600 hover:text-rose-700 flex items-center gap-1 transition-colors"
+                        >
+                          <span className="material-symbols-outlined text-[16px]">
+                            delete_sweep
+                          </span>
+                          Hapus Semua
+                        </button>
+                      )}
+                      <button
+                        onClick={handleMarkAllAsRead}
+                        className="text-xs font-semibold text-[#1D4ED8] hover:text-[#1e3a8a] flex items-center gap-1"
+                      >
+                        <span className="material-symbols-outlined text-[16px]">
+                          done_all
+                        </span>
+                        Tandai Semua Dibaca
+                      </button>
+                    </div>
                   </div>
 
                   {notifications.length === 0 ? (
@@ -969,14 +1104,25 @@ export default function UserDashboardPage() {
                             </div>
                           </div>
 
-                          {!n.is_read && (
+                          <div className="flex items-center gap-2 shrink-0 ml-4">
+                            {!n.is_read && (
+                              <button
+                                onClick={() => handleMarkAsRead(n.id)}
+                                className="text-[11px] font-extrabold text-[#1D4ED8] hover:text-[#001a52] hover:underline transition-colors"
+                              >
+                                Tandai dibaca
+                              </button>
+                            )}
                             <button
-                              onClick={() => handleMarkAsRead(n.id)}
-                              className="text-[11px] font-extrabold text-[#1D4ED8] hover:text-[#001a52] hover:underline shrink-0 ml-4 transition-colors"
+                              onClick={() => handleDeleteNotification(n.id)}
+                              className="p-1.5 text-slate-400 hover:text-rose-600 rounded-lg hover:bg-rose-50 transition-colors"
+                              title="Hapus notifikasi"
                             >
-                              Tandai dibaca
+                              <span className="material-symbols-outlined text-[18px]">
+                                delete
+                              </span>
                             </button>
-                          )}
+                          </div>
                         </div>
                       ))}
                     </div>

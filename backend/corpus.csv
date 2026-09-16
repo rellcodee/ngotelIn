@@ -1,4 +1,6 @@
 intent;question;answer
+
+sapaan.awal;halo;Halo Kak! Ada yang bisa Tini bantu di SiniBook? ✨
 sapaan.awal;halo;Halo Kak! Selamat datang di SiniBook, ada yang bisa Tini bantu?
 sapaan.awal;hai;Hai Kak! Ada yang bisa Tini bantu soal SiniBook?
 sapaan.awal;tes;Hai Kak! Senang menyambut Kakak di SiniBook. Ada yang bisa Tini bantu sekarang?
@@ -24,10 +26,11 @@ sapaan.penutup;trims;-
 sapaan.penutup;trimss;-
 sapaan.penutup;y;-
 sapaan.penutup;ya ok;-
+sapaan.penutup;makasih;Sama-sama Kak! Senang bisa membantu. 😊
 
-umum.bisa_apa;fitur bot ini apa aja;Tini bisa bantu carikan info kamar, cek harga, fasilitas, kebijakan hotel, sampai panduan layanan di SiniBook ya Kak.
-umum.bisa_apa;bisa ngapain aja lu;Tini bisa jawab pertanyaan seputar kamar, kisaran harga, fasilitas hotel, dan bantu Kakak nemuin kamar yang pas!
-umum.bisa_apa;apa kegunaan bot ini;Tini bertugas sebagai asisten virtual buat jawab info hotel, detail kamar, fasilitas, dan aturan di SiniBook Kak.
+umum.bisa_apa;bot apa;Tini bisa bantu carikan info kamar, cek harga, fasilitas, kebijakan hotel, sampai panduan layanan di SiniBook ya Kak.
+umum.bisa_apa;bisa ngapain aja;Tini bisa jawab pertanyaan seputar kamar, kisaran harga, fasilitas hotel, dan bantu Kakak nemuin kamar yang pas!
+umum.bisa_apa;apa kegunaan bot;Tini bertugas sebagai asisten virtual buat jawab info hotel, detail kamar, fasilitas, dan aturan di SiniBook Kak.
 umum.bisa_apa;tini bisa apa;Tini bisa bantu kasih rekomendasi kamar, info harga per malam, fasilitas, dan panduan seputar layanan SiniBook.
 umum.bisa_apa;kamu gunanya buat apa;Tini siap bantu Kakak dapat info lengkap soal kamar, harga, fasilitas, dan aturan menginap di SiniBook!
 umum.bisa_apa;bisa bantu apa disini;Kakak bisa tanya soal tipe kamar, harga, fasilitas hotel, jam check-in/out, sampai rekomendasi kamar hemat ke Tini ya.
@@ -38,49 +41,72 @@ umum.bisa_apa;peran lu apa;-
 umum.bisa_apa;fungsi lu ngapain;-
 
 
-umum.tini;kamu siapa;Halo Kak! Aku Tini, asisten virtual resmi dari SiniBook yang siap bantu cari info hotel dan kamar.
-umum.tini;ini siapa ya;Hai Kak! Kenalin, aku Tini, asisten virtual SiniBook yang siap nemenin Kakak di sini.
-umum.tini;nama lu siapa;Nama aku Tini, asisten AI SiniBook yang bertugas bantu jawab pertanyaan seputar penginapan.
-umum.tini;kenalan dong;Halo Kak! Kenalin, aku Tini dari SiniBook. Salam kenal ya, senang bisa bantu Kakak!
-umum.tini;siapa nama kamu;Nama aku Tini, asisten concierge virtual dari SiniBook.
-umum.tini;lu bot atau manusia;Aku Tini, asisten bot AI dari SiniBook yang siap bantu jawab berbagai info seputar hotel.
-umum.tini;lu tuh siapa sih;Aku Tini, asisten digital SiniBook yang bertugas bantu cari kamar, info fasilitas, sampai tarif per malam.
-umum.tini;kamu ini siapa;Hai Kak! Aku Tini, asisten virtual SiniBook buat mempermudah rencana menginap Kakak.
-umum.tini;ini robot ya;Betul Kak, aku Tini! Asisten virtual berbasis AI yang siap bantu Kakak cari info seputar SiniBook.
-umum.tini;sp lu;Halo Kak! Kenalin, aku Tini, asisten virtual SiniBook yang siap bantu kebutuhan Kakak di sini.
-umum.tini;anda siapa;-
-umum.tini;nma u sp ?;-
 
-info.alamat;alamat hotelnya dimana;Hotel kami berlokasi di Jl. Sudirman No. 123, Jakarta Pusat, Kak.
+umum.tini;kamu siapa;Aku Tini, asisten virtual resmi SiniBook! 🏨
+bot.kritik;lu bego banget;Mohon maaf ya Kak kalau jawaban Tini kurang memuaskan 🙏. Ada yang bisa Tini bantu lagi, atau mau dihubungkan ke resepsionis?
+
+# 2. OPERASIONAL & FAQ (STATIS)
+jadwal.checkin;jam check in;Waktu check-in standar kami mulai jam 14:00 WIB ya Kak. 🕒
+jadwal.checkout;jam check out;Waktu check-out maksimal jam 12:00 WIB siang ya Kak. 🕛
+
+info.alamat;alamat hotelnya;Hotel kami berlokasi di Jl. Sudirman No. 123, Jakarta Pusat, Kak.
 info.alamat;lokasi hotel;Lokasinya di Jl. Sudirman No. 123, Jakarta Pusat.
-info.alamat;dimana sih hotel ini;SiniBook berlokasi di Jl. Sudirman No. 123, Jakarta Pusat, Kak.
-info.alamat;tempatnya di daerah mana ya;Alamat lengkap kami ada di Jl. Sudirman No. 123, Jakarta Pusat, Kak.
-info.alamat;shareloc hotel dong;SiniBook berada di Jl. Sudirman No. 123, Jakarta Pusat, Kak. Kakak bisa mencarinya di Google Maps!
-info.alamat;ini posisi hotel di mana;Posisi hotel kami ada di kawasan Jakarta Pusat, tepatnya di Jl. Sudirman No. 123, Kak.
-info.alamat;patokan hotelnya apa;Lokasi kami di Jl. Sudirman No. 123, Jakarta Pusat, Kak. Sangat strategis di pusat kota!
+info.alamat;dimana hotel;SiniBook berlokasi di Jl. Sudirman No. 123, Jakarta Pusat, Kak.
+info.alamat;daerah mana;Alamat lengkap kami ada di Jl. Sudirman No. 123, Jakarta Pusat, Kak.
+info.alamat;posisi hotel;Posisi hotel kami ada di kawasan Jakarta Pusat, tepatnya di Jl. Sudirman No. 123, Kak.
 info.alamat;alamat lengkapnya;Alamat lengkap SiniBook ada di Jl. Sudirman No. 123, Jakarta Pusat, Kak.
-info.alamat;daerah mana sih ini hotel;Kami berlokasi di daerah Jl. Sudirman No. 123, Jakarta Pusat, Kak.
+info.alamat;di kota mana;Kami berlokasi di daerah Jl. Sudirman No. 123, Jakarta Pusat, Kak.
 info.alamat;minta alamat dong;Tentu Kak! SiniBook beralamat di Jl. Sudirman No. 123, Jakarta Pusat.
 info.alamat;posisinya di mana min;Lokasi kami persis di Jl. Sudirman No. 123, Jakarta Pusat ya, Kak.
 info.alamat;hotelnya di wilayah mana;Hotel SiniBook terletak di kawasan Jakarta Pusat, alamat pastinya di Jl. Sudirman No. 123, Kak.
+info.alamat;jakarta mana;-
+info.alamat;jkt;-
+info.alamat;lok;-
 
-alamat.maps;minta link gmaps dong;Untuk rute tercepat, Kakak bisa langsung cari di aplikasi Google Maps dengan mengetikkan "SiniBook Hotel Jakarta" ya.
-alamat.maps;ada titik maps nya ga;Ada kok Kak! Silakan buka Google Maps dan ketik pencarian "SiniBook Hotel Jakarta" untuk melihat titik lokasi pastinya.
-alamat.maps;shareloc google maps;Kakak cukup buka aplikasi Maps di HP dan masukkan kata kunci "SiniBook Hotel Jakarta", nanti akan langsung diarahkan ke lokasi kami.
-alamat.maps;gmaps nya apa namanya;Nama titik di Google Maps-nya "SiniBook Hotel Jakarta" ya, Kak. Tinggal di-search aja nanti langsung muncul!
-alamat.maps;rute google maps nya gimana;Gampang banget Kak, tinggal buka Google Maps lalu ketik "SiniBook Hotel Jakarta" untuk dapat panduan rute terbaik ke tempat kami.
-alamat.maps;bisa minta share loc maps;Bisa Kak! Ketik aja keyword "SiniBook Hotel Jakarta" di Google Maps, titik lokasinya udah akurat kok.
-alamat.maps;lokasi gmaps nya mana;Titik lokasinya udah terdaftar resmi di Maps ya Kak. Langsung aja cari "SiniBook Hotel Jakarta" buat panduan jalannya.
-alamat.maps;maps hotel ini;Buat panduan arah pakai navigasi, Kakak bisa search "SiniBook Hotel Jakarta" di aplikasi Google Maps ya.
-alamat.maps;ada di gmaps ga;Ada dong Kak! Coba search "SiniBook Hotel Jakarta" di Google Maps, nanti langsung muncul titik persisnya.
-alamat.maps;cara ke sana pake maps;Kakak buka aja Google Maps, terus ketik tujuan "SiniBook Hotel Jakarta". Nanti bakal langsung diarahkan ke lokasi.
-alamat.maps;titik kordinat gmaps;Titik kami udah pas di Maps Kak. Langsung cari "SiniBook Hotel Jakarta" aja buat mulai navigasi.
-alamat.maps;waze atau gmaps nya apa;Buat pengguna Google Maps, Kakak bisa langsung cari pakai nama "SiniBook Hotel Jakarta" ya.
-alamat.maps;minta map nya min;Siap Kak! Di Google Maps namanya "SiniBook Hotel Jakarta", titiknya udah sesuai sama bangunan hotel kami.
-alamat.maps;bagi shareloc dong;Untuk panduan rute, Kakak bisa cek mandiri di Google Maps dengan keyword "SiniBook Hotel Jakarta" ya.
-alamat.maps;nama di maps apa;Di Google Maps, tempat kami terdaftar dengan nama "SiniBook Hotel Jakarta" Kak, silakan diketik aja ya!
-alamat.maps;gmap;-
-alamat.maps;gmaps;-
+
+info.maps;ada maps gak;Kakak bisa cari "SiniBook Hotel Jakarta" di Google Maps ya, nanti muncul titik lokasinya.
+info.maps;link maps;bisa kakak cek di google maps ya, dengan keyword "SiniBook Hotel Jakarta".
+info.maps;titik lokasi;Silahkan Kakak cari titik lokasi hotel di Google Maps "SiniBook Hotel Jakarta".
+info.maps;gmaps;-
+info.maps;google maps;-
+info.maps;maps;-
+info.maps;maps;-
+
+
+info.sarapan;dapat sarapan gak;Seluruh kamar include sarapan prasmanan gratis untuk 2 orang tamu di Restoran Utama ya Kak!
+info.sarapan;makan;Pembookingan Kamar sudah include sarapan prasmanan untuk 2 orang tamu
+info.sarapan;sarapan;di SiniBook Hotel sudah include sarapan prasmanan untuk 2 orang tamu
+info.sarapan;makan pagi;-
+info.sarapan;mkn;-
+info.sarapan;brfast;-
+info.sarapan;makanan;-
+
+
+info.parkir;parkir bayar gak;Gratis Kak! SiniBook menyediakan basement parkir mobil & motor free untuk tamu menginap. 🚗
+info.merokok;boleh merokok gak;Untuk Non-Smoking Room dilarang merokok di kamar (bisa di outdoor kantin Lt 1). Jika ingin merokok di kamar, pilih tipe Smoking Room ya Kak! 🚭
+info.sosmed;punya ig gak;Mohon maaf Kak, saat ini SiniBook belum memiliki media sosial resmi ya.
+
+kamar.rekomendasi;rekomen kamar dong;-
+kamar.rekomendasi;kamar yang bagus apa ya;-
+kamar.rekomendasi;kamar yang enak buat nginep;-
+kamar.rekomendasi;saran kamar yang recommended;-
+
+kamar.termurah;kamar paling murah;-
+kamar.termurah;kamar paling hemat;-
+kamar.termurah;kamar budget standard;-
+
+kamar.termahal;kamar paling mewah;-
+kamar.termahal;kamar kelas sultan;-
+kamar.termahal;kamar presidential suite;-
+
+kamar.keluarga;kamar buat keluarga;-
+kamar.keluarga;kamar bawa anak kecil;-
+kamar.keluarga;kamar rombongan keluarga besar;-
+
+kamar.kapasitas;kamar buat 3 orang;-
+kamar.kapasitas;kamar untuk 4 orang;-
+kamar.kapasitas;kamar bertiga;-
+kamar.kapasitas;kamar muat berapa orang;-
 
 
 info.email;email admin apa;Untuk email resmi SiniBook, Kakak bisa kirim pesan ke info@sinibookhotel.com ya.
@@ -178,7 +204,7 @@ jadwal.late_checkin;check in jam pagi bisa;-
 jadwal.late_checkin;bisa masuk kamar malam hari;-
 jadwal.late_checkin;kalo telat check in gimana;-
 jadwal.late_checkin;late checkin konfirmasi ke siapa;-
-jadwal.late_checkin;gw ada urusan, jadinya telat dari jam 14 atau 2, gak masalah kan?স্থিত;-
+jadwal.late_checkin;gw ada urusan, jadinya telat dari jam 14 atau 2, gak masalah kan?;-
 jadwal.late_checkin;tlat msk;-
 jadwal.late_checkin;tlt msuk kmar;-
 
@@ -250,7 +276,6 @@ booking.cara;gimana cara booking;Untuk booking, Kakak bisa pilih kamar yang diin
 booking.cara;cara pesan kamar gimana;Kakak tinggal pilih kamar di aplikasi, lalu ikuti langkah reservasi yang tersedia di sana.
 
 booking.pembayaran;bisa bayar cash gak;Bisa Kak, kami menerima GOPAY, QRIS, transfer bank, kartu kredit, maupun cash saat booking di aplikasi.
-pembayaran.cash;?;Pembayaran bisa di lakukan di Petugas Administrasi SiniBook ya kak, di Lobby Hotel.
 pembayaran.cash;cash bayar di mana?;Pembayaran bisa di lakukan di Petugas Administrasi SiniBook ya kak, di Lobby Hotel.
 booking.pembayaran;bayar pakai apa aja bisa;Pembayaran bisa via GOPAY, QRIS, Bank Transfer (BCA, Mandiri, BNI), Credit Card, atau Cash, dilakukan saat proses booking di aplikasi ya Kak.
 booking.pembayaran;bisa bayar cash gak;Bisa Kak, kami menerima GOPAY, QRIS, transfer bank, kartu kredit, maupun cash saat booking di aplikasi.
@@ -265,3 +290,7 @@ butuh.bantuan_lanjut;bisa ngomong sama orang beneran gak;Tentu Kak, Kakak bisa h
 luar_konteks.umum;eh btw menurut kamu cuaca hari ini gimana;Maaf Kak, Tini cuma bisa bantu seputar info SiniBook ya. Ada yang mau ditanyakan soal kamar atau hotel?
 luar_konteks.umum;bantuin aku ngoding dong;Maaf Kak, Tini khusus bantu info seputar SiniBook aja ya. Ada yang bisa dibantu soal hotel?
 luar_konteks.hotel_lain;hotel sebelah lebih murah gak sih;Maaf Kak, Tini cuma bisa kasih info seputar SiniBook ya.
+
+
+None;mau beli nasi goreng;Maaf Kak, Tini khusus asisten informasi hotel SiniBook ya.
+None;cuaca hari ini mendung gak;Maaf Kak, Tini cuma melayani info seputar SiniBook ya.
