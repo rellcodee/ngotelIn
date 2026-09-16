@@ -3,6 +3,7 @@ import { UserService } from '../user/user.service';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { OAuth2Client } from 'google-auth-library';
+import { CaptchaService } from '../captcha/captcha.service';
 
 @Injectable()
 export class AuthService {
@@ -10,7 +11,12 @@ export class AuthService {
   constructor(
     private userService: UserService,
     private jwtService: JwtService,
+    private captchaService: CaptchaService,
   ) {}
+
+  async validateCaptcha(token?: string, remoteIp?: string): Promise<void> {
+    return this.captchaService.validate(token, remoteIp);
+  }
 
   async validateUser(email: string, pass: string): Promise<any> {
     const user = await this.userService.findByEmail(email);

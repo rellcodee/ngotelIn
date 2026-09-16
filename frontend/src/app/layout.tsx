@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Plus_Jakarta_Sans, Outfit } from "next/font/google";
 import "./globals.css";
 import { GoogleOAuthProvider } from "@react-oauth/google";
+import Script from "next/script";
 import AiAssistantModal from "./landing-pages/AiAssistantModal";
 
 const plusJakartaSans = Plus_Jakarta_Sans({
@@ -46,6 +47,13 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-full flex flex-col bg-background font-body-md text-on-surface">
+        {process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY && (
+          <Script
+            src="https://challenges.cloudflare.com/turnstile/v0/api.js"
+            async
+            defer
+          />
+        )}
         <GoogleOAuthProvider
           clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!}
         >

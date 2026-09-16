@@ -6,10 +6,13 @@ import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { LocalStrategy } from './local.strategy';
 import { JwtStrategy } from './strategies/jwt.strategy';
+import { CaptchaModule } from '../captcha/captcha.module';
+import { CaptchaService } from '../captcha/captcha.service';
 
 @Module({
   imports: [
     UserModule,
+    CaptchaModule,
     PassportModule,
     JwtModule.register({
       secret: process.env.JWT_SECRET || 'ngotelin_jaya_jaya',
@@ -17,6 +20,7 @@ import { JwtStrategy } from './strategies/jwt.strategy';
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, LocalStrategy, JwtStrategy],
+  providers: [AuthService, LocalStrategy, JwtStrategy, CaptchaService],
+  exports: [CaptchaService],
 })
 export class AuthModule {}

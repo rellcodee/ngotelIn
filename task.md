@@ -27,6 +27,4 @@ Ini daftar tugas (Todo List) yang harus lu beresin di Frontend biar sistem hotel
 - `[x]` **Daftar Ulasan (Reviews):** Bikin UI/komponen buat nampilin daftar *review* dari tamu sebelumnya. Komponen ini harus narik data asli ke API `GET /reviews/resource/:resourceId`.
 
 ## 5. 🔒 Autentikasi & Keamanan (`/login` & `/register`)
-- `[ ]` **Integrasi CAPTCHA:** Tambahin komponen *widget* CAPTCHA (reCAPTCHA/Turnstile) di UI halaman form biar terhindar dari *bot spam*. (Catatan: Butuh modifikasi juga di *Backend* untuk validasi token).
-
-
+- `[x]` **Integrasi CAPTCHA:** Tambahin komponen *widget* CAPTCHA (reCAPTCHA/Turnstile) di UI halaman form biar terhindar dari *bot spam*. (Catatan: Butuh modifikasi juga di *Backend* untuk validasi token).

@@ -12,6 +12,8 @@ export default function LoginPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [captchaToken, setCaptchaToken] = useState("");
+  const turnstileSiteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
@@ -80,6 +82,11 @@ export default function LoginPage() {
       return;
     }
 
+    if (process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY && !captchaToken) {
+      setErrorMsg("Silakan selesaikan CAPTCHA terlebih dahulu");
+      return;
+    }
+
     setIsLoading(true);
     setErrorMsg("");
 
@@ -92,6 +99,7 @@ export default function LoginPage() {
         body: JSON.stringify({
           email,
           password,
+          ...(captchaToken ? { captcha_token: captchaToken } : {}),
         }),
       });
 
@@ -215,7 +223,7 @@ export default function LoginPage() {
                 </span>
                 <span>Beranda</span>
               </Link>
-              
+
               {/* 3D Inset Pill Switcher */}
               <div className="bg-slate-100/90 p-1 rounded-full flex items-center gap-1 border border-slate-200/90 shadow-[inset_0_2px_4px_rgba(0,0,0,0.06)] shrink-0">
                 <Link
@@ -236,13 +244,13 @@ export default function LoginPage() {
             {/* Title Section (Spacious & Clean) */}
             <div className="mb-6 2xl:mb-8 text-center lg:text-left">
               {/* Mobile Logo */}
-              <Image 
-                 src="/images/icon.png" 
-                 alt="SiniBook Logo" 
-                 width={140} 
-                 height={42} 
-                 className="lg:hidden mx-auto mb-4 h-auto object-contain brightness-0 drop-shadow-sm opacity-90" 
-                 priority 
+              <Image
+                 src="/images/icon.png"
+                 alt="SiniBook Logo"
+                 width={140}
+                 height={42}
+                 className="lg:hidden mx-auto mb-4 h-auto object-contain brightness-0 drop-shadow-sm opacity-90"
+                 priority
               />
               <h2 className="text-2xl sm:text-3xl 2xl:text-4xl font-extrabold text-[#001a52] tracking-tight">
                 Halo, Selamat Datang
@@ -262,6 +270,18 @@ export default function LoginPage() {
 
             {/* Form */}
             <form onSubmit={handleSubmit} className="space-y-4">
+              {process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY && (
+                <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3">
+                  <div
+                    className="cf-turnstile"
+                    data-sitekey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY}
+                    data-callback={setCaptchaToken}
+                  />
+                  <p className="mt-2 text-[11px] font-medium text-slate-500">
+                    Verifikasi keamanan untuk melanjutkan.
+                  </p>
+                </div>
+              )}
               {/* Email */}
               <div>
                 <label

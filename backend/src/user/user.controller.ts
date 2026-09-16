@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   UseGuards,
+  Request as NestRequest,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -17,14 +18,27 @@ import { RolesGuard } from '../common/guards/roles.guard';
 import { Roles } from '../common/decorators/roles.decorator';
 import { Role } from '../common/enums';
 import { CurrentUser } from '../common/decorators/current-user.decorator';
+import { CaptchaService } from '../captcha/captcha.service';
+import type { Request as ExpressRequest } from 'express';
 
 @Controller('user')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly userService: UserService,
+    private readonly captchaService: CaptchaService,
+  ) {}
 
   @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.userService.create(createUserDto);
+  async create(
+    @Body() createUserDto: CreateUserDto,
+    @NestRequest() request: ExpressRequest,
+  ) {
+    await this.captchaService.validate(
+      createUserDto.captcha_token,
+      request.ip,
+    );
+    const { captcha_token: _, ...userData } = createUserDto;
+    return this.userService.create(userData);
   }
 
   @UseGuards(AuthGuard('jwt'), RolesGuard)

@@ -13,6 +13,8 @@ export default function RegisterPage() {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [captchaToken, setCaptchaToken] = useState("");
+  const turnstileSiteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY;
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
@@ -88,6 +90,7 @@ export default function RegisterPage() {
           name: username,
           email,
           password,
+          ...(captchaToken ? { captcha_token: captchaToken } : {}),
         }),
       });
 
@@ -160,6 +163,11 @@ export default function RegisterPage() {
 
     if (password.length < 8) {
       setErrorMsg("Password minimal harus 8 karakter");
+      return;
+    }
+
+    if (process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY && !captchaToken) {
+      setErrorMsg("Silakan selesaikan CAPTCHA terlebih dahulu");
       return;
     }
 
@@ -319,6 +327,18 @@ export default function RegisterPage() {
 
             {/* Form */}
             <form onSubmit={handleSubmit} className="space-y-3.5">
+              {process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY && (
+                <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3">
+                  <div
+                    className="cf-turnstile"
+                    data-sitekey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY}
+                    data-callback={setCaptchaToken}
+                  />
+                  <p className="mt-2 text-[11px] font-medium text-slate-500">
+                    Verifikasi keamanan untuk melanjutkan.
+                  </p>
+                </div>
+              )}
               {/* Full Name */}
               <div>
                 <label
