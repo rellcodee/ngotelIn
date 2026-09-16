@@ -40,74 +40,87 @@ export default function CustomModal({
 
     if (!isOpen) return null;
 
-    // Determine icon and theme colors based on type
+    // Determine icon and theme colors based on type matching Landing Page design system (#001a52, #1D4ED8)
     let iconName = 'info';
-    let iconColor = 'text-blue-500';
-    let iconBg = 'bg-blue-50 border border-blue-100';
-    let primaryButtonBg = 'bg-[#1D4ED8] hover:bg-[#1E3A8A] text-white focus:ring-[#1D4ED8]';
+    let iconColor = 'text-[#1D4ED8]';
+    let iconBg = 'bg-gradient-to-b from-blue-50 via-slate-50 to-blue-100/90 border border-blue-200/80 shadow-[0_8px_20px_-6px_rgba(0,26,82,0.18),inset_0_2px_4px_rgba(255,255,255,0.9)]';
+    let topBarBg = 'bg-gradient-to-r from-[#001a52] via-[#1D4ED8] to-[#001a52]';
+    let primaryButtonBg = 'bg-gradient-to-r from-[#001a52] via-[#0e2f76] to-[#1D4ED8] hover:from-[#001440] hover:to-[#1E3A8A] text-white shadow-[0_6px_20px_rgba(0,26,82,0.3),inset_0_1px_1px_rgba(255,255,255,0.3)] border border-blue-400/30';
 
     switch (type) {
         case 'success':
             iconName = 'check_circle';
-            iconColor = 'text-emerald-600';
-            iconBg = 'bg-emerald-50 border border-emerald-100';
-            primaryButtonBg = 'bg-emerald-600 hover:bg-emerald-700 text-white focus:ring-emerald-500';
+            iconColor = 'text-[#1D4ED8]';
+            iconBg = 'bg-gradient-to-b from-blue-50 via-indigo-50 to-blue-100/90 border border-blue-200/80 shadow-[0_8px_20px_-6px_rgba(29,78,216,0.25),inset_0_2px_4px_rgba(255,255,255,0.9)]';
+            topBarBg = 'bg-gradient-to-r from-[#001a52] via-[#1D4ED8] to-[#001a52]';
+            primaryButtonBg = 'bg-gradient-to-r from-[#001a52] via-[#0e2f76] to-[#1D4ED8] hover:from-[#001440] hover:to-[#1E3A8A] text-white shadow-[0_6px_20px_rgba(0,26,82,0.35),inset_0_1px_1px_rgba(255,255,255,0.35)] border border-blue-400/30';
             break;
         case 'error':
             iconName = 'error';
             iconColor = 'text-rose-600';
-            iconBg = 'bg-rose-50 border border-rose-100';
-            primaryButtonBg = 'bg-rose-600 hover:bg-rose-700 text-white focus:ring-rose-500';
+            iconBg = 'bg-gradient-to-b from-rose-50 via-pink-50 to-rose-100/90 border border-rose-200/80 shadow-[0_8px_20px_-6px_rgba(225,29,72,0.25),inset_0_2px_4px_rgba(255,255,255,0.9)]';
+            topBarBg = 'bg-gradient-to-r from-rose-600 via-rose-500 to-rose-700';
+            primaryButtonBg = 'bg-gradient-to-r from-rose-700 via-rose-600 to-pink-600 hover:from-rose-800 hover:to-rose-700 text-white shadow-[0_6px_20px_rgba(225,29,72,0.35),inset_0_1px_1px_rgba(255,255,255,0.35)] border border-rose-400/30';
             break;
         case 'warning':
             iconName = 'warning';
             iconColor = 'text-amber-600';
-            iconBg = 'bg-amber-50 border border-amber-100';
-            primaryButtonBg = 'bg-amber-600 hover:bg-amber-700 text-white focus:ring-amber-500';
+            iconBg = 'bg-gradient-to-b from-amber-50 via-orange-50 to-amber-100/90 border border-amber-200/80 shadow-[0_8px_20px_-6px_rgba(217,119,6,0.25),inset_0_2px_4px_rgba(255,255,255,0.9)]';
+            topBarBg = 'bg-gradient-to-r from-amber-600 via-amber-500 to-amber-700';
+            primaryButtonBg = 'bg-gradient-to-r from-amber-700 via-amber-600 to-orange-600 hover:from-amber-800 hover:to-amber-700 text-white shadow-[0_6px_20px_rgba(217,119,6,0.35),inset_0_1px_1px_rgba(255,255,255,0.35)] border border-amber-400/30';
             break;
         case 'confirm':
-            iconName = 'info';
+            iconName = 'help';
             iconColor = 'text-[#1D4ED8]';
-            iconBg = 'bg-emerald-50 border border-emerald-100';
-            primaryButtonBg = 'bg-[#1D4ED8] hover:bg-[#1E3A8A] text-white focus:ring-[#1D4ED8]';
+            iconBg = 'bg-gradient-to-b from-blue-50 via-indigo-50 to-blue-100/90 border border-blue-200/80 shadow-[0_8px_20px_-6px_rgba(29,78,216,0.25),inset_0_2px_4px_rgba(255,255,255,0.9)]';
+            topBarBg = 'bg-gradient-to-r from-[#001a52] via-[#1D4ED8] to-[#001a52]';
+            primaryButtonBg = 'bg-gradient-to-r from-[#001a52] via-[#0e2f76] to-[#1D4ED8] hover:from-[#001440] hover:to-[#1E3A8A] text-white shadow-[0_6px_20px_rgba(0,26,82,0.35),inset_0_1px_1px_rgba(255,255,255,0.35)] border border-blue-400/30';
             break;
     }
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-            {/* Backdrop with backdrop-blur */}
+            {/* Backdrop with backdrop-blur and soft dark overlay */}
             <div
-                className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity duration-300 animate-fade-in"
+                className="absolute inset-0 bg-slate-950/65 backdrop-blur-md transition-opacity duration-300 animate-fade-in"
                 onClick={type !== 'confirm' && !isLoading ? onClose : undefined}
             />
 
-            {/* Modal Container */}
-            <div className="relative w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 shadow-2xl transition-all duration-300 scale-95 animate-scale-in border border-gray-100">
+            {/* 3D Styled Modal Container */}
+            <div className="relative w-full max-w-md transform overflow-hidden rounded-3xl bg-white p-7 shadow-[0_25px_60px_-15px_rgba(0,26,82,0.35),0_10px_25px_-5px_rgba(0,0,0,0.1)] transition-all duration-300 animate-scale-in border border-slate-100 ring-1 ring-black/5">
+
+                {/* 3D Top Accent Bar */}
+                <div className={`absolute top-0 inset-x-0 h-1.5 ${topBarBg}`} />
 
                 {/* Close Button (only for non-confirm and non-loading modals) */}
                 {type !== 'confirm' && !isLoading && (
                     <button
                         onClick={onClose}
-                        className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors rounded-full p-1 hover:bg-gray-100"
+                        className="absolute top-4 right-4 text-slate-400 hover:text-slate-700 transition-colors rounded-full p-1.5 hover:bg-slate-100 active:scale-95"
                     >
                         <span className="material-symbols-outlined text-[20px]">close</span>
                     </button>
                 )}
 
                 {/* Modal Content */}
-                <div className="flex flex-col items-center text-center">
-                    {/* Icon Section */}
-                    <div className={`flex h-16 w-16 items-center justify-center rounded-full ${iconBg} mb-4 shrink-0`}>
-                        <span className={`material-symbols-outlined text-[32px] ${iconColor}`}>{iconName}</span>
+                <div className="flex flex-col items-center text-center pt-2">
+                    {/* 3D Icon Section */}
+                    <div className="relative mb-5">
+                        <div className="absolute -inset-1.5 rounded-3xl bg-gradient-to-r from-blue-500/20 to-indigo-500/20 blur-sm" />
+                        <div className={`relative flex h-20 w-20 items-center justify-center rounded-2xl ${iconBg} shrink-0 transform hover:scale-105 transition-transform duration-300`}>
+                            <span className={`material-symbols-outlined text-[38px] ${iconColor} drop-shadow-[0_4px_6px_rgba(0,26,82,0.2)]`}>
+                                {iconName}
+                            </span>
+                        </div>
                     </div>
 
                     {/* Title */}
-                    <h3 className="text-lg font-bold text-gray-900 mb-2 leading-tight">
+                    <h3 className="text-xl font-extrabold text-slate-900 mb-2 leading-tight tracking-tight font-display">
                         {title}
                     </h3>
 
                     {/* Message */}
-                    <p className="text-sm text-gray-500 mb-6 leading-relaxed whitespace-pre-line">
+                    <p className="text-sm text-slate-600 mb-7 leading-relaxed whitespace-pre-line font-medium px-2">
                         {message}
                     </p>
 
@@ -119,7 +132,7 @@ export default function CustomModal({
                                     type="button"
                                     disabled={isLoading}
                                     onClick={onClose}
-                                    className="flex-1 rounded-xl border border-gray-300 bg-white py-3 text-sm font-semibold text-gray-700 hover:bg-gray-50 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-300 transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
+                                    className="flex-1 rounded-2xl border border-slate-200/90 bg-gradient-to-b from-white to-slate-50 py-3.5 px-4 text-sm font-bold text-slate-700 shadow-[0_4px_12px_rgba(0,0,0,0.04),inset_0_1px_0_rgba(255,255,255,0.8)] hover:bg-slate-100 hover:text-slate-900 hover:-translate-y-0.5 active:translate-y-0.5 active:shadow-none focus:outline-none focus:ring-2 focus:ring-slate-300 transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
                                     {cancelText}
                                 </button>
@@ -127,7 +140,7 @@ export default function CustomModal({
                                     type="button"
                                     disabled={isLoading}
                                     onClick={onConfirm}
-                                    className={`flex-1 rounded-xl py-3 text-sm font-bold shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 ${primaryButtonBg}`}
+                                    className={`flex-1 rounded-2xl py-3.5 px-4 text-sm font-bold transition-all duration-150 hover:-translate-y-0.5 active:translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 ${primaryButtonBg}`}
                                 >
                                     {isLoading ? (
                                         <>
@@ -146,7 +159,7 @@ export default function CustomModal({
                             <button
                                 type="button"
                                 onClick={onClose}
-                                className={`w-full max-w-[200px] rounded-xl py-3 text-sm font-bold shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 transition-all active:scale-[0.98] ${primaryButtonBg}`}
+                                className={`w-full max-w-[220px] rounded-2xl py-3.5 px-6 text-sm font-bold transition-all duration-150 hover:-translate-y-0.5 active:translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${primaryButtonBg}`}
                             >
                                 OK
                             </button>

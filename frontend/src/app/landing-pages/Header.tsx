@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 
 import Image from "next/image";
@@ -14,10 +14,14 @@ export default function Header({ activePage = "home" }: HeaderProps) {
   const [activeNav, setActiveNav] = useState(activePage);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isMobileProfileOpen, setIsMobileProfileOpen] = useState(false);
+  const [isDesktopProfileOpen, setIsDesktopProfileOpen] = useState(false);
   const [prevActivePage, setPrevActivePage] = useState(activePage);
 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userName, setUserName] = useState("");
+  const [userRole, setUserRole] = useState("user");
+
+  const desktopProfileRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (activePage !== prevActivePage) {
@@ -45,13 +49,25 @@ export default function Header({ activePage = "home" }: HeaderProps) {
       }
     };
 
-    // Run on mount
     handleLocationChange();
-
-    // Listen for hash changes
     window.addEventListener("hashchange", handleLocationChange);
     return () => window.removeEventListener("hashchange", handleLocationChange);
   }, []);
+
+  // Click outside listener for desktop profile dropdown
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        desktopProfileRef.current &&
+        !desktopProfileRef.current.contains(event.target as Node)
+      ) {
+        setIsDesktopProfileOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
   const [modal, setModal] = useState({
     isOpen: false,
     type: "confirm" as "success" | "error" | "warning" | "info" | "confirm",
@@ -63,11 +79,38 @@ export default function Header({ activePage = "home" }: HeaderProps) {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    const name = localStorage.getItem("userName");
+    let name = localStorage.getItem("userName");
+    let role = localStorage.getItem("userRole");
+
     if (token) {
-      // eslint-disable-next-line
       setIsLoggedIn(true);
-      setUserName(name || "Member");
+
+      // Attempt JWT payload decode for precision
+      try {
+        const base64Url = token.split(".")[1];
+        if (base64Url) {
+          const jsonPayload = decodeURIComponent(
+            atob(base64Url.replace(/-/g, "+").replace(/_/g, "/"))
+              .split("")
+              .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
+              .join("")
+          );
+          const payload = JSON.parse(jsonPayload);
+          if (payload.name && (!name || name === "Member")) {
+            name = payload.name;
+            localStorage.setItem("userName", payload.name);
+          }
+          if (payload.role) {
+            role = payload.role;
+            localStorage.setItem("userRole", payload.role);
+          }
+        }
+      } catch (e) {
+        // ignore JWT parse error
+      }
+
+      setUserName(name || "Pengguna");
+      setUserRole(role || "user");
     }
   }, []);
 
@@ -80,8 +123,10 @@ export default function Header({ activePage = "home" }: HeaderProps) {
       onConfirm: () => {
         localStorage.removeItem("token");
         localStorage.removeItem("userName");
+        localStorage.removeItem("userRole");
         setIsLoggedIn(false);
         setUserName("");
+        setUserRole("user");
         setModal({
           isOpen: true,
           type: "success",
@@ -99,6 +144,24 @@ export default function Header({ activePage = "home" }: HeaderProps) {
       },
     });
   };
+
+  const getDashboardInfo = () => {
+    if (userRole === "admin") {
+      return { href: "/admin", label: "Panel Admin", icon: "admin_panel_settings" };
+    }
+    if (userRole === "staff") {
+      return { href: "/staff", label: "Panel Staff", icon: "badge" };
+    }
+    return { href: "/dashboard", label: "Dashboard Profil", icon: "dashboard" };
+  };
+
+  const getRoleBadge = () => {
+    if (userRole === "admin") return "Administrator";
+    if (userRole === "staff") return "Staff SiniBook";
+    return "Member SiniBook";
+  };
+
+  const dashboardInfo = getDashboardInfo();
 
   return (
     <header className="fixed top-0 inset-x-0 z-50 px-gutter-mobile lg:px-gutter-desktop pt-space-xs">
@@ -121,7 +184,7 @@ export default function Header({ activePage = "home" }: HeaderProps) {
         <nav className="hidden lg:flex items-center gap-space-xs">
           <Link
             href="/"
-            onClick={(e) => {
+            onClick={() => {
               setActiveNav("home");
               if (typeof window !== "undefined" && window.location.pathname === "/") {
                 window.scrollTo({ top: 0, behavior: "smooth" });
@@ -196,43 +259,102 @@ export default function Header({ activePage = "home" }: HeaderProps) {
           {/* Desktop Right Action Area */}
           <div className="hidden md:flex items-center gap-space-sm">
             {isLoggedIn ? (
-              <div className="relative group flex items-center">
+              <div
+                ref={desktopProfileRef}
+                className="relative group flex items-center"
+                onMouseEnter={() => setIsDesktopProfileOpen(true)}
+                onMouseLeave={() => setIsDesktopProfileOpen(false)}
+              >
                 {/* Profile Button Trigger */}
                 <button
-                  className="flex items-center gap-space-xs bg-surface-container-lowest border border-outline-variant/30 px-1 py-1 pr-space-md rounded-full hover:bg-surface-container-low hover:border-outline-variant/60 transition-all focus:outline-none"
+                  onClick={() => setIsDesktopProfileOpen((prev) => !prev)}
+                  className="flex items-center gap-2 bg-surface-container-lowest border border-outline-variant/30 p-1.5 pr-3.5 rounded-full hover:bg-surface-container-low hover:border-outline-variant/60 transition-all focus:outline-none cursor-pointer shadow-sm"
+                  aria-expanded={isDesktopProfileOpen}
                 >
-                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary text-on-primary font-bold text-sm uppercase shadow-sm">
+                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary text-on-primary font-extrabold text-sm uppercase shadow-sm">
                     {userName ? userName.charAt(0) : "U"}
                   </div>
-                  <span className="font-label-md text-label-md text-on-surface max-w-[100px] truncate">
+                  <span className="font-label-md text-label-md text-on-surface max-w-[110px] truncate font-medium">
                     {userName}
                   </span>
-                  <span className="material-symbols-outlined text-[18px] text-on-surface-variant transition-transform duration-300 group-hover:-rotate-180 ml-1">
+                  <span
+                    className={`material-symbols-outlined text-[18px] text-on-surface-variant transition-transform duration-300 ${
+                      isDesktopProfileOpen ? "rotate-180" : ""
+                    }`}
+                  >
                     expand_more
                   </span>
                 </button>
 
-                {/* Dropdown Menu (Appears on Hover) */}
-                <div className="absolute top-full right-0 mt-2 w-52 bg-surface-container-lowest border border-outline-variant/30 rounded-xl shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 flex flex-col p-1.5 z-50">
-                  <div className="px-3 py-2">
-                    <p className="font-label-sm text-label-sm text-secondary uppercase tracking-wider mb-1">Akun Saya</p>
+                {/* Dropdown Menu */}
+                {isDesktopProfileOpen && (
+                  <div className="absolute top-full right-0 pt-2 w-64 z-50 animate-in fade-in slide-in-from-top-2 duration-200">
+                    <div className="bg-surface-container-lowest border border-outline-variant/30 rounded-2xl shadow-2xl flex flex-col p-2.5">
+                      {/* User Info Header */}
+                      <div className="px-3.5 py-3 bg-surface-container-low/70 rounded-xl mb-2 flex items-center gap-3 border border-outline-variant/20">
+                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary text-on-primary font-bold text-base uppercase shadow-sm">
+                          {userName ? userName.charAt(0) : "U"}
+                        </div>
+                        <div className="overflow-hidden">
+                          <p className="font-bold text-[14px] text-on-surface truncate leading-tight">
+                            {userName}
+                          </p>
+                          <span className="inline-block text-[11px] font-semibold text-primary bg-primary/10 px-2 py-0.5 rounded-full mt-1">
+                            {getRoleBadge()}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Nav Links */}
+                      <div className="flex flex-col gap-0.5">
+                        <Link
+                          href={dashboardInfo.href}
+                          onClick={() => setIsDesktopProfileOpen(false)}
+                          className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-surface-container-low text-on-surface transition-colors group"
+                        >
+                          <span className="material-symbols-outlined text-[20px] text-primary group-hover:scale-110 transition-transform">
+                            {dashboardInfo.icon}
+                          </span>
+                          <span className="font-label-md text-label-md font-medium">
+                            {dashboardInfo.label}
+                          </span>
+                        </Link>
+
+                        {userRole === "user" && (
+                          <Link
+                            href="/dashboard?tab=bookings"
+                            onClick={() => setIsDesktopProfileOpen(false)}
+                            className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-surface-container-low text-on-surface transition-colors group"
+                          >
+                            <span className="material-symbols-outlined text-[20px] text-primary group-hover:scale-110 transition-transform">
+                              receipt_long
+                            </span>
+                            <span className="font-label-md text-label-md font-medium">
+                              Pesanan Saya
+                            </span>
+                          </Link>
+                        )}
+
+                        <div className="h-px bg-outline-variant/20 my-1 mx-1.5" />
+
+                        <button
+                          onClick={() => {
+                            setIsDesktopProfileOpen(false);
+                            handleLogoutClick();
+                          }}
+                          className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-error/10 text-error transition-colors w-full text-left cursor-pointer group"
+                        >
+                          <span className="material-symbols-outlined text-[20px] group-hover:scale-110 transition-transform">
+                            logout
+                          </span>
+                          <span className="font-label-md text-label-md font-semibold">
+                            Keluar Akun
+                          </span>
+                        </button>
+                      </div>
+                    </div>
                   </div>
-                  <Link
-                    href="/dashboard"
-                    className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-surface-container-low text-on-surface transition-colors"
-                  >
-                    <span className="material-symbols-outlined text-[20px] text-primary">dashboard</span>
-                    <span className="font-label-md text-label-md">Dashboard Profil</span>
-                  </Link>
-                  <div className="h-px bg-outline-variant/20 my-1 mx-2"></div>
-                  <button
-                    onClick={handleLogoutClick}
-                    className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-error/10 text-error transition-colors w-full text-left"
-                  >
-                    <span className="material-symbols-outlined text-[20px]">logout</span>
-                    <span className="font-label-md text-label-md">Keluar Akun</span>
-                  </button>
-                </div>
+                )}
               </div>
             ) : (
               <div className="flex items-center gap-space-sm">
@@ -252,44 +374,69 @@ export default function Header({ activePage = "home" }: HeaderProps) {
             )}
           </div>
 
-          {/* Mobile Profile Icon (Visible only on mobile when logged in) */}
+          {/* Mobile Profile Icon */}
           {isLoggedIn && (
             <div className="lg:hidden relative">
-              <button 
+              <button
                 onClick={() => {
                   setIsMobileProfileOpen(!isMobileProfileOpen);
-                  setIsMobileMenuOpen(false); // Close hamburger if open
+                  setIsMobileMenuOpen(false);
                 }}
                 className="flex h-10 w-10 items-center justify-center rounded-full bg-primary text-on-primary font-bold shadow-md hover:bg-primary/90 transition-colors"
               >
                 {userName ? userName.charAt(0) : "U"}
               </button>
-              
+
               {/* Mobile Profile Dropdown */}
               {isMobileProfileOpen && (
-                <div className="absolute top-full right-0 mt-3 w-56 bg-surface-bright border border-surface-container rounded-2xl shadow-xl flex flex-col p-2 z-50">
-                  <div className="px-3 py-3 border-b border-surface-container mb-2 flex items-center gap-3">
-                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary-container text-primary font-bold text-lg">
+                <div className="absolute top-full right-0 mt-3 w-60 bg-surface-bright border border-surface-container rounded-2xl shadow-xl flex flex-col p-2.5 z-50 animate-in fade-in duration-150">
+                  <div className="px-3.5 py-3 border-b border-surface-container mb-2 flex items-center gap-3">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary text-on-primary font-bold text-base uppercase">
                       {userName ? userName.charAt(0) : "U"}
                     </div>
                     <div className="overflow-hidden">
-                      <p className="font-bold text-[15px] text-on-surface truncate">{userName}</p>
-                      <p className="text-[12px] text-on-surface-variant">Member SiniBook</p>
+                      <p className="font-bold text-[15px] text-on-surface truncate">
+                        {userName}
+                      </p>
+                      <p className="text-[11px] font-semibold text-primary bg-primary/10 px-2 py-0.5 rounded-full inline-block mt-0.5">
+                        {getRoleBadge()}
+                      </p>
                     </div>
                   </div>
                   <Link
-                    href="/dashboard"
+                    href={dashboardInfo.href}
                     onClick={() => setIsMobileProfileOpen(false)}
                     className="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-surface-container text-on-surface transition-colors"
                   >
-                    <span className="material-symbols-outlined text-[20px] text-primary">dashboard</span>
-                    <span className="font-bold text-[14px]">Dashboard Profil</span>
+                    <span className="material-symbols-outlined text-[20px] text-primary">
+                      {dashboardInfo.icon}
+                    </span>
+                    <span className="font-bold text-[14px]">
+                      {dashboardInfo.label}
+                    </span>
                   </Link>
+                  {userRole === "user" && (
+                    <Link
+                      href="/dashboard?tab=bookings"
+                      onClick={() => setIsMobileProfileOpen(false)}
+                      className="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-surface-container text-on-surface transition-colors"
+                    >
+                      <span className="material-symbols-outlined text-[20px] text-primary">
+                        receipt_long
+                      </span>
+                      <span className="font-bold text-[14px]">Pesanan Saya</span>
+                    </Link>
+                  )}
                   <button
-                    onClick={() => { setIsMobileProfileOpen(false); handleLogoutClick(); }}
-                    className="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-error/10 text-error transition-colors w-full text-left mt-1"
+                    onClick={() => {
+                      setIsMobileProfileOpen(false);
+                      handleLogoutClick();
+                    }}
+                    className="flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-error/10 text-error transition-colors w-full text-left mt-1 cursor-pointer"
                   >
-                    <span className="material-symbols-outlined text-[20px]">logout</span>
+                    <span className="material-symbols-outlined text-[20px]">
+                      logout
+                    </span>
                     <span className="font-bold text-[14px]">Keluar Akun</span>
                   </button>
                 </div>
@@ -300,15 +447,19 @@ export default function Header({ activePage = "home" }: HeaderProps) {
           <button
             onClick={() => {
               setIsMobileMenuOpen(!isMobileMenuOpen);
-              setIsMobileProfileOpen(false); // Close profile if open
+              setIsMobileProfileOpen(false);
             }}
             className="lg:hidden w-10 h-10 rounded-full bg-surface-container-high flex items-center justify-center text-on-surface hover:bg-surface-container-highest transition-colors"
             aria-label="Toggle menu"
           >
             {isMobileMenuOpen ? (
-              <span className="material-symbols-outlined text-[20px]">close</span>
+              <span className="material-symbols-outlined text-[20px]">
+                close
+              </span>
             ) : (
-              <span className="material-symbols-outlined text-[20px]">menu</span>
+              <span className="material-symbols-outlined text-[20px]">
+                menu
+              </span>
             )}
           </button>
         </div>
@@ -319,11 +470,18 @@ export default function Header({ activePage = "home" }: HeaderProps) {
           <nav className="flex flex-col gap-space-xs">
             <Link
               href="/"
-              className={`rounded-xl px-space-md py-space-sm font-label-lg text-label-lg ${activeNav === "home" ? "bg-primary-container text-on-primary font-bold" : "text-on-surface hover:bg-surface-container"}`}
-              onClick={(e) => { 
-                setActiveNav("home"); 
-                setIsMobileMenuOpen(false); 
-                if (typeof window !== "undefined" && window.location.pathname === "/") {
+              className={`rounded-xl px-space-md py-space-sm font-label-lg text-label-lg ${
+                activeNav === "home"
+                  ? "bg-primary-container text-on-primary font-bold"
+                  : "text-on-surface hover:bg-surface-container"
+              }`}
+              onClick={() => {
+                setActiveNav("home");
+                setIsMobileMenuOpen(false);
+                if (
+                  typeof window !== "undefined" &&
+                  window.location.pathname === "/"
+                ) {
                   window.scrollTo({ top: 0, behavior: "smooth" });
                 }
               }}
@@ -332,36 +490,71 @@ export default function Header({ activePage = "home" }: HeaderProps) {
             </Link>
             <Link
               href="/kamar"
-              className={`rounded-xl px-space-md py-space-sm font-label-lg text-label-lg ${activeNav === "kamar" ? "bg-primary-container text-on-primary font-bold" : "text-on-surface hover:bg-surface-container"}`}
-              onClick={() => { setActiveNav("kamar"); setIsMobileMenuOpen(false); }}
+              className={`rounded-xl px-space-md py-space-sm font-label-lg text-label-lg ${
+                activeNav === "kamar"
+                  ? "bg-primary-container text-on-primary font-bold"
+                  : "text-on-surface hover:bg-surface-container"
+              }`}
+              onClick={() => {
+                setActiveNav("kamar");
+                setIsMobileMenuOpen(false);
+              }}
             >
               Kamar & Suites
             </Link>
             <Link
               href="/#fasilitas"
-              className={`rounded-xl px-space-md py-space-sm font-label-lg text-label-lg ${activeNav === "fasilitas" ? "bg-primary-container text-on-primary font-bold" : "text-on-surface hover:bg-surface-container"}`}
-              onClick={() => { setActiveNav("fasilitas"); setIsMobileMenuOpen(false); }}
+              className={`rounded-xl px-space-md py-space-sm font-label-lg text-label-lg ${
+                activeNav === "fasilitas"
+                  ? "bg-primary-container text-on-primary font-bold"
+                  : "text-on-surface hover:bg-surface-container"
+              }`}
+              onClick={() => {
+                setActiveNav("fasilitas");
+                setIsMobileMenuOpen(false);
+              }}
             >
               Fasilitas
             </Link>
             <Link
               href="/#tentang-kami"
-              className={`rounded-xl px-space-md py-space-sm font-label-lg text-label-lg ${activeNav === "tentang-kami" ? "bg-primary-container text-on-primary font-bold" : "text-on-surface hover:bg-surface-container"}`}
-              onClick={() => { setActiveNav("tentang-kami"); setIsMobileMenuOpen(false); }}
+              className={`rounded-xl px-space-md py-space-sm font-label-lg text-label-lg ${
+                activeNav === "tentang-kami"
+                  ? "bg-primary-container text-on-primary font-bold"
+                  : "text-on-surface hover:bg-surface-container"
+              }`}
+              onClick={() => {
+                setActiveNav("tentang-kami");
+                setIsMobileMenuOpen(false);
+              }}
             >
               Tentang Hotel
             </Link>
             <Link
               href="/#ulasan"
-              className={`rounded-xl px-space-md py-space-sm font-label-lg text-label-lg ${activeNav === "ulasan" ? "bg-primary-container text-on-primary font-bold" : "text-on-surface hover:bg-surface-container"}`}
-              onClick={() => { setActiveNav("ulasan"); setIsMobileMenuOpen(false); }}
+              className={`rounded-xl px-space-md py-space-sm font-label-lg text-label-lg ${
+                activeNav === "ulasan"
+                  ? "bg-primary-container text-on-primary font-bold"
+                  : "text-on-surface hover:bg-surface-container"
+              }`}
+              onClick={() => {
+                setActiveNav("ulasan");
+                setIsMobileMenuOpen(false);
+              }}
             >
               Testimoni
             </Link>
             <Link
               href="/#kontak"
-              className={`rounded-xl px-space-md py-space-sm font-label-lg text-label-lg ${activeNav === "kontak" ? "bg-primary-container text-on-primary font-bold" : "text-on-surface hover:bg-surface-container"}`}
-              onClick={() => { setActiveNav("kontak"); setIsMobileMenuOpen(false); }}
+              className={`rounded-xl px-space-md py-space-sm font-label-lg text-label-lg ${
+                activeNav === "kontak"
+                  ? "bg-primary-container text-on-primary font-bold"
+                  : "text-on-surface hover:bg-surface-container"
+              }`}
+              onClick={() => {
+                setActiveNav("kontak");
+                setIsMobileMenuOpen(false);
+              }}
             >
               Kontak
             </Link>
@@ -401,3 +594,4 @@ export default function Header({ activePage = "home" }: HeaderProps) {
     </header>
   );
 }
+

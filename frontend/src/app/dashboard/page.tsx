@@ -941,27 +941,29 @@ export default function UserDashboardPage() {
                       {notifications.map((n) => (
                         <div
                           key={n.id}
-                          className={`flex items-start justify-between p-4 rounded-2xl border transition-all ${n.is_read
-                            ? "bg-white border-gray-200/80 text-gray-600"
-                            : "bg-emerald-50/40 border-emerald-200 text-gray-900 shadow-sm"
-                            }`}
+                          className={`flex items-start justify-between p-4.5 rounded-2xl border transition-all duration-200 ${
+                            n.is_read
+                              ? "bg-white border-slate-200/80 text-slate-600 shadow-sm"
+                              : "bg-gradient-to-r from-blue-50/80 via-indigo-50/40 to-white border-blue-200/90 text-slate-900 shadow-[0_4px_16px_rgba(29,78,216,0.08)]"
+                          }`}
                         >
-                          <div className="flex items-start gap-3">
+                          <div className="flex items-start gap-3.5">
                             <div
-                              className={`p-2 rounded-xl mt-0.5 ${n.is_read
-                                ? "bg-gray-100 text-gray-500"
-                                : "bg-[#1D4ED8] text-white"
-                                }`}
+                              className={`p-2.5 rounded-xl mt-0.5 transition-all ${
+                                n.is_read
+                                  ? "bg-slate-100 text-slate-400"
+                                  : "bg-gradient-to-br from-[#001a52] to-[#1D4ED8] text-white shadow-md shadow-blue-900/20 border border-blue-400/30"
+                              }`}
                             >
-                              <span className="material-symbols-outlined text-[16px]">
+                              <span className="material-symbols-outlined text-[18px]">
                                 notifications
                               </span>
                             </div>
                             <div>
-                              <p className="text-xs sm:text-sm font-medium leading-relaxed">
+                              <p className="text-xs sm:text-sm font-semibold leading-relaxed text-slate-800">
                                 {n.message}
                               </p>
-                              <span className="text-[10px] text-gray-400 mt-1 block">
+                              <span className="text-[10px] text-slate-400 font-medium mt-1 block">
                                 {new Date(n.created_at).toLocaleString("id-ID")}
                               </span>
                             </div>
@@ -970,7 +972,7 @@ export default function UserDashboardPage() {
                           {!n.is_read && (
                             <button
                               onClick={() => handleMarkAsRead(n.id)}
-                              className="text-[11px] font-bold text-[#1D4ED8] hover:underline shrink-0 ml-4"
+                              className="text-[11px] font-extrabold text-[#1D4ED8] hover:text-[#001a52] hover:underline shrink-0 ml-4 transition-colors"
                             >
                               Tandai dibaca
                             </button>
@@ -1101,45 +1103,57 @@ export default function UserDashboardPage() {
         </section>
       </main>
 
-      {/* MODAL BERI ULASAN */}
+      {/* MODAL BERI ULASAN (3D Theme consistent with Landing Page) */}
       {selectedReviewBooking && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-          <div className="w-full max-w-md rounded-3xl bg-white p-6 sm:p-8 shadow-2xl relative">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/65 backdrop-blur-md p-4 animate-fade-in">
+          <div className="relative w-full max-w-md transform overflow-hidden rounded-3xl bg-white p-7 sm:p-8 shadow-[0_25px_60px_-15px_rgba(0,26,82,0.35),0_10px_25px_-5px_rgba(0,0,0,0.1)] transition-all duration-300 animate-scale-in border border-slate-100 ring-1 ring-black/5">
+            {/* 3D Top Accent Bar */}
+            <div className="absolute top-0 inset-x-0 h-1.5 bg-gradient-to-r from-[#001a52] via-[#1D4ED8] to-[#001a52]" />
+
             <button
               onClick={() => setSelectedReviewBooking(null)}
-              className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
+              className="absolute top-4 right-4 text-slate-400 hover:text-slate-700 transition-colors rounded-full p-1.5 hover:bg-slate-100 active:scale-95"
             >
               <span className="material-symbols-outlined text-[20px]">
                 close
               </span>
             </button>
 
-            <h3 className="text-lg font-bold text-gray-900">
-              Beri Ulasan & Rating
-            </h3>
-            <p className="text-xs text-gray-500 mt-1">
-              Bagikan pengalaman Anda menginap di{" "}
-              {selectedReviewBooking.room_name}.
-            </p>
+            <div className="flex items-center gap-3 mb-4">
+              <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-[#001a52] to-[#1D4ED8] text-white shadow-[0_6px_16px_rgba(0,26,82,0.25)] border border-blue-400/30">
+                <span className="material-symbols-outlined text-[22px]">
+                  rate_review
+                </span>
+              </div>
+              <div>
+                <h3 className="text-xl font-extrabold text-slate-900 font-display">
+                  Beri Ulasan & Rating
+                </h3>
+                <p className="text-xs text-slate-500 font-medium">
+                  Pengalaman Anda di {selectedReviewBooking.room_name}
+                </p>
+              </div>
+            </div>
 
             <form onSubmit={handleSubmitReview} className="mt-5 space-y-4">
-              <div>
-                <label className="block text-xs font-bold text-gray-700 mb-2">
+              <div className="rounded-2xl bg-slate-50/80 p-4 border border-slate-200/70 shadow-inner">
+                <label className="block text-xs font-bold text-slate-700 mb-2">
                   Rating Bintang
                 </label>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 justify-center py-1">
                   {[1, 2, 3, 4, 5].map((star) => (
                     <button
                       key={star}
                       type="button"
                       onClick={() => setReviewRating(star)}
-                      className="p-1 transition-transform hover:scale-125"
+                      className="p-1 transition-transform hover:scale-125 active:scale-95 focus:outline-none"
                     >
                       <span
-                        className={`material-symbols-outlined text-[28px] ${star <= reviewRating
-                          ? "text-amber-400"
-                          : "text-gray-300"
-                          }`}
+                        className={`material-symbols-outlined text-[32px] transition-colors ${
+                          star <= reviewRating
+                            ? "text-amber-400 drop-shadow-[0_2px_6px_rgba(245,158,11,0.5)]"
+                            : "text-slate-300"
+                        }`}
                       >
                         star
                       </span>
@@ -1149,25 +1163,34 @@ export default function UserDashboardPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-gray-700 mb-1">
+                <label className="block text-xs font-bold text-slate-700 mb-1.5">
                   Komentar Ulasan
                 </label>
                 <textarea
                   value={reviewComment}
                   onChange={(e) => setReviewComment(e.target.value)}
                   rows={4}
-                  placeholder="Tulis ulasan Anda di sini..."
-                  className="w-full rounded-xl border border-gray-300 p-3 text-xs text-gray-900 focus:border-[#1D4ED8] focus:outline-none"
+                  placeholder="Tulis ulasan jujur dan pengalaman menginap Anda..."
+                  className="w-full rounded-2xl border border-slate-200 bg-slate-50/40 p-3.5 text-xs text-slate-900 placeholder:text-slate-400 focus:border-[#1D4ED8] focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 transition-all font-medium"
                   required
                 />
               </div>
 
-              <button
-                type="submit"
-                className="w-full rounded-full bg-[#1D4ED8] py-3 text-xs font-bold text-white shadow hover:bg-[#1E3A8A]"
-              >
-                Kirim Ulasan
-              </button>
+              <div className="flex gap-3 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setSelectedReviewBooking(null)}
+                  className="flex-1 rounded-2xl border border-slate-200/90 bg-slate-50 py-3.5 text-xs font-bold text-slate-700 hover:bg-slate-100 transition-all"
+                >
+                  Batal
+                </button>
+                <button
+                  type="submit"
+                  className="flex-1 rounded-2xl bg-gradient-to-r from-[#001a52] via-[#0e2f76] to-[#1D4ED8] hover:from-[#001440] hover:to-[#1E3A8A] py-3.5 text-xs font-bold text-white shadow-[0_6px_20px_rgba(0,26,82,0.3),inset_0_1px_1px_rgba(255,255,255,0.3)] hover:-translate-y-0.5 active:translate-y-0.5 transition-all duration-150 border border-blue-400/30"
+                >
+                  Kirim Ulasan
+                </button>
+              </div>
             </form>
           </div>
         </div>

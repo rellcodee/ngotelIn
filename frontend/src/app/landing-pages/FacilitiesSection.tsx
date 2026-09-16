@@ -65,13 +65,23 @@ export default function FacilitiesSection() {
     const fetchFacilities = async () => {
       try {
         const response = await fetch("http://localhost:3001/resources/facilities");
-        const groupedData = await response.json();
+        if (!response.ok) return;
 
-        setGroupedFacilities(groupedData);
-        
-        const keys = Object.keys(groupedData);
-        if (keys.length > 0) {
-          setActiveTab(keys[0]);
+        const groupedData = await response.json();
+        if (groupedData && typeof groupedData === "object" && !Array.isArray(groupedData)) {
+          // Filter out error response keys if any
+          const validData: Record<string, string[]> = {};
+          Object.entries(groupedData).forEach(([key, val]) => {
+            if (Array.isArray(val)) {
+              validData[key] = val;
+            }
+          });
+          setGroupedFacilities(validData);
+
+          const keys = Object.keys(validData);
+          if (keys.length > 0) {
+            setActiveTab(keys[0]);
+          }
         }
       } catch (error) {
         console.error("Gagal load fasilitas", error);
@@ -163,52 +173,58 @@ export default function FacilitiesSection() {
             ) : (
               <div className="bg-surface-container-lowest rounded-2xl md:rounded-3xl border border-surface-container p-6 md:p-8 lg:p-10 shadow-[0_8px_24px_rgba(14,47,118,0.06)] h-full">
                 {activeTab && (
-                  <div className="h-full flex flex-col">
-                    <div className="mb-6 md:mb-8 pb-4 md:pb-6 border-b border-surface-container flex flex-col sm:flex-row sm:items-end justify-between gap-2">
-                      <div>
-                        <h3 className="font-bold text-[22px] sm:text-[24px] md:text-[28px] lg:text-[32px] text-on-surface tracking-tight leading-tight">
-                          Kamar Tipe <br className="hidden sm:block" />
-                          <span className="text-primary">{activeTab}</span>
-                        </h3>
-                        <p className="text-[14px] md:text-[15px] text-on-surface-variant mt-1 md:mt-2">
-                          {groupedFacilities[activeTab].length} fasilitas
-                          terdaftar
-                        </p>
-                      </div>
-                    </div>
+                  (() => {
+                    const currentFacilities = Array.isArray(groupedFacilities[activeTab])
+                      ? groupedFacilities[activeTab]
+                      : [];
+                    return (
+                      <div className="h-full flex flex-col">
+                        <div className="mb-6 md:mb-8 pb-4 md:pb-6 border-b border-surface-container flex flex-col sm:flex-row sm:items-end justify-between gap-2">
+                          <div>
+                            <h3 className="font-bold text-[22px] sm:text-[24px] md:text-[28px] lg:text-[32px] text-on-surface tracking-tight leading-tight">
+                              Kamar Tipe <br className="hidden sm:block" />
+                              <span className="text-primary">{activeTab}</span>
+                            </h3>
+                            <p className="text-[14px] md:text-[15px] text-on-surface-variant mt-1 md:mt-2">
+                              {currentFacilities.length} fasilitas terdaftar
+                            </p>
+                          </div>
+                        </div>
 
-                    {groupedFacilities[activeTab].length === 0 ? (
-                      <div className="flex-1 flex flex-col items-center justify-center py-12 md:py-16 text-center bg-surface-container-low rounded-2xl border border-surface-container">
-                        <span className="material-symbols-outlined text-[48px] text-outline-variant mb-4">
-                          info
-                        </span>
-                        <p className="font-bold text-[15px] md:text-[16px] text-on-surface-variant">
-                          Belum ada fasilitas khusus untuk tipe kamar ini.
-                        </p>
+                        {currentFacilities.length === 0 ? (
+                          <div className="flex-1 flex flex-col items-center justify-center py-12 md:py-16 text-center bg-surface-container-low rounded-2xl border border-surface-container">
+                            <span className="material-symbols-outlined text-[48px] text-outline-variant mb-4">
+                              info
+                            </span>
+                            <p className="font-bold text-[15px] md:text-[16px] text-on-surface-variant">
+                              Belum ada fasilitas khusus untuk tipe kamar ini.
+                            </p>
+                          </div>
+                        ) : (
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4 auto-rows-max">
+                            {currentFacilities.map((facility, fIdx) => {
+                              const iconName = getIconForFacility(facility);
+                              return (
+                                <div
+                                  key={fIdx}
+                                  className="flex items-center gap-3 md:gap-4 rounded-xl border border-surface-container-high bg-surface-container-low p-3 md:p-4 transition-all hover:border-primary-fixed-dim hover:bg-primary-fixed/20 hover:shadow-sm hover:-translate-y-0.5"
+                                >
+                                  <div className="w-10 h-10 shrink-0 rounded-full bg-surface-container-lowest flex items-center justify-center text-primary shadow-sm">
+                                    <span className="material-symbols-outlined text-[20px]">
+                                      {iconName}
+                                    </span>
+                                  </div>
+                                  <span className="font-bold text-[14px] md:text-[15px] text-on-surface leading-snug">
+                                    {facility}
+                                  </span>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        )}
                       </div>
-                    ) : (
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4 auto-rows-max">
-                        {groupedFacilities[activeTab].map((facility, fIdx) => {
-                          const iconName = getIconForFacility(facility);
-                          return (
-                            <div
-                              key={fIdx}
-                              className="flex items-center gap-3 md:gap-4 rounded-xl border border-surface-container-high bg-surface-container-low p-3 md:p-4 transition-all hover:border-primary-fixed-dim hover:bg-primary-fixed/20 hover:shadow-sm hover:-translate-y-0.5"
-                            >
-                              <div className="w-10 h-10 shrink-0 rounded-full bg-surface-container-lowest flex items-center justify-center text-primary shadow-sm">
-                                <span className="material-symbols-outlined text-[20px]">
-                                  {iconName}
-                                </span>
-                              </div>
-                              <span className="font-bold text-[14px] md:text-[15px] text-on-surface leading-snug">
-                                {facility}
-                              </span>
-                            </div>
-                          );
-                        })}
-                      </div>
-                    )}
-                  </div>
+                    );
+                  })()
                 )}
               </div>
             )}
