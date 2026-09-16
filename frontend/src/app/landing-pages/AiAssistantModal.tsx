@@ -197,11 +197,11 @@ export default function AiAssistantModal() {
       {!isOpen && (
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="fixed bottom-6 right-6 z-50 flex items-center gap-2.5 rounded-full bg-[#1D4ED8] px-5 py-3 text-white shadow-2xl transition-all duration-300 hover:scale-105 hover:bg-[#1E3A8A] active:scale-95 border-2 border-emerald-400/40 animate-pulse-ring"
+          className="fixed bottom-6 right-6 z-50 flex items-center gap-2.5 rounded-full bg-[#1E3A8A] px-5 py-3 text-white shadow-2xl transition-all duration-300 hover:scale-105 hover:bg-[#1E3A8A] active:scale-95 border-2 border-emerald-400/40 animate-pulse-ring"
           aria-label="Toggle AI Assistant"
         >
-          <div className="flex h-7 w-7 items-center justify-center rounded-full bg-emerald-500/30 text-emerald-200">
-            <span className="material-symbols-outlined text-[16px]">smart_toy</span>
+          <div className="flex h-7 w-7 items-center justify-center rounded-full bg-white text-[#1E3A8A]">
+            <span className="material-symbols-outlined text-[16px]">support_agent</span>
           </div>
           <span className="text-sm font-bold tracking-wide">TiniBot</span>
         </button>
@@ -216,8 +216,8 @@ export default function AiAssistantModal() {
           <div className="flex items-center justify-between border-b border-gray-100 bg-white px-4 py-3 shadow-sm">
             <div className="flex items-center gap-2.5">
               {/* Avatar Bot AI dengan latar hijau lingkaran */}
-              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#1D4ED8] text-white shadow-sm">
-                <span className="material-symbols-outlined text-[20px]">smart_toy</span>
+              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#1E3A8A] text-white shadow-sm">
+                <span className="material-symbols-outlined text-[20px]">support_agent</span>
               </div>
               <div>
                 {/* Judul AI Assistant */}

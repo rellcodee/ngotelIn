@@ -6,12 +6,14 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { CreateOfficialDto } from './dto/create-official.dto';
+import { GetUsersQueryDto } from './dto/get-users-query.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from '../common/guards/roles.guard';
 import { Roles } from '../common/decorators/roles.decorator';
@@ -39,8 +41,8 @@ export class UserController {
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles(Role.ADMIN, Role.STAFF)
   @Get()
-  findAll() {
-    return this.userService.findAll();
+  findAll(@Query() query: GetUsersQueryDto) {
+    return this.userService.findAll(query);
   }
 
   @UseGuards(AuthGuard('jwt'))

@@ -12,6 +12,7 @@ import {
 import { BookingsService } from './bookings.service';
 import { CreateBookingDto } from './dto/create-booking.dto';
 import { UpdateBookingDto } from './dto/update-booking.dto';
+import { GetBookingsQueryDto } from './dto/get-bookings-query.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from '../common/guards/roles.guard';
 import { Roles } from '../common/decorators/roles.decorator';
@@ -43,10 +44,9 @@ export class BookingsController {
   @Get()
   async findAll(
     @CurrentUser() currentUser: { userId: string; role: string },
-    @Query('user_id') userId?: string,
-    @Query('status') status?: string,
+    @Query() query: GetBookingsQueryDto,
   ) {
-    return this.bookingsService.findAll(currentUser, userId, status);
+    return this.bookingsService.findAll(currentUser, query);
   }
 
   @Get(':id')

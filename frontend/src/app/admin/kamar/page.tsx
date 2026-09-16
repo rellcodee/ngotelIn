@@ -1,8 +1,10 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 
 import CustomModal from "@/components/CustomModal";
+import PillPagination from "@/components/PillPagination";
+import SearchInput from "@/components/SearchInput";
 
 interface RoomImage {
   id: string;
@@ -27,6 +29,13 @@ export default function KamarPage() {
   const [rooms, setRooms] = useState<RoomData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [errorMsg, setErrorMsg] = useState("");
+
+  // State Filter & Paginasi
+  const [searchQuery, setSearchQuery] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [typeFilter, setTypeFilter] = useState("all");
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 6; // 6 Card per halaman (2 baris x 3 kolom)
 
   const [modal, setModal] = useState<{
     isOpen: boolean;
@@ -434,6 +443,56 @@ export default function KamarPage() {
     }
   };
 
+  // List tipe kamar unik dari data yang ada
+  const availableTypes = useMemo(() => {
+    const types = new Set(rooms.map((r) => r.type).filter(Boolean));
+    return Array.from(types);
+  }, [rooms]);
+
+  // Filter kamar berdasarkan Search, Status, dan Tipe
+  const filteredRooms = useMemo(() => {
+    return rooms.filter((room) => {
+      const matchSearch =
+        !searchQuery.trim() ||
+        room.name.toLowerCase().includes(searchQuery.toLowerCase().trim()) ||
+        room.location.toLowerCase().includes(searchQuery.toLowerCase().trim());
+
+      const roomStatus = room.current_status || "available";
+      const matchStatus =
+        statusFilter === "all" || roomStatus === statusFilter;
+
+      const matchType =
+        typeFilter === "all" ||
+        room.type.toLowerCase() === typeFilter.toLowerCase();
+
+      return matchSearch && matchStatus && matchType;
+    });
+  }, [rooms, searchQuery, statusFilter, typeFilter]);
+
+  const totalItems = filteredRooms.length;
+  const totalPages = Math.ceil(totalItems / pageSize) || 1;
+
+  // Kamar yang ditampilkan pada halaman saat ini
+  const paginatedRooms = useMemo(() => {
+    const startIndex = (currentPage - 1) * pageSize;
+    return filteredRooms.slice(startIndex, startIndex + pageSize);
+  }, [filteredRooms, currentPage, pageSize]);
+
+  // Reset pagination ke page 1 saat filter atau search berubah
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery, statusFilter, typeFilter]);
+
+  const isFilterActive =
+    searchQuery.trim() !== "" || statusFilter !== "all" || typeFilter !== "all";
+
+  const handleResetFilters = () => {
+    setSearchQuery("");
+    setStatusFilter("all");
+    setTypeFilter("all");
+    setCurrentPage(1);
+  };
+
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
       {/* HEADER */}
@@ -461,10 +520,67 @@ export default function KamarPage() {
             setNewPrimaryIndex(0);
             setIsAddModalOpen(true);
           }}
-          className="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-xl font-medium shadow-sm transition-all hover:-translate-y-0.5 active:scale-95"
+          className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl font-medium shadow-sm transition-all hover:-translate-y-0.5 active:scale-95"
         >
           <span className="material-symbols-outlined text-[16px]">add</span> Tambah Kamar Baru
         </button>
+      </div>
+
+      {/* FILTER & SEARCH TOOLBAR */}
+      <div className="bg-white p-4 sm:p-5 rounded-2xl border border-gray-100 shadow-sm flex flex-col md:flex-row gap-4 justify-between items-stretch md:items-center">
+        <div className="flex-1 max-w-md">
+          <SearchInput
+            placeholder="Cari nama kamar, lokasi, atau lantai..."
+            value={searchQuery}
+            onChange={setSearchQuery}
+          />
+        </div>
+
+        <div className="flex flex-wrap items-center gap-3">
+          {/* Filter Status Ketersediaan */}
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-semibold text-gray-500 hidden sm:inline">Status:</span>
+            <select
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              className="px-3 py-2 bg-slate-50 border border-gray-200 rounded-xl text-xs font-semibold text-gray-700 outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 focus:bg-white transition-all cursor-pointer"
+            >
+              <option value="all">Semua Status</option>
+              <option value="available">🟢 Tersedia</option>
+              <option value="booked">🔵 Terisi (Booked)</option>
+              <option value="maintenance">🔴 Maintenance</option>
+            </select>
+          </div>
+
+          {/* Filter Tipe Kamar */}
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-semibold text-gray-500 hidden sm:inline">Tipe:</span>
+            <select
+              value={typeFilter}
+              onChange={(e) => setTypeFilter(e.target.value)}
+              className="px-3 py-2 bg-slate-50 border border-gray-200 rounded-xl text-xs font-semibold text-gray-700 outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 focus:bg-white transition-all cursor-pointer capitalize"
+            >
+              <option value="all">Semua Tipe</option>
+              {availableTypes.map((t) => (
+                <option key={t} value={t} className="capitalize">
+                  {t.replace(/_/g, " ")}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Tombol Reset Filter jika aktif */}
+          {isFilterActive && (
+            <button
+              onClick={handleResetFilters}
+              className="flex items-center gap-1 px-3 py-2 text-xs font-semibold text-rose-600 bg-rose-50 hover:bg-rose-100 rounded-xl transition-colors"
+              title="Reset Filter"
+            >
+              <span className="material-symbols-outlined text-[16px]">restart_alt</span>
+              <span>Reset</span>
+            </button>
+          )}
+        </div>
       </div>
 
       {/* TAMPILAN GRID KAMAR */}
@@ -483,74 +599,105 @@ export default function KamarPage() {
           </div>
           <p className="font-medium text-gray-900">Belum Ada Kamar</p>
         </div>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-          {rooms.map((room) => (
-            <div
-              key={room.id}
-              className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-md transition-shadow group flex flex-col"
-            >
-              <div className="relative h-56 w-full overflow-hidden bg-gray-100">
-                <img
-                  src={getPrimaryImage(room.room_images)}
-                  alt={room.name}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                  onError={(e) => {
-                    e.currentTarget.src =
-                      "https://placehold.co/600x400?text=Image+Not+Found";
-                  }}
-                />
-
-                {getStatusBadge(room.current_status)}
-
-                <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-sm px-2.5 py-1 rounded-lg text-xs font-bold text-emerald-700 shadow-sm uppercase tracking-wide">
-                  {room.type.replace("_", " ")}
-                </div>
-              </div>
-              <div className="p-5 flex-1 flex flex-col">
-                <h3 className="text-lg font-bold text-gray-900 mb-1 leading-tight">
-                  {room.name}
-                </h3>
-                <div className="flex flex-col gap-2 mt-3 text-sm text-gray-600">
-                  <div className="flex items-center gap-2">
-                    <span className="material-symbols-outlined text-[16px] text-emerald-600 shrink-0">location_on</span>
-                    <span className="truncate">{room.location}</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="material-symbols-outlined text-[16px] text-emerald-600 shrink-0">group</span>
-                    <span>Maksimal {room.capacity} Orang</span>
-                  </div>
-                </div>
-                <div className="mt-auto pt-5">
-                  <div className="border-t border-gray-100 pt-4 flex items-end justify-between">
-                    <div>
-                      <p className="text-xs text-gray-500 font-medium mb-0.5">
-                        Tarif per malam
-                      </p>
-                      <p className="text-lg font-bold text-[#1D4ED8]">
-                        Rp {room.price_per_night.toLocaleString("id-ID")}
-                      </p>
-                    </div>
-                    <div className="flex gap-2">
-                      <button
-                        onClick={() => openEditModal(room)}
-                        className="p-2 text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors shadow-sm"
-                      >
-                        <span className="material-symbols-outlined text-[16px]">edit</span>
-                      </button>
-                      <button
-                        onClick={() => handleDelete(room.id, room.name)}
-                        className="p-2 text-rose-600 bg-rose-50 hover:bg-rose-100 rounded-lg transition-colors shadow-sm"
-                      >
-                        <span className="material-symbols-outlined text-[16px]">delete</span>
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          ))}
+      ) : filteredRooms.length === 0 ? (
+        <div className="p-12 text-center text-gray-500 bg-white rounded-xl border border-gray-100 shadow-sm flex flex-col items-center justify-center">
+          <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mb-4">
+            <span className="material-symbols-outlined text-[32px] text-gray-300">search_off</span>
+          </div>
+          <p className="font-medium text-gray-900 mb-1">Kamar Tidak Ditemukan</p>
+          <p className="text-xs text-gray-400 mb-4">
+            Tidak ada kamar yang sesuai dengan kriteria pencarian atau filter yang dipilih.
+          </p>
+          <button
+            onClick={handleResetFilters}
+            className="px-4 py-2 bg-emerald-50 text-emerald-700 font-semibold text-xs rounded-xl hover:bg-emerald-100 transition-colors"
+          >
+            Hapus Semua Filter
+          </button>
         </div>
+      ) : (
+        <>
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+            {paginatedRooms.map((room) => (
+              <div
+                key={room.id}
+                className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-md transition-shadow group flex flex-col"
+              >
+                <div className="relative h-56 w-full overflow-hidden bg-gray-100">
+                  <img
+                    src={getPrimaryImage(room.room_images)}
+                    alt={room.name}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    onError={(e) => {
+                      e.currentTarget.src =
+                        "https://placehold.co/600x400?text=Image+Not+Found";
+                    }}
+                  />
+
+                  {getStatusBadge(room.current_status)}
+
+                  <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-sm px-2.5 py-1 rounded-lg text-xs font-bold text-emerald-700 shadow-sm uppercase tracking-wide">
+                    {room.type.replace("_", " ")}
+                  </div>
+                </div>
+                <div className="p-5 flex-1 flex flex-col">
+                  <h3 className="text-lg font-bold text-gray-900 mb-1 leading-tight">
+                    {room.name}
+                  </h3>
+                  <div className="flex flex-col gap-2 mt-3 text-sm text-gray-600">
+                    <div className="flex items-center gap-2">
+                      <span className="material-symbols-outlined text-[16px] text-emerald-600 shrink-0">location_on</span>
+                      <span className="truncate">{room.location}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="material-symbols-outlined text-[16px] text-emerald-600 shrink-0">group</span>
+                      <span>Maksimal {room.capacity} Orang</span>
+                    </div>
+                  </div>
+                  <div className="mt-auto pt-5">
+                    <div className="border-t border-gray-100 pt-4 flex items-end justify-between">
+                      <div>
+                        <p className="text-xs text-gray-500 font-medium mb-0.5">
+                          Tarif per malam
+                        </p>
+                        <p className="text-lg font-bold text-[#1D4ED8]">
+                          Rp {room.price_per_night.toLocaleString("id-ID")}
+                        </p>
+                      </div>
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => openEditModal(room)}
+                          className="p-2 text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors shadow-sm"
+                        >
+                          <span className="material-symbols-outlined text-[16px]">edit</span>
+                        </button>
+                        <button
+                          onClick={() => handleDelete(room.id, room.name)}
+                          className="p-2 text-rose-600 bg-rose-50 hover:bg-rose-100 rounded-lg transition-colors shadow-sm"
+                        >
+                          <span className="material-symbols-outlined text-[16px]">delete</span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* PAGINATION COMPONENT */}
+          {totalItems > 0 && (
+            <div className="pt-4 pb-2">
+              <PillPagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                totalItems={totalItems}
+                pageSize={pageSize}
+                onPageChange={(page) => setCurrentPage(page)}
+              />
+            </div>
+          )}
+        </>
       )}
 
       {/* =======================================================
@@ -594,7 +741,7 @@ export default function KamarPage() {
                         onChange={(e) =>
                           setFormData({ ...formData, name: e.target.value })
                         }
-                        className="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none"
+                        className="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none"
                       />
                     </div>
                     <div>
@@ -606,7 +753,7 @@ export default function KamarPage() {
                         onChange={(e) =>
                           setFormData({ ...formData, type: e.target.value })
                         }
-                        className="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none"
+                        className="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none"
                       >
                         <option value="standard">Standard</option>
                         <option value="suite">Suite</option>
@@ -631,7 +778,7 @@ export default function KamarPage() {
                               capacity: parseInt(e.target.value) || 0,
                             })
                           }
-                          className="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none"
+                          className="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none"
                         />
                       </div>
                       <div>
@@ -649,7 +796,7 @@ export default function KamarPage() {
                               price_per_night: parseInt(e.target.value) || 0,
                             })
                           }
-                          className="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none"
+                          className="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none"
                         />
                       </div>
                     </div>
@@ -663,7 +810,7 @@ export default function KamarPage() {
                         onChange={(e) =>
                           setFormData({ ...formData, location: e.target.value })
                         }
-                        className="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none"
+                        className="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none"
                       />
                     </div>
                     <div>
@@ -679,7 +826,7 @@ export default function KamarPage() {
                             description: e.target.value,
                           })
                         }
-                        className="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none resize-none"
+                        className="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none resize-none"
                         placeholder="Tuliskan deskripsi menarik tentang kamar ini..."
                       ></textarea>
                     </div>
@@ -695,7 +842,7 @@ export default function KamarPage() {
                             facilities: e.target.value,
                           })
                         }
-                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none min-h-[100px] resize-y"
+                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none min-h-[100px] resize-y"
                       />
                     </div>
                   </div>
@@ -713,8 +860,8 @@ export default function KamarPage() {
 
                     <div
                       className={`border-2 border-dashed rounded-2xl p-6 text-center transition-colors group mb-4 ${isDragging
-                          ? "bg-emerald-50 border-emerald-500 scale-[1.02]"
-                          : "border-gray-300 hover:bg-emerald-50/50 hover:border-emerald-300"
+                          ? "bg-blue-50 border-blue-500 scale-[1.02]"
+                          : "border-gray-300 hover:bg-blue-50/50 hover:border-blue-300"
                         }`}
                       onDragOver={handleDragOver}
                       onDragLeave={handleDragLeave}
@@ -732,8 +879,8 @@ export default function KamarPage() {
                         htmlFor="file-upload"
                         className="cursor-pointer flex flex-col items-center justify-center"
                       >
-                        <span className="material-symbols-outlined text-[32px] text-gray-400 group-hover:text-emerald-500 transition-colors mb-2">cloud_upload</span>
-                        <span className="text-sm font-semibold text-emerald-600">
+                        <span className="material-symbols-outlined text-[32px] text-gray-400 group-hover:text-blue-500 transition-colors mb-2">cloud_upload</span>
+                        <span className="text-sm font-semibold text-blue-600">
                           Upload Foto Baru
                         </span>
                       </label>
@@ -751,20 +898,25 @@ export default function KamarPage() {
                           return (
                             <div
                               key={img.id}
-                              className={`relative aspect-video rounded-xl overflow-hidden border-2 transition-all ${isDeleted ? "opacity-30 border-dashed" : isPrimary ? "border-amber-400" : "border-gray-200"}`}
+                              className={`relative aspect-video rounded-xl overflow-hidden border-2 transition-all ${isDeleted
+                                  ? "opacity-30 border-rose-300 border-dashed"
+                                  : isPrimary
+                                    ? "border-amber-400 ring-2 ring-amber-400/50"
+                                    : "border-gray-200"
+                                }`}
                             >
                               <img
                                 src={src}
-                                alt="old"
+                                alt="room"
                                 className="w-full h-full object-cover"
                               />
                               {isDeleted ? (
                                 <button
                                   type="button"
                                   onClick={() => undoOldImageDeletion(img.id)}
-                                  className="absolute inset-0 bg-black/50 flex flex-col items-center justify-center text-white"
+                                  className="absolute inset-0 bg-black/60 flex flex-col items-center justify-center text-white p-2"
                                 >
-                                  <span className="text-[10px] font-bold">
+                                  <span className="text-[10px] font-bold bg-rose-600 px-2 py-1 rounded">
                                     BATAL HAPUS
                                   </span>
                                 </button>
@@ -773,7 +925,10 @@ export default function KamarPage() {
                                   {!isPrimary && (
                                     <button
                                       type="button"
-                                      onClick={() => setPrimaryImageId(img.id)}
+                                      onClick={() => {
+                                        setPrimaryImageId(img.id);
+                                        setNewPrimaryIndex(0);
+                                      }}
                                       className="bg-amber-500 text-white p-1 rounded hover:bg-amber-600"
                                       title="Jadikan Cover"
                                     >
@@ -782,16 +937,15 @@ export default function KamarPage() {
                                   )}
                                   <button
                                     type="button"
-                                    onClick={() =>
-                                      markOldImageForDeletion(img.id)
-                                    }
+                                    onClick={() => markOldImageForDeletion(img.id)}
                                     className="bg-rose-500 text-white p-1 rounded hover:bg-rose-600 ml-auto"
+                                    title="Hapus Foto"
                                   >
                                     <span className="material-symbols-outlined text-[14px]">delete</span>
                                   </button>
                                 </div>
                               )}
-                              {!isDeleted && isPrimary && (
+                              {isPrimary && !isDeleted && (
                                 <div className="absolute top-1 left-1 bg-amber-400 text-black text-[9px] px-1.5 py-0.5 rounded-sm font-bold shadow-sm">
                                   COVER
                                 </div>
@@ -811,7 +965,7 @@ export default function KamarPage() {
                         return (
                           <div
                             key={idx}
-                            className={`relative aspect-video rounded-xl overflow-hidden border-2 group ${isPrimaryNew ? "border-amber-400" : "border-emerald-400"}`}
+                            className={`relative aspect-video rounded-xl overflow-hidden border-2 group ${isPrimaryNew ? "border-amber-400" : "border-blue-400"}`}
                           >
                             <img
                               src={URL.createObjectURL(file)}
@@ -841,7 +995,7 @@ export default function KamarPage() {
                               </button>
                             </div>
 
-                            <div className="absolute top-1 right-1 bg-emerald-500 text-white text-[9px] px-1.5 py-0.5 rounded-sm font-bold shadow-sm">
+                            <div className="absolute top-1 right-1 bg-blue-500 text-white text-[9px] px-1.5 py-0.5 rounded-sm font-bold shadow-sm">
                               BARU
                             </div>
                             {isPrimaryNew && (
@@ -873,7 +1027,7 @@ export default function KamarPage() {
                 type="submit"
                 form="room-form"
                 disabled={isSubmitting}
-                className="px-6 py-2.5 text-sm font-semibold text-white bg-emerald-600 hover:bg-emerald-700 rounded-xl disabled:opacity-50 transition-colors flex items-center gap-2"
+                className="px-6 py-2.5 text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 rounded-xl disabled:opacity-50 transition-colors flex items-center gap-2"
               >
                 {isSubmitting ? "Menyimpan..." : "Simpan Kamar"}
               </button>

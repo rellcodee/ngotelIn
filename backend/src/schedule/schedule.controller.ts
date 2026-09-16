@@ -13,6 +13,7 @@ import {
 import { ScheduleService } from './schedule.service';
 import { CreateScheduleDto } from './dto/create-schedule.dto';
 import { UpdateScheduleDto } from './dto/update-schedule.dto';
+import { GetScheduleQueryDto } from './dto/get-schedule-query.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { Roles } from '../common/decorators/roles.decorator';
 import { RolesGuard } from '../common/guards/roles.guard';
@@ -68,8 +69,8 @@ export class ScheduleController {
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles(Role.ADMIN, Role.STAFF)
   @Get()
-  async findAll() {
-    return this.scheduleService.findAll();
+  async findAll(@Query() query: GetScheduleQueryDto) {
+    return this.scheduleService.findAll(query);
   }
 
   // Find One Schedule (Detail Jadwal)

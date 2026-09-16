@@ -9,6 +9,8 @@ import { PrismaService } from '../prisma/prisma.service';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { CreateBookingDto } from './dto/create-booking.dto';
 import { UpdateBookingDto } from './dto/update-booking.dto';
+import { GetBookingsQueryDto } from './dto/get-bookings-query.dto';
+import { Prisma } from '@prisma/client';
 import {
   ScheduleStatus,
   BookingStatus,
@@ -254,9 +256,13 @@ export class BookingsService {
 
   async findAll(
     currentUser: { userId: string; role: string },
-    userId?: string,
-    status?: string,
+    query?: GetBookingsQueryDto,
   ) {
+    const page = Math.max(1, Number(query?.page) || 1);
+    const limit = Math.max(1, Number(query?.limit) || 10);
+    const skip = (page - 1) * limit;
+
+    let userId = query?.userId;
     if (currentUser.role === (Role.USER as string)) {
       userId = currentUser.userId;
     }
@@ -268,6 +274,7 @@ export class BookingsService {
           ...(userId && { user_id: userId }),
           status: BookingStatus.PENDING,
         },
+        take: 5,
       });
 
       for (const pb of pendingBookings) {
@@ -330,24 +337,70 @@ export class BookingsService {
       // Ignore global sync errors
     }
 
-    return this.prisma.bookings.findMany({
-      where: {
-        ...(userId && { user_id: userId }),
-        ...(status && { status: status as BookingStatus }),
-      },
-      include: {
-        users: {
-          select: { id: true, name: true, email: true }, // (amanin password)
-        },
-        schedules: {
-          include: {
-            resources: true,
+    const where: Prisma.bookingsWhereInput = {};
+
+    if (userId) {
+      where.user_id = userId;
+    }
+
+    if (query?.status) {
+      where.status = query.status as BookingStatus;
+    }
+
+    if (query?.startDate || query?.endDate) {
+      where.schedules = {
+        ...(query?.startDate && {
+          start_time: { gte: new Date(query.startDate) },
+        }),
+        ...(query?.endDate && {
+          end_time: { lte: new Date(query.endDate) },
+        }),
+      };
+    }
+
+    if (query?.search?.trim()) {
+      const s = query.search.trim();
+      where.OR = [
+        { users: { name: { contains: s, mode: 'insensitive' } } },
+        { users: { email: { contains: s, mode: 'insensitive' } } },
+        {
+          schedules: {
+            resources: {
+              name: { contains: s, mode: 'insensitive' },
+            },
           },
         },
-        payment: true,
-      },
-      orderBy: { created_at: 'desc' },
-    });
+      ];
+    }
+
+    const [data, total] = await Promise.all([
+      this.prisma.bookings.findMany({
+        where,
+        skip,
+        take: limit,
+        include: {
+          users: {
+            select: { id: true, name: true, email: true },
+          },
+          schedules: {
+            include: {
+              resources: true,
+            },
+          },
+          payment: true,
+        },
+        orderBy: { created_at: 'desc' },
+      }),
+      this.prisma.bookings.count({ where }),
+    ]);
+
+    return {
+      data,
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit) || 1,
+    };
   }
 
   async findOne(id: string, currentUser: { userId: string; role: string }) {

@@ -13,6 +13,7 @@ import { AiBotModule } from './ai_bot/ai_bot.module';
 import { ReviewsModule } from './reviews/reviews.module';
 import { NotificationsModule } from './notifications/notifications.module';
 import { PaymentsModule } from './payments/payments.module';
+import { DashboardModule } from './dashboard/dashboard.module';
 import { CacheModule } from '@nestjs/cache-manager';
 import { createKeyv } from '@keyv/redis';
 
@@ -30,6 +31,7 @@ import { createKeyv } from '@keyv/redis';
     ReviewsModule,
     NotificationsModule,
     PaymentsModule,
+    DashboardModule,
     CacheModule.registerAsync({
       isGlobal: true,
       // eslint-disable-next-line @typescript-eslint/require-await

@@ -33,7 +33,7 @@ interface BookingItem {
   room_image: string;
   check_in: string;
   check_out: string;
-  status: "pending" | "confirmed" | "completed" | "cancelled";
+  status: string;
   notes?: string;
   total_price: number;
   created_at: string;
@@ -219,8 +219,10 @@ export default function UserDashboardPage() {
         if (res.ok) {
           const rawData = await res.json();
 
+          const bookingList = Array.isArray(rawData) ? rawData : (rawData.data || []);
+
           // Mapping data dari struktur Prisma Backend ke struktur BookingItem Frontend
-          const mappedBookings: BookingItem[] = rawData.map((b: any) => ({
+          const mappedBookings: BookingItem[] = bookingList.map((b: any) => ({
             id: b.id,
             user_id: b.user_id,
             schedule_id: b.schedule_id,
@@ -242,6 +244,7 @@ export default function UserDashboardPage() {
             status: b.status,
             notes: b.notes || "-",
             total_price: b.payment?.amount || 0,
+            payment_status: b.payment?.status,
             created_at: b.created_at,
           }));
 
@@ -598,11 +601,10 @@ export default function UserDashboardPage() {
             <div className="flex border-b border-gray-100 bg-gray-50/70 overflow-x-auto scrollbar-none">
               <button
                 onClick={() => setActiveTab("bookings")}
-                className={`flex items-center gap-2 px-6 py-4 text-xs sm:text-sm font-bold transition-all whitespace-nowrap border-b-2 ${
-                  activeTab === "bookings"
-                    ? "border-[#1D4ED8] bg-white text-[#1D4ED8]"
-                    : "border-transparent text-gray-500 hover:text-gray-900 hover:bg-gray-100/50"
-                }`}
+                className={`flex items-center gap-2 px-6 py-4 text-xs sm:text-sm font-bold transition-all whitespace-nowrap border-b-2 ${activeTab === "bookings"
+                  ? "border-[#1D4ED8] bg-white text-[#1D4ED8]"
+                  : "border-transparent text-gray-500 hover:text-gray-900 hover:bg-gray-100/50"
+                  }`}
               >
                 <span className="material-symbols-outlined text-[16px]">
                   calendar_today
@@ -615,11 +617,10 @@ export default function UserDashboardPage() {
 
               <button
                 onClick={() => setActiveTab("notifications")}
-                className={`flex items-center gap-2 px-6 py-4 text-xs sm:text-sm font-bold transition-all whitespace-nowrap border-b-2 relative ${
-                  activeTab === "notifications"
-                    ? "border-[#1D4ED8] bg-white text-[#1D4ED8]"
-                    : "border-transparent text-gray-500 hover:text-gray-900 hover:bg-gray-100/50"
-                }`}
+                className={`flex items-center gap-2 px-6 py-4 text-xs sm:text-sm font-bold transition-all whitespace-nowrap border-b-2 relative ${activeTab === "notifications"
+                  ? "border-[#1D4ED8] bg-white text-[#1D4ED8]"
+                  : "border-transparent text-gray-500 hover:text-gray-900 hover:bg-gray-100/50"
+                  }`}
               >
                 <span className="material-symbols-outlined text-[16px]">
                   notifications
@@ -634,11 +635,10 @@ export default function UserDashboardPage() {
 
               <button
                 onClick={() => setActiveTab("reviews")}
-                className={`flex items-center gap-2 px-6 py-4 text-xs sm:text-sm font-bold transition-all whitespace-nowrap border-b-2 ${
-                  activeTab === "reviews"
-                    ? "border-[#1D4ED8] bg-white text-[#1D4ED8]"
-                    : "border-transparent text-gray-500 hover:text-gray-900 hover:bg-gray-100/50"
-                }`}
+                className={`flex items-center gap-2 px-6 py-4 text-xs sm:text-sm font-bold transition-all whitespace-nowrap border-b-2 ${activeTab === "reviews"
+                  ? "border-[#1D4ED8] bg-white text-[#1D4ED8]"
+                  : "border-transparent text-gray-500 hover:text-gray-900 hover:bg-gray-100/50"
+                  }`}
               >
                 <span className="material-symbols-outlined text-[16px]">
                   star
@@ -648,11 +648,10 @@ export default function UserDashboardPage() {
 
               <button
                 onClick={() => setActiveTab("settings")}
-                className={`flex items-center gap-2 px-6 py-4 text-xs sm:text-sm font-bold transition-all whitespace-nowrap border-b-2 ${
-                  activeTab === "settings"
-                    ? "border-[#1D4ED8] bg-white text-[#1D4ED8]"
-                    : "border-transparent text-gray-500 hover:text-gray-900 hover:bg-gray-100/50"
-                }`}
+                className={`flex items-center gap-2 px-6 py-4 text-xs sm:text-sm font-bold transition-all whitespace-nowrap border-b-2 ${activeTab === "settings"
+                  ? "border-[#1D4ED8] bg-white text-[#1D4ED8]"
+                  : "border-transparent text-gray-500 hover:text-gray-900 hover:bg-gray-100/50"
+                  }`}
               >
                 <span className="material-symbols-outlined text-[16px]">
                   person
@@ -745,13 +744,13 @@ export default function UserDashboardPage() {
                                   )}
                                   {(booking.status === "confirmed" ||
                                     booking.status === "approved") && (
-                                    <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700 border border-emerald-200">
-                                      <span className="material-symbols-outlined text-[14px] text-emerald-600">
-                                        check_circle
+                                      <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700 border border-emerald-200">
+                                        <span className="material-symbols-outlined text-[14px] text-emerald-600">
+                                          check_circle
+                                        </span>
+                                        Terverifikasi (Lunas)
                                       </span>
-                                      Terverifikasi (Lunas)
-                                    </span>
-                                  )}
+                                    )}
                                   {booking.status === "checked_in" && (
                                     <span className="inline-flex items-center gap-1 rounded-full bg-indigo-50 px-3 py-1 text-xs font-semibold text-indigo-700 border border-indigo-200">
                                       <span className="material-symbols-outlined text-[14px] text-indigo-600">
@@ -864,11 +863,11 @@ export default function UserDashboardPage() {
                                 )}
                                 {(booking.status === "confirmed" ||
                                   booking.status === "approved") && (
-                                  <span className="text-xs font-semibold text-emerald-700 bg-emerald-50 px-3 py-1.5 rounded-xl border border-emerald-200 flex items-center gap-1">
-                                    <span className="material-symbols-outlined text-[14px]">key</span>
-                                    Siap Check-in
-                                  </span>
-                                )}
+                                    <span className="text-xs font-semibold text-emerald-700 bg-emerald-50 px-3 py-1.5 rounded-xl border border-emerald-200 flex items-center gap-1">
+                                      <span className="material-symbols-outlined text-[14px]">key</span>
+                                      Siap Check-in
+                                    </span>
+                                  )}
                                 {booking.status === "checked_in" && (
                                   <span className="text-xs font-semibold text-indigo-700 bg-indigo-50 px-3 py-1.5 rounded-xl border border-indigo-200 flex items-center gap-1">
                                     <span className="material-symbols-outlined text-[14px]">door_open</span>
@@ -942,19 +941,17 @@ export default function UserDashboardPage() {
                       {notifications.map((n) => (
                         <div
                           key={n.id}
-                          className={`flex items-start justify-between p-4 rounded-2xl border transition-all ${
-                            n.is_read
-                              ? "bg-white border-gray-200/80 text-gray-600"
-                              : "bg-emerald-50/40 border-emerald-200 text-gray-900 shadow-sm"
-                          }`}
+                          className={`flex items-start justify-between p-4 rounded-2xl border transition-all ${n.is_read
+                            ? "bg-white border-gray-200/80 text-gray-600"
+                            : "bg-emerald-50/40 border-emerald-200 text-gray-900 shadow-sm"
+                            }`}
                         >
                           <div className="flex items-start gap-3">
                             <div
-                              className={`p-2 rounded-xl mt-0.5 ${
-                                n.is_read
-                                  ? "bg-gray-100 text-gray-500"
-                                  : "bg-[#1D4ED8] text-white"
-                              }`}
+                              className={`p-2 rounded-xl mt-0.5 ${n.is_read
+                                ? "bg-gray-100 text-gray-500"
+                                : "bg-[#1D4ED8] text-white"
+                                }`}
                             >
                               <span className="material-symbols-outlined text-[16px]">
                                 notifications
@@ -1139,11 +1136,10 @@ export default function UserDashboardPage() {
                       className="p-1 transition-transform hover:scale-125"
                     >
                       <span
-                        className={`material-symbols-outlined text-[28px] ${
-                          star <= reviewRating
-                            ? "text-amber-400"
-                            : "text-gray-300"
-                        }`}
+                        className={`material-symbols-outlined text-[28px] ${star <= reviewRating
+                          ? "text-amber-400"
+                          : "text-gray-300"
+                          }`}
                       >
                         star
                       </span>

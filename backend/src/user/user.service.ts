@@ -7,9 +7,11 @@ import {
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateOfficialDto } from './dto/create-official.dto';
+import { GetUsersQueryDto } from './dto/get-users-query.dto';
+import { PrismaService } from 'src/prisma/prisma.service';
 import { Role } from '../common/enums';
+import { Prisma } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import type { Cache } from 'cache-manager';
@@ -89,26 +91,52 @@ export class UserService {
     }
   }
 
-  async findAll() {
-    const cacheKey = 'users:all';
-    const cachedUsers = await this.cacheManager.get(cacheKey);
-    if (cachedUsers) {
-      return cachedUsers;
+  async findAll(query?: GetUsersQueryDto) {
+    const page = Math.max(1, Number(query?.page) || 1);
+    const limit = Math.max(1, Number(query?.limit) || 10);
+    const skip = (page - 1) * limit;
+    const search = query?.search?.trim();
+    const roleType = query?.roleType;
+
+    const where: Prisma.usersWhereInput = {};
+
+    if (roleType === 'official') {
+      where.role = { in: [Role.ADMIN, Role.STAFF] };
+    } else if (roleType === 'users') {
+      where.role = Role.USER;
     }
 
-    const users = await this.prisma.users.findMany({
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        role: true,
-        created_at: true,
-      },
-      orderBy: { created_at: 'desc' },
-    });
+    if (search) {
+      where.OR = [
+        { name: { contains: search, mode: 'insensitive' } },
+        { email: { contains: search, mode: 'insensitive' } },
+      ];
+    }
 
-    await this.cacheManager.set(cacheKey, users, 1800000);
-    return users;
+    const [data, total] = await Promise.all([
+      this.prisma.users.findMany({
+        where,
+        skip,
+        take: limit,
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          role: true,
+          created_at: true,
+        },
+        orderBy: { created_at: 'desc' },
+      }),
+      this.prisma.users.count({ where }),
+    ]);
+
+    return {
+      data,
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit) || 1,
+    };
   }
   // --- CEK KEPEMILIKAN AKUN ---
   private checkAccountOwnership(targetId: string, currentUser: any) {

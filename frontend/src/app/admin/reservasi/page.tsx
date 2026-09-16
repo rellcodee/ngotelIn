@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-
+import React, { useState, useEffect, useCallback } from "react";
 import CustomModal from "@/components/CustomModal";
+import PillPagination from "@/components/PillPagination";
+import SearchInput from "@/components/SearchInput";
 
 // --- TYPES ---
 interface User {
@@ -47,15 +48,33 @@ interface Booking {
 }
 
 export default function AdminReservasiPage() {
-  const [activeTab, setActiveTab] = useState<"reservasi" | "jadwal">(
-    "reservasi",
-  );
+  const [activeTab, setActiveTab] = useState<"reservasi" | "jadwal">("reservasi");
   const [isLoading, setIsLoading] = useState(true);
 
   // Data
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [schedules, setSchedules] = useState<Schedule[]>([]);
   const [rooms, setRooms] = useState<Resource[]>([]);
+
+  // State Paginasi & Filter Reservasi
+  const [bookingPage, setBookingPage] = useState(1);
+  const [bookingPageSize] = useState(10);
+  const [bookingSearch, setBookingSearch] = useState("");
+  const [bookingStatus, setBookingStatusFilter] = useState("");
+  const [bookingStartDate, setBookingStartDate] = useState("");
+  const [bookingEndDate, setBookingEndDate] = useState("");
+  const [bookingTotal, setBookingTotal] = useState(0);
+  const [bookingTotalPages, setBookingTotalPages] = useState(1);
+
+  // State Paginasi & Filter Jadwal
+  const [schedulePage, setSchedulePage] = useState(1);
+  const [schedulePageSize] = useState(10);
+  const [scheduleSearch, setScheduleSearch] = useState("");
+  const [scheduleStatus, setScheduleStatusFilter] = useState("");
+  const [scheduleStartDate, setScheduleStartDate] = useState("");
+  const [scheduleEndDate, setScheduleEndDate] = useState("");
+  const [scheduleTotal, setScheduleTotal] = useState(0);
+  const [scheduleTotalPages, setScheduleTotalPages] = useState(1);
 
   // Modal State
   const [modal, setModal] = useState<{
@@ -75,7 +94,7 @@ export default function AdminReservasiPage() {
   // Action States
   const [isEditBookingOpen, setIsEditBookingOpen] = useState(false);
   const [editingBooking, setEditingBooking] = useState<Booking | null>(null);
-  const [bookingStatus, setBookingStatus] = useState("");
+  const [editBookingStatus, setEditBookingStatus] = useState("");
 
   const [isAddScheduleOpen, setIsAddScheduleOpen] = useState(false);
   const [scheduleData, setScheduleData] = useState({
@@ -93,45 +112,107 @@ export default function AdminReservasiPage() {
   });
 
   // --- FETCHERS ---
-  const fetchData = async () => {
+  const fetchBookings = useCallback(async () => {
     setIsLoading(true);
     try {
       const token = localStorage.getItem("token");
-      const headers = { Authorization: `Bearer ${token}` };
-
-      // Fetch Bookings
-      const resBookings = await fetch("http://localhost:3001/bookings", {
-        headers,
+      const params = new URLSearchParams({
+        page: bookingPage.toString(),
+        limit: bookingPageSize.toString(),
       });
-      if (resBookings.ok) {
-        setBookings(await resBookings.json());
-      }
 
-      // Fetch Schedules
-      const resSchedules = await fetch("http://localhost:3001/schedule", {
-        headers,
-      });
-      if (resSchedules.ok) {
-        setSchedules(await resSchedules.json());
-      }
+      if (bookingSearch.trim()) params.append("search", bookingSearch.trim());
+      if (bookingStatus) params.append("status", bookingStatus);
+      if (bookingStartDate) params.append("startDate", bookingStartDate);
+      if (bookingEndDate) params.append("endDate", bookingEndDate);
 
-      // Fetch Rooms (for maintenance dropdown)
-      const resRooms = await fetch("http://localhost:3001/resources", {
-        headers,
+      const res = await fetch(`http://localhost:3001/bookings?${params.toString()}`, {
+        headers: { Authorization: `Bearer ${token}` },
       });
-      if (resRooms.ok) {
-        setRooms(await resRooms.json());
+
+      if (res.ok) {
+        const json = await res.json();
+        setBookings(json.data || []);
+        setBookingTotal(json.total || 0);
+        setBookingTotalPages(json.totalPages || 1);
       }
     } catch (err) {
       console.error(err);
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [bookingPage, bookingPageSize, bookingSearch, bookingStatus, bookingStartDate, bookingEndDate]);
+
+  const fetchSchedules = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      const token = localStorage.getItem("token");
+      const params = new URLSearchParams({
+        page: schedulePage.toString(),
+        limit: schedulePageSize.toString(),
+      });
+
+      if (scheduleSearch.trim()) params.append("search", scheduleSearch.trim());
+      if (scheduleStatus) params.append("status", scheduleStatus);
+      if (scheduleStartDate) params.append("startDate", scheduleStartDate);
+      if (scheduleEndDate) params.append("endDate", scheduleEndDate);
+
+      const res = await fetch(`http://localhost:3001/schedule?${params.toString()}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (res.ok) {
+        const json = await res.json();
+        setSchedules(json.data || []);
+        setScheduleTotal(json.total || 0);
+        setScheduleTotalPages(json.totalPages || 1);
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [schedulePage, schedulePageSize, scheduleSearch, scheduleStatus, scheduleStartDate, scheduleEndDate]);
+
+  const fetchRooms = useCallback(async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const res = await fetch("http://localhost:3001/resources", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (res.ok) {
+        setRooms(await res.json());
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  }, []);
 
   useEffect(() => {
-    void fetchData();
-  }, []);
+    if (activeTab === "reservasi") {
+      fetchBookings();
+    } else {
+      fetchSchedules();
+      fetchRooms();
+    }
+  }, [activeTab, fetchBookings, fetchSchedules, fetchRooms]);
+
+  // Reset Filters
+  const handleResetBookingFilters = () => {
+    setBookingSearch("");
+    setBookingStatusFilter("");
+    setBookingStartDate("");
+    setBookingEndDate("");
+    setBookingPage(1);
+  };
+
+  const handleResetScheduleFilters = () => {
+    setScheduleSearch("");
+    setScheduleStatusFilter("");
+    setScheduleStartDate("");
+    setScheduleEndDate("");
+    setSchedulePage(1);
+  };
 
   // --- BOOKING ACTIONS ---
   const handleUpdateBooking = async (e: React.FormEvent) => {
@@ -148,7 +229,7 @@ export default function AdminReservasiPage() {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify({ status: bookingStatus }),
+          body: JSON.stringify({ status: editBookingStatus }),
         },
       );
 
@@ -163,7 +244,7 @@ export default function AdminReservasiPage() {
         onClose: () => setModal((prev) => ({ ...prev, isOpen: false })),
       });
       setIsEditBookingOpen(false);
-      fetchData();
+      fetchBookings();
     } catch (err: unknown) {
       setModal({
         isOpen: true,
@@ -214,7 +295,7 @@ export default function AdminReservasiPage() {
         end_time: "",
         status: "maintenance",
       });
-      fetchData();
+      fetchSchedules();
     } catch (err: unknown) {
       setModal({
         isOpen: true,
@@ -252,7 +333,7 @@ export default function AdminReservasiPage() {
         onClose: () => setModal((prev) => ({ ...prev, isOpen: false })),
       });
       setIsRescheduleOpen(false);
-      fetchData();
+      fetchSchedules();
     } catch (err: unknown) {
       setModal({
         isOpen: true,
@@ -288,7 +369,7 @@ export default function AdminReservasiPage() {
             message: "Jadwal berhasil dihapus.",
             onClose: () => setModal((prev) => ({ ...prev, isOpen: false })),
           });
-          fetchData();
+          fetchSchedules();
         } catch (err: unknown) {
           setModal({
             isOpen: true,
@@ -365,8 +446,12 @@ export default function AdminReservasiPage() {
     }
   };
 
+  const hasActiveBookingFilters = Boolean(bookingSearch || bookingStatus || bookingStartDate || bookingEndDate);
+  const hasActiveScheduleFilters = Boolean(scheduleSearch || scheduleStatus || scheduleStartDate || scheduleEndDate);
+
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+      {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">
@@ -379,7 +464,7 @@ export default function AdminReservasiPage() {
         {activeTab === "jadwal" && (
           <button
             onClick={() => setIsAddScheduleOpen(true)}
-            className="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-xl font-medium shadow-sm transition-all hover:-translate-y-0.5 active:scale-95"
+            className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl font-medium shadow-sm transition-all hover:-translate-y-0.5 active:scale-95"
           >
             <span className="material-symbols-outlined text-[16px]">add</span> Tambah Jadwal
           </button>
@@ -389,27 +474,164 @@ export default function AdminReservasiPage() {
       {/* Tabs */}
       <div className="flex space-x-1 bg-gray-100/80 p-1 rounded-xl w-fit">
         <button
-          onClick={() => setActiveTab("reservasi")}
-          className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${
-            activeTab === "reservasi"
-              ? "bg-white text-emerald-700 shadow-sm"
-              : "text-gray-500 hover:text-gray-700 hover:bg-gray-200/50"
-          }`}
+          onClick={() => {
+            setActiveTab("reservasi");
+            setBookingPage(1);
+          }}
+          className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm transition-all duration-200 ${activeTab === "reservasi"
+            ? "bg-white text-blue-700 shadow-sm"
+            : "text-gray-500 hover:text-gray-700 hover:bg-gray-200/50"
+            }`}
         >
           <span className="material-symbols-outlined text-[16px]">calendar_month</span>
           Daftar Reservasi
         </button>
         <button
-          onClick={() => setActiveTab("jadwal")}
-          className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${
-            activeTab === "jadwal"
-              ? "bg-white text-emerald-700 shadow-sm"
-              : "text-gray-500 hover:text-gray-700 hover:bg-gray-200/50"
-          }`}
+          onClick={() => {
+            setActiveTab("jadwal");
+            setSchedulePage(1);
+          }}
+          className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm transition-all duration-200 ${activeTab === "jadwal"
+            ? "bg-white text-blue-700 shadow-sm"
+            : "text-gray-500 hover:text-gray-700 hover:bg-gray-200/50"
+            }`}
         >
           <span className="material-symbols-outlined text-[16px]">date_range</span>
           Daftar Jadwal
         </button>
+      </div>
+
+      {/* TOOLBAR FILTER & SEARCH */}
+      <div className="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex flex-col md:flex-row gap-3 items-stretch md:items-center justify-between">
+        {activeTab === "reservasi" ? (
+          <>
+            <SearchInput
+              value={bookingSearch}
+              onChange={(val) => {
+                setBookingSearch(val);
+                setBookingPage(1);
+              }}
+              placeholder="Cari nama tamu, email, kamar..."
+              className="md:max-w-xs"
+            />
+            <div className="flex flex-wrap items-center gap-2.5">
+              {/* Status Filter */}
+              <select
+                value={bookingStatus}
+                onChange={(e) => {
+                  setBookingStatusFilter(e.target.value);
+                  setBookingPage(1);
+                }}
+                className="text-sm px-3 py-2 bg-white border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-blue-500/20 text-gray-700"
+              >
+                <option value="">Semua Status</option>
+                <option value="pending">Pending</option>
+                <option value="approved">Approved</option>
+                <option value="checked_in">Checked In</option>
+                <option value="completed">Completed</option>
+                <option value="canceled">Canceled</option>
+                <option value="rejected">Rejected</option>
+              </select>
+
+              {/* Tanggal Filter */}
+              <div className="flex items-center gap-1.5 text-xs text-gray-500">
+                <input
+                  type="date"
+                  value={bookingStartDate}
+                  onChange={(e) => {
+                    setBookingStartDate(e.target.value);
+                    setBookingPage(1);
+                  }}
+                  className="text-xs px-2.5 py-2 bg-white border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-blue-500/20 text-gray-700"
+                  title="Tanggal Mulai"
+                />
+                <span>-</span>
+                <input
+                  type="date"
+                  value={bookingEndDate}
+                  onChange={(e) => {
+                    setBookingEndDate(e.target.value);
+                    setBookingPage(1);
+                  }}
+                  className="text-xs px-2.5 py-2 bg-white border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-blue-500/20 text-gray-700"
+                  title="Tanggal Selesai"
+                />
+              </div>
+
+              {/* Reset Filter Button */}
+              {hasActiveBookingFilters && (
+                <button
+                  onClick={handleResetBookingFilters}
+                  className="text-xs text-rose-600 hover:text-rose-700 font-medium px-2 py-1.5 rounded-lg hover:bg-rose-50 transition-colors"
+                >
+                  Reset Filter
+                </button>
+              )}
+            </div>
+          </>
+        ) : (
+          <>
+            <SearchInput
+              value={scheduleSearch}
+              onChange={(val) => {
+                setScheduleSearch(val);
+                setSchedulePage(1);
+              }}
+              placeholder="Cari nama kamar..."
+              className="md:max-w-xs"
+            />
+            <div className="flex flex-wrap items-center gap-2.5">
+              {/* Status Filter */}
+              <select
+                value={scheduleStatus}
+                onChange={(e) => {
+                  setScheduleStatusFilter(e.target.value);
+                  setSchedulePage(1);
+                }}
+                className="text-sm px-3 py-2 bg-white border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-blue-500/20 text-gray-700"
+              >
+                <option value="">Semua Status</option>
+                <option value="booked">Booked (Dipesan)</option>
+                <option value="maintenance">Maintenance</option>
+              </select>
+
+              {/* Tanggal Filter */}
+              <div className="flex items-center gap-1.5 text-xs text-gray-500">
+                <input
+                  type="date"
+                  value={scheduleStartDate}
+                  onChange={(e) => {
+                    setScheduleStartDate(e.target.value);
+                    setSchedulePage(1);
+                  }}
+                  className="text-xs px-2.5 py-2 bg-white border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-blue-500/20 text-gray-700"
+                  title="Tanggal Mulai"
+                />
+                <span>-</span>
+                <input
+                  type="date"
+                  value={scheduleEndDate}
+                  onChange={(e) => {
+                    setScheduleEndDate(e.target.value);
+                    setSchedulePage(1);
+                  }}
+                  className="text-xs px-2.5 py-2 bg-white border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-blue-500/20 text-gray-700"
+                  title="Tanggal Selesai"
+                />
+              </div>
+
+              {/* Reset Filter Button */}
+              {hasActiveScheduleFilters && (
+                <button
+                  onClick={handleResetScheduleFilters}
+                  className="text-xs text-rose-600 hover:text-rose-700 font-medium px-2 py-1.5 rounded-lg hover:bg-rose-50 transition-colors"
+                >
+                  Reset Filter
+                </button>
+              )}
+            </div>
+          </>
+        )}
       </div>
 
       {/* CONTENT */}
@@ -490,7 +712,7 @@ export default function AdminReservasiPage() {
                         <button
                           onClick={() => {
                             setEditingBooking(booking);
-                            setBookingStatus(booking.status);
+                            setEditBookingStatus(booking.status);
                             setIsEditBookingOpen(true);
                           }}
                           className="p-2 text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors shadow-sm inline-flex"
@@ -504,7 +726,7 @@ export default function AdminReservasiPage() {
                   {bookings.length === 0 && (
                     <tr>
                       <td colSpan={6} className="p-8 text-center text-gray-500">
-                        Belum ada reservasi.
+                        Tidak ada data reservasi ditemukan.
                       </td>
                     </tr>
                   )}
@@ -541,11 +763,10 @@ export default function AdminReservasiPage() {
                         <div className="flex items-center justify-center gap-2">
                           <button
                             onClick={() => {
-                              // Konversi ke format YYYY-MM-DDThh:mm untuk input datetime-local
                               const offset = new Date().getTimezoneOffset() * 60000;
                               const localStart = new Date(new Date(sched.start_time).getTime() - offset).toISOString().slice(0, 16);
                               const localEnd = new Date(new Date(sched.end_time).getTime() - offset).toISOString().slice(0, 16);
-                              
+
                               setRescheduleData({
                                 id: sched.id,
                                 start_time: localStart,
@@ -572,7 +793,7 @@ export default function AdminReservasiPage() {
                   {schedules.length === 0 && (
                     <tr>
                       <td colSpan={5} className="p-8 text-center text-gray-500">
-                        Tidak ada jadwal.
+                        Tidak ada data jadwal ditemukan.
                       </td>
                     </tr>
                   )}
@@ -582,6 +803,27 @@ export default function AdminReservasiPage() {
           </div>
         )}
       </div>
+
+      {/* REUSABLE PILL PAGINATION */}
+      {activeTab === "reservasi" ? (
+        <PillPagination
+          currentPage={bookingPage}
+          totalPages={bookingTotalPages}
+          totalItems={bookingTotal}
+          pageSize={bookingPageSize}
+          onPageChange={(newPage) => setBookingPage(newPage)}
+          className="pt-2"
+        />
+      ) : (
+        <PillPagination
+          currentPage={schedulePage}
+          totalPages={scheduleTotalPages}
+          totalItems={scheduleTotal}
+          pageSize={schedulePageSize}
+          onPageChange={(newPage) => setSchedulePage(newPage)}
+          className="pt-2"
+        />
+      )}
 
       {/* MODAL UPDATE BOOKING */}
       {isEditBookingOpen && (
@@ -604,9 +846,9 @@ export default function AdminReservasiPage() {
                   Ubah Status
                 </label>
                 <select
-                  value={bookingStatus}
-                  onChange={(e) => setBookingStatus(e.target.value)}
-                  className="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none"
+                  value={editBookingStatus}
+                  onChange={(e) => setEditBookingStatus(e.target.value)}
+                  className="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none"
                 >
                   <option value="pending">Pending</option>
                   <option value="approved">Approved</option>
@@ -626,7 +868,7 @@ export default function AdminReservasiPage() {
                 </button>
                 <button
                   type="submit"
-                  className="flex-1 px-4 py-2 text-white bg-emerald-600 hover:bg-emerald-700 rounded-xl font-semibold transition-colors shadow-sm"
+                  className="flex-1 px-4 py-2 text-white bg-blue-600 hover:bg-blue-700 rounded-xl font-semibold transition-colors shadow-sm"
                 >
                   Simpan
                 </button>
@@ -665,7 +907,7 @@ export default function AdminReservasiPage() {
                       resource_id: e.target.value,
                     })
                   }
-                  className="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none"
+                  className="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none"
                 >
                   <option value="" disabled>
                     -- Pilih Kamar --
@@ -692,7 +934,7 @@ export default function AdminReservasiPage() {
                         start_time: e.target.value,
                       })
                     }
-                    className="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none"
+                    className="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none"
                   />
                 </div>
                 <div>
@@ -709,7 +951,7 @@ export default function AdminReservasiPage() {
                         end_time: e.target.value,
                       })
                     }
-                    className="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none"
+                    className="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none"
                   />
                 </div>
               </div>
@@ -723,7 +965,7 @@ export default function AdminReservasiPage() {
                   onChange={(e) =>
                     setScheduleData({ ...scheduleData, status: e.target.value })
                   }
-                  className="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none"
+                  className="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none"
                 >
                   <option value="booked">Booked (Dipesan)</option>
                   <option value="maintenance">
@@ -741,7 +983,7 @@ export default function AdminReservasiPage() {
                 </button>
                 <button
                   type="submit"
-                  className="flex-1 px-4 py-2 text-white bg-emerald-600 hover:bg-emerald-700 rounded-xl font-semibold transition-colors shadow-sm"
+                  className="flex-1 px-4 py-2 text-white bg-blue-600 hover:bg-blue-700 rounded-xl font-semibold transition-colors shadow-sm"
                 >
                   Simpan Jadwal
                 </button>
@@ -768,7 +1010,7 @@ export default function AdminReservasiPage() {
                     required
                     value={rescheduleData.start_time}
                     onChange={(e) => setRescheduleData({ ...rescheduleData, start_time: e.target.value })}
-                    className="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none"
+                    className="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none"
                   />
                 </div>
                 <div>
@@ -778,7 +1020,7 @@ export default function AdminReservasiPage() {
                     required
                     value={rescheduleData.end_time}
                     onChange={(e) => setRescheduleData({ ...rescheduleData, end_time: e.target.value })}
-                    className="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-emerald-500 outline-none"
+                    className="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none"
                   />
                 </div>
               </div>
@@ -796,7 +1038,7 @@ export default function AdminReservasiPage() {
         type={modal.type}
         title={modal.title}
         message={modal.message}
-        onClose={modal.onClose || (() => {})}
+        onClose={modal.onClose || (() => { })}
         onConfirm={modal.onConfirm}
       />
     </div>

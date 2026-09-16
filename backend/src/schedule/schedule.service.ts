@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { CreateScheduleDto } from './dto/create-schedule.dto';
 import { UpdateScheduleDto } from './dto/update-schedule.dto';
+import { GetScheduleQueryDto } from './dto/get-schedule-query.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Prisma } from '@prisma/client';
 import { ScheduleStatus } from 'src/common/enums';
@@ -144,19 +145,65 @@ export class ScheduleService {
     });
   }
 
-  async findAll(status?: ScheduleStatus) {
-    return this.prisma.schedules.findMany({
-      where: status
-        ? { status } // Kalau admin explicitly minta ?status=CANCELLED
-        : { status: { not: ScheduleStatus.CANCELED } }, // Default: Sembunyikan yang CANCELLED
-      include: {
-        resources: true,
-      },
-      orderBy: {
-        start_time: 'asc',
-      },
-    });
+  async findAll(query?: GetScheduleQueryDto) {
+    const page = Math.max(1, Number(query?.page) || 1);
+    const limit = Math.max(1, Number(query?.limit) || 10);
+    const skip = (page - 1) * limit;
+
+    const where: Prisma.schedulesWhereInput = {};
+
+    if (query?.status) {
+      where.status = query.status as ScheduleStatus;
+    } else {
+      where.status = { not: ScheduleStatus.CANCELED };
+    }
+
+    if (query?.resource_id) {
+      where.resource_id = query.resource_id;
+    }
+
+    if (query?.startDate || query?.endDate) {
+      where.AND = [
+        ...(query?.startDate
+          ? [{ start_time: { gte: new Date(query.startDate) } }]
+          : []),
+        ...(query?.endDate
+          ? [{ end_time: { lte: new Date(query.endDate) } }]
+          : []),
+      ];
+    }
+
+    if (query?.search?.trim()) {
+      const s = query.search.trim();
+      where.resources = {
+        name: { contains: s, mode: 'insensitive' },
+      };
+    }
+
+    const [data, total] = await Promise.all([
+      this.prisma.schedules.findMany({
+        where,
+        skip,
+        take: limit,
+        include: {
+          resources: true,
+        },
+        orderBy: {
+          start_time: 'desc',
+        },
+      }),
+      this.prisma.schedules.count({ where }),
+    ]);
+
+    return {
+      data,
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit) || 1,
+    };
   }
+
   // 5. PENCARI JADWAL SIBUK (Pengganti findAvailable)
   // Method ini digunakan frontend untuk me-nonaktifkan tanggal di komponen Kalender (DatePicker)
   async findBusySchedules(resource_id: string) {

@@ -1,41 +1,197 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
+import StaffKpiCards from "@/components/dashboard/staff/StaffKpiCards";
+import StaffQuickActions from "@/components/dashboard/staff/StaffQuickActions";
+import TodayArrivalsTable from "@/components/dashboard/staff/TodayArrivalsTable";
+import RoomOccupancyWidget from "@/components/dashboard/staff/RoomOccupancyWidget";
+import { Clock, WarningCircle, User } from "@phosphor-icons/react";
 
+interface StaffDashboardData {
+  checkInTodayCount: number;
+  checkedInTodayCount: number;
+  checkOutTodayCount: number;
+  inHouseCount: number;
+  totalRooms: number;
+  roomOverview: {
+    total: number;
+    available: number;
+    booked: number;
+    maintenance: number;
+  };
+  todayArrivals: {
+    bookingId: string;
+    scheduleId: string;
+    guestName: string;
+    guestEmail: string;
+    roomName: string;
+    roomType: string;
+    roomLocation: string;
+    checkIn: string;
+    checkOut: string;
+    bookingStatus: string;
+    paymentStatus: string;
+    paymentAmount: number;
+    paymentMethod: string;
+    notes?: string;
+  }[];
+}
 
-export default function StaffDashboard() {
-  return (
-    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-      <div>
-        <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">Dashboard Staff</h1>
-        <p className="text-gray-500 mt-1">Pantau jadwal hari ini dan pastikan kenyamanan tamu.</p>
+export default function StaffDashboardPage() {
+  const [data, setData] = useState<StaffDashboardData | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
+
+  const fetchStaffData = async (isManual = false) => {
+    if (isManual) setIsRefreshing(true);
+    else setIsLoading(true);
+
+    try {
+      const token = localStorage.getItem("token");
+      const res = await fetch("http://localhost:3001/dashboard/staff", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (!res.ok) throw new Error("Gagal mengambil data operasional staff");
+
+      const result = await res.json();
+      setData(result);
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setErrorMsg(err.message);
+      } else {
+        setErrorMsg("Terjadi kesalahan memuat dashboard");
+      }
+    } finally {
+      setIsLoading(false);
+      setIsRefreshing(false);
+    }
+  };
+
+  useEffect(() => {
+    void fetchStaffData();
+  }, []);
+
+  const handleStatusUpdate = async (bookingId: string, newStatus: string) => {
+    try {
+      const token = localStorage.getItem("token");
+      const res = await fetch(`http://localhost:3001/bookings/${bookingId}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ status: newStatus }),
+      });
+
+      if (!res.ok) {
+        const errData = await res.json();
+        throw new Error(errData.message || "Gagal mengubah status booking");
+      }
+
+      await fetchStaffData(true);
+    } catch (err: any) {
+      alert("Error: " + err.message);
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <div className="space-y-6 animate-pulse">
+        <div className="h-10 w-64 bg-slate-200 rounded-2xl mb-6"></div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          {[1, 2, 3, 4].map((i) => (
+            <div key={i} className="h-36 bg-slate-200 rounded-3xl"></div>
+          ))}
+        </div>
+        <div className="h-12 w-full bg-slate-200 rounded-2xl"></div>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="h-80 lg:col-span-2 bg-slate-200 rounded-3xl"></div>
+          <div className="h-80 bg-slate-200 rounded-3xl"></div>
+        </div>
       </div>
-      
-      {/* Overview Cards */}
-      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-        {[
-          { name: "Check-in Hari Ini", value: "8", icon: "event_available", color: "text-emerald-600", bg: "bg-emerald-100/50" },
-          { name: "Check-out Hari Ini", value: "5", icon: "schedule", color: "text-amber-600", bg: "bg-amber-100/50" },
-          { name: "Kamar Perlu Dibersihkan", value: "3", icon: "key", color: "text-rose-600", bg: "bg-rose-100/50" },
-          { name: "Tugas Selesai", value: "12", icon: "check_circle", color: "text-blue-600", bg: "bg-blue-100/50" },
-        ].map((stat) => (
-          <div key={stat.name} className="flex items-center gap-4 rounded-2xl bg-white p-6 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-gray-100 transition-transform hover:-translate-y-1">
-            <div className={`flex h-12 w-12 items-center justify-center rounded-full ${stat.bg}`}>
-              <span className={`material-symbols-outlined text-[24px] ${stat.color}`}>{stat.icon}</span>
+    );
+  }
+
+  if (errorMsg) {
+    return (
+      <div className="p-12 text-center bg-white rounded-3xl border border-slate-200/80 shadow-sm">
+        <div className="w-16 h-16 bg-rose-50 rounded-full flex items-center justify-center mx-auto mb-4 text-rose-500">
+          <WarningCircle size={32} weight="duotone" />
+        </div>
+        <h2 className="text-lg font-bold text-slate-900 mb-1">Gagal Memuat Dashboard</h2>
+        <p className="text-xs text-slate-500 mb-5">{errorMsg}</p>
+        <button
+          onClick={() => fetchStaffData()}
+          className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl transition-all shadow-sm active:scale-95"
+        >
+          Coba Lagi
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-7 animate-in fade-in slide-in-from-bottom-4 duration-500 pb-10">
+      {/* 1. Header Banner */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div>
+          <div className="flex items-center gap-3">
+            <div className="flex items-center justify-center bg-blue-100 p-2.5 rounded-2xl border border-blue-200/60 shadow-sm text-blue-600">
+              <User size={22} weight="bold" />
             </div>
             <div>
-              <p className="text-sm font-semibold text-gray-500">{stat.name}</p>
-              <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
+              <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+                Staff Workspace
+              </h1>
+              <p className="text-xs text-slate-500 mt-0.5">
+                Monitoring operasional harian & pelayanan tamu hotel
+              </p>
             </div>
           </div>
-        ))}
+        </div>
+        <div className="flex items-center gap-2 bg-white px-4 py-2.5 rounded-2xl border border-slate-200/80 shadow-sm text-xs font-bold text-slate-700">
+          <Clock size={16} weight="bold" className="text-blue-600" />
+          <span>{new Date().toLocaleDateString("id-ID", { dateStyle: "full" })}</span>
+        </div>
       </div>
-      
-      {/* Main Content Area placeholder */}
-      <div className="mt-8 rounded-2xl bg-white p-8 shadow-[0_2px_10px_-3px_rgba(6,81,237,0.1)] border border-gray-100 min-h-[400px] flex flex-col items-center justify-center border-dashed border-2">
-        <span className="material-symbols-outlined text-[48px] text-gray-300 mb-4">event_available</span>
-        <h3 className="text-lg font-bold text-gray-600">Daftar Kedatangan</h3>
-        <p className="text-gray-400 text-sm mt-1 text-center max-w-sm">Tabel daftar kedatangan tamu hari ini akan muncul di sini.</p>
+
+      {/* 2. Operational KPI Cards */}
+      <StaffKpiCards
+        checkInTodayCount={data?.checkInTodayCount || 0}
+        checkedInTodayCount={data?.checkedInTodayCount || 0}
+        checkOutTodayCount={data?.checkOutTodayCount || 0}
+        inHouseCount={data?.inHouseCount || 0}
+        maintenanceCount={data?.roomOverview.maintenance || 0}
+      />
+
+      {/* 3. Quick Action Shortcut Pills */}
+      <StaffQuickActions
+        onRefresh={() => fetchStaffData(true)}
+        isRefreshing={isRefreshing}
+      />
+
+      {/* 4. Main Section: Today Arrivals Table & Room Occupancy Breakdown */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="lg:col-span-2">
+          <TodayArrivalsTable
+            arrivals={data?.todayArrivals || []}
+            onStatusUpdate={handleStatusUpdate}
+          />
+        </div>
+        <div className="lg:col-span-1">
+          <RoomOccupancyWidget
+            overview={
+              data?.roomOverview || {
+                total: 0,
+                available: 0,
+                booked: 0,
+                maintenance: 0,
+              }
+            }
+          />
+        </div>
       </div>
     </div>
   );
