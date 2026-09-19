@@ -113,7 +113,7 @@ export default function StaffKamarPage() {
     switch (status) {
       case "available":
         return (
-          <span className="absolute top-3 right-3 px-2.5 py-1 bg-emerald-500 text-white text-[11px] font-bold rounded-lg shadow-md uppercase tracking-wide z-10">
+          <span className="absolute top-3 right-3 px-2.5 py-1 bg-blue-600 text-white text-[11px] font-bold rounded-lg shadow-md uppercase tracking-wide z-10">
             Tersedia
           </span>
         );
@@ -243,7 +243,7 @@ export default function StaffKamarPage() {
           <p className="text-gray-500 text-sm mb-4">Coba ubah kata kunci atau filter pencarian Anda.</p>
           <button
             onClick={handleResetFilters}
-            className="px-4 py-2 bg-emerald-50 text-emerald-700 font-semibold text-xs rounded-xl hover:bg-emerald-100 transition-colors"
+            className="px-4 py-2 bg-blue-50 text-blue-700 font-semibold text-xs rounded-xl hover:bg-blue-100 transition-colors"
           >
             Hapus Semua Filter
           </button>
@@ -282,7 +282,7 @@ export default function StaffKamarPage() {
                   </div>
 
                   <div className="flex flex-wrap gap-2 mb-4">
-                    <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-emerald-50 text-emerald-700 text-[10px] font-bold uppercase tracking-wider rounded-lg border border-emerald-100/50">
+                    <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-blue-50 text-blue-700 text-[10px] font-bold uppercase tracking-wider rounded-lg border border-blue-100/50">
                       <span className="material-symbols-outlined text-[12px]">bed</span>
                       {room.type.replace(/_/g, " ")}
                     </span>
@@ -294,7 +294,7 @@ export default function StaffKamarPage() {
 
                   <div className="mt-auto">
                     <div className="flex items-center gap-1.5 text-gray-500 text-sm">
-                      <span className="material-symbols-outlined text-[16px] text-emerald-500">location_on</span>
+                      <span className="material-symbols-outlined text-[16px] text-blue-600">location_on</span>
                       <span className="truncate">{room.location}</span>
                     </div>
                   </div>

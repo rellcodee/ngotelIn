@@ -266,27 +266,15 @@ export class ScheduleService {
   }
 
   async remove(id: string) {
-    try {
-      const deleted = await this.prisma.schedules.delete({
-        where: { id },
-      });
-      return {
-        statusCode: 200,
-        message: `Jadwal dengan ID ${id} berhasil dihapus.`,
-        data: deleted,
-      };
-    } catch (error) {
-      if (
-        error instanceof Prisma.PrismaClientKnownRequestError &&
-        error.code === 'P2025'
-      ) {
-        throw new NotFoundException(
-          `Schedule dengan ID ${id} tidak ditemukan.`,
-        );
-      }
-      throw new InternalServerErrorException(
-        'Terjadi kesalahan saat menghapus jadwal',
-      );
-    }
+    await this.findOne(id);
+    const updated = await this.prisma.schedules.update({
+      where: { id },
+      data: { status: ScheduleStatus.CANCELED },
+    });
+    return {
+      statusCode: 200,
+      message: `Jadwal dengan ID ${id} berhasil dibatalkan.`,
+      data: updated,
+    };
   }
 }

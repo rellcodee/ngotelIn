@@ -26,7 +26,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   }, [router]);
 
   if (!isAuthorized) {
-    return <div className="flex min-h-screen items-center justify-center bg-slate-50 text-emerald-800 font-medium">Memverifikasi akses admin...</div>;
+    return <div className="flex min-h-screen items-center justify-center bg-slate-50 text-blue-800 font-medium">Memverifikasi akses admin...</div>;
   }
 
   return (

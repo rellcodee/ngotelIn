@@ -609,7 +609,7 @@ export default function UserDashboardPage() {
       {/* Main Content Dashboard */}
       <main className="flex-1 w-full pb-20">
         {/* BANNER PROFIL HEADER DASHBOARD */}
-        <section className="relative w-full bg-[#1E3A8A] pt-12 pb-20 text-white overflow-hidden">
+        <section className="relative w-full bg-[#1E3A8A] pt-28 sm:pt-32 pb-20 text-white overflow-hidden">
           <div className="absolute inset-0 z-0">
             <Image
               src="https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1920&q=80"
@@ -626,7 +626,7 @@ export default function UserDashboardPage() {
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
               <div className="flex items-center gap-4 sm:gap-6">
                 {/* Avatar Circle */}
-                <div className="flex h-16 w-16 sm:h-20 sm:w-20 items-center justify-center rounded-2xl bg-[#126E4E] text-white text-2xl sm:text-3xl font-extrabold shadow-xl border-2 border-emerald-400/40">
+                <div className="flex h-16 w-16 sm:h-20 sm:w-20 items-center justify-center rounded-2xl bg-gradient-to-tr from-[#1D4ED8] to-[#1E3A8A] text-white text-2xl sm:text-3xl font-extrabold shadow-xl border-2 border-blue-300/40">
                   {user?.name.charAt(0).toUpperCase()}
                 </div>
 
@@ -635,12 +635,12 @@ export default function UserDashboardPage() {
                     <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
                       {user?.name}
                     </h1>
-                    <span className="rounded-full bg-emerald-500/30 px-3 py-0.5 text-xs font-semibold text-emerald-300 border border-emerald-400/40">
+                    <span className="rounded-full bg-blue-400/20 px-3 py-0.5 text-xs font-semibold text-blue-200 border border-blue-300/30">
                       Member {user?.role.toUpperCase()}
                     </span>
                   </div>
 
-                  <p className="mt-1 text-xs sm:text-sm text-emerald-100/80 flex items-center gap-2 font-light">
+                  <p className="mt-1 text-xs sm:text-sm text-blue-100/80 flex items-center gap-2 font-light">
                     <span>{user?.email}</span>
                     <span>•</span>
                     <span>ID: {user?.id}</span>
@@ -652,7 +652,7 @@ export default function UserDashboardPage() {
               <div className="flex items-center gap-3">
                 <Link
                   href="/kamar"
-                  className="rounded-full bg-white px-5 py-2.5 text-xs font-bold text-[#1D4ED8] shadow transition-all hover:bg-emerald-50 hover:shadow-md"
+                  className="rounded-full bg-white px-5 py-2.5 text-xs font-bold text-[#1D4ED8] shadow transition-all hover:bg-blue-50 hover:shadow-md"
                 >
                   Pesan Kamar Baru
                 </Link>
@@ -671,7 +671,7 @@ export default function UserDashboardPage() {
             {/* KARTU RINGKASAN STATISTIK DASAR */}
             <div className="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-4">
               <div className="rounded-2xl border border-white/10 bg-white/10 p-4 backdrop-blur-md">
-                <span className="block text-[11px] font-medium text-emerald-200 uppercase tracking-wider">
+                <span className="block text-[11px] font-medium text-blue-200/90 uppercase tracking-wider">
                   Total Booking
                 </span>
                 <span className="mt-1 block text-2xl sm:text-3xl font-extrabold text-white">
@@ -680,7 +680,7 @@ export default function UserDashboardPage() {
               </div>
 
               <div className="rounded-2xl border border-white/10 bg-white/10 p-4 backdrop-blur-md">
-                <span className="block text-[11px] font-medium text-emerald-200 uppercase tracking-wider">
+                <span className="block text-[11px] font-medium text-blue-200/90 uppercase tracking-wider">
                   Booking Aktif
                 </span>
                 <span className="mt-1 block text-2xl sm:text-3xl font-extrabold text-amber-300">
@@ -689,16 +689,16 @@ export default function UserDashboardPage() {
               </div>
 
               <div className="rounded-2xl border border-white/10 bg-white/10 p-4 backdrop-blur-md">
-                <span className="block text-[11px] font-medium text-emerald-200 uppercase tracking-wider">
+                <span className="block text-[11px] font-medium text-blue-200/90 uppercase tracking-wider">
                   Total Transaksi
                 </span>
-                <span className="mt-1 block text-lg sm:text-xl font-extrabold text-emerald-300 truncate">
+                <span className="mt-1 block text-lg sm:text-xl font-extrabold text-blue-200 truncate">
                   Rp {totalSettledPayments.toLocaleString("id-ID")}
                 </span>
               </div>
 
               <div className="rounded-2xl border border-white/10 bg-white/10 p-4 backdrop-blur-md">
-                <span className="block text-[11px] font-medium text-emerald-200 uppercase tracking-wider">
+                <span className="block text-[11px] font-medium text-blue-200/90 uppercase tracking-wider">
                   Notifikasi Baru
                 </span>
                 <span className="mt-1 block text-2xl sm:text-3xl font-extrabold text-rose-300">
@@ -713,31 +713,31 @@ export default function UserDashboardPage() {
         <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 -mt-8 relative z-20">
           <div className="rounded-3xl border border-gray-200/80 bg-white shadow-xl overflow-hidden">
             {/* BILAH TAB NAVIGATION HORIZONTAL */}
-            <div className="flex border-b border-gray-100 bg-gray-50/70 overflow-x-auto scrollbar-none">
+            <div className="grid grid-cols-2 md:grid-cols-4 border-b border-gray-100 bg-gray-50/70">
               <button
                 onClick={() => setActiveTab("bookings")}
-                className={`flex items-center gap-2 px-6 py-4 text-xs sm:text-sm font-bold transition-all whitespace-nowrap border-b-2 ${activeTab === "bookings"
+                className={`flex items-center justify-center gap-2 px-4 py-4 text-xs sm:text-sm font-bold transition-all whitespace-nowrap border-b-2 ${activeTab === "bookings"
                   ? "border-[#1D4ED8] bg-white text-[#1D4ED8]"
                   : "border-transparent text-gray-500 hover:text-gray-900 hover:bg-gray-100/50"
                   }`}
               >
-                <span className="material-symbols-outlined text-[16px]">
+                <span className="material-symbols-outlined text-[18px]">
                   calendar_today
                 </span>
                 <span>Pemesanan Saya</span>
-                <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] text-emerald-800">
+                <span className="rounded-full bg-blue-100 px-2 py-0.5 text-[10px] text-blue-800 font-bold">
                   {bookings.length}
                 </span>
               </button>
 
               <button
                 onClick={() => setActiveTab("notifications")}
-                className={`flex items-center gap-2 px-6 py-4 text-xs sm:text-sm font-bold transition-all whitespace-nowrap border-b-2 relative ${activeTab === "notifications"
+                className={`flex items-center justify-center gap-2 px-4 py-4 text-xs sm:text-sm font-bold transition-all whitespace-nowrap border-b-2 relative ${activeTab === "notifications"
                   ? "border-[#1D4ED8] bg-white text-[#1D4ED8]"
                   : "border-transparent text-gray-500 hover:text-gray-900 hover:bg-gray-100/50"
                   }`}
               >
-                <span className="material-symbols-outlined text-[16px]">
+                <span className="material-symbols-outlined text-[18px]">
                   notifications
                 </span>
                 <span>Notifikasi</span>
@@ -750,12 +750,12 @@ export default function UserDashboardPage() {
 
               <button
                 onClick={() => setActiveTab("reviews")}
-                className={`flex items-center gap-2 px-6 py-4 text-xs sm:text-sm font-bold transition-all whitespace-nowrap border-b-2 ${activeTab === "reviews"
+                className={`flex items-center justify-center gap-2 px-4 py-4 text-xs sm:text-sm font-bold transition-all whitespace-nowrap border-b-2 ${activeTab === "reviews"
                   ? "border-[#1D4ED8] bg-white text-[#1D4ED8]"
                   : "border-transparent text-gray-500 hover:text-gray-900 hover:bg-gray-100/50"
                   }`}
               >
-                <span className="material-symbols-outlined text-[16px]">
+                <span className="material-symbols-outlined text-[18px]">
                   star
                 </span>
                 <span>Ulasan Saya</span>
@@ -763,12 +763,12 @@ export default function UserDashboardPage() {
 
               <button
                 onClick={() => setActiveTab("settings")}
-                className={`flex items-center gap-2 px-6 py-4 text-xs sm:text-sm font-bold transition-all whitespace-nowrap border-b-2 ${activeTab === "settings"
+                className={`flex items-center justify-center gap-2 px-4 py-4 text-xs sm:text-sm font-bold transition-all whitespace-nowrap border-b-2 ${activeTab === "settings"
                   ? "border-[#1D4ED8] bg-white text-[#1D4ED8]"
                   : "border-transparent text-gray-500 hover:text-gray-900 hover:bg-gray-100/50"
                   }`}
               >
-                <span className="material-symbols-outlined text-[16px]">
+                <span className="material-symbols-outlined text-[18px]">
                   person
                 </span>
                 <span>Pengaturan Profil</span>
@@ -840,7 +840,7 @@ export default function UserDashboardPage() {
                                     {booking.room_name}
                                   </h3>
                                   <div className="flex items-center gap-1 text-xs text-gray-500 mt-0.5">
-                                    <span className="material-symbols-outlined text-[14px] text-emerald-600 shrink-0">
+                                    <span className="material-symbols-outlined text-[14px] text-blue-600 shrink-0">
                                       location_on
                                     </span>
                                     <span>{booking.room_location}</span>
@@ -859,8 +859,8 @@ export default function UserDashboardPage() {
                                   )}
                                   {(booking.status === "confirmed" ||
                                     booking.status === "approved") && (
-                                      <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700 border border-emerald-200">
-                                        <span className="material-symbols-outlined text-[14px] text-emerald-600">
+                                      <span className="inline-flex items-center gap-1 rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700 border border-blue-200">
+                                        <span className="material-symbols-outlined text-[14px] text-blue-600">
                                           check_circle
                                         </span>
                                         Terverifikasi (Lunas)
@@ -875,29 +875,22 @@ export default function UserDashboardPage() {
                                     </span>
                                   )}
                                   {booking.status === "completed" && (
-                                    <span className="inline-flex items-center gap-1 rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700 border border-blue-200">
-                                      <span className="material-symbols-outlined text-[14px] text-blue-600">
+                                    <span className="inline-flex items-center gap-1 rounded-full bg-blue-100 px-3 py-1 text-xs font-semibold text-blue-800 border border-blue-200">
+                                      <span className="material-symbols-outlined text-[14px] text-blue-700">
                                         task_alt
                                       </span>
                                       Selesai Menginap
                                     </span>
                                   )}
-                                  {booking.status === "rejected" && (
-                                    <span className="inline-flex items-center gap-1 rounded-full bg-rose-50 px-3 py-1 text-xs font-semibold text-rose-700 border border-rose-200">
-                                      <span className="material-symbols-outlined text-[14px] text-rose-600">
-                                        cancel
+                                  {(booking.status === "canceled" ||
+                                    booking.status === "rejected") && (
+                                      <span className="inline-flex items-center gap-1 rounded-full bg-rose-50 px-3 py-1 text-xs font-semibold text-rose-700 border border-rose-200 capitalize">
+                                        <span className="material-symbols-outlined text-[14px] text-rose-600">
+                                          cancel
+                                        </span>
+                                        {booking.status}
                                       </span>
-                                      Ditolak
-                                    </span>
-                                  )}
-                                  {booking.status === "canceled" && (
-                                    <span className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600 border border-slate-200">
-                                      <span className="material-symbols-outlined text-[14px] text-slate-500">
-                                        block
-                                      </span>
-                                      Dibatalkan
-                                    </span>
-                                  )}
+                                    )}
                                 </div>
                               </div>
 
@@ -934,7 +927,7 @@ export default function UserDashboardPage() {
                                   <span className="font-semibold uppercase text-gray-600">{(booking as any).payment?.payment_method || "-"}</span>
                                   <span className="text-gray-300">•</span>
                                   {(booking as any).payment?.status === "settlement" || (booking as any).payment?.status === "success" ? (
-                                    <span className="rounded-full bg-emerald-100 px-2 py-0.5 font-bold text-emerald-700">LUNAS</span>
+                                    <span className="rounded-full bg-blue-100 px-2 py-0.5 font-bold text-blue-700">LUNAS</span>
                                   ) : (
                                     <span className="rounded-full bg-amber-100 px-2 py-0.5 font-bold text-amber-700">PENDING</span>
                                   )}
@@ -978,7 +971,7 @@ export default function UserDashboardPage() {
                                 )}
                                 {(booking.status === "confirmed" ||
                                   booking.status === "approved") && (
-                                    <span className="text-xs font-semibold text-emerald-700 bg-emerald-50 px-3 py-1.5 rounded-xl border border-emerald-200 flex items-center gap-1">
+                                    <span className="text-xs font-semibold text-blue-700 bg-blue-50 px-3 py-1.5 rounded-xl border border-blue-200 flex items-center gap-1">
                                       <span className="material-symbols-outlined text-[14px]">key</span>
                                       Siap Check-in
                                     </span>

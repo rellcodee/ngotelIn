@@ -121,7 +121,7 @@ export default function KamarPage() {
     switch (status) {
       case "available":
         return (
-          <div className="absolute top-3 right-3 bg-emerald-500 text-white px-2.5 py-1 rounded-lg text-xs font-bold shadow-md uppercase tracking-wide z-10">
+          <div className="absolute top-3 right-3 bg-blue-600 text-white px-2.5 py-1 rounded-lg text-xs font-bold shadow-md uppercase tracking-wide z-10">
             Tersedia
           </div>
         );
@@ -610,7 +610,7 @@ export default function KamarPage() {
           </p>
           <button
             onClick={handleResetFilters}
-            className="px-4 py-2 bg-emerald-50 text-emerald-700 font-semibold text-xs rounded-xl hover:bg-emerald-100 transition-colors"
+            className="px-4 py-2 bg-blue-50 text-blue-700 font-semibold text-xs rounded-xl hover:bg-blue-100 transition-colors"
           >
             Hapus Semua Filter
           </button>
@@ -636,7 +636,7 @@ export default function KamarPage() {
 
                   {getStatusBadge(room.current_status)}
 
-                  <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-sm px-2.5 py-1 rounded-lg text-xs font-bold text-emerald-700 shadow-sm uppercase tracking-wide">
+                  <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-sm px-2.5 py-1 rounded-lg text-xs font-bold text-blue-700 shadow-sm uppercase tracking-wide">
                     {room.type.replace("_", " ")}
                   </div>
                 </div>
@@ -646,11 +646,11 @@ export default function KamarPage() {
                   </h3>
                   <div className="flex flex-col gap-2 mt-3 text-sm text-gray-600">
                     <div className="flex items-center gap-2">
-                      <span className="material-symbols-outlined text-[16px] text-emerald-600 shrink-0">location_on</span>
+                      <span className="material-symbols-outlined text-[16px] text-blue-600 shrink-0">location_on</span>
                       <span className="truncate">{room.location}</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <span className="material-symbols-outlined text-[16px] text-emerald-600 shrink-0">group</span>
+                      <span className="material-symbols-outlined text-[16px] text-blue-600 shrink-0">group</span>
                       <span>Maksimal {room.capacity} Orang</span>
                     </div>
                   </div>

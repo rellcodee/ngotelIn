@@ -349,24 +349,28 @@ export default function AdminReservasiPage() {
     setModal({
       isOpen: true,
       type: "confirm",
-      title: "Hapus Blokir Jadwal?",
-      message: "Kamar akan kembali tersedia pada rentang waktu ini.",
+      title: "Batalkan Jadwal?",
+      message: "Jadwal akan dibatalkan dan kamar akan kembali tersedia.",
       onConfirm: async () => {
         setModal((prev) => ({ ...prev, isOpen: false }));
         try {
           const token = localStorage.getItem("token");
           const res = await fetch(`http://localhost:3001/schedule/${id}`, {
-            method: "DELETE",
-            headers: { Authorization: `Bearer ${token}` },
+            method: "PATCH",
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ status: "canceled" }),
           });
 
-          if (!res.ok) throw new Error("Gagal menghapus jadwal");
+          if (!res.ok) throw new Error("Gagal membatalkan jadwal");
 
           setModal({
             isOpen: true,
             type: "success",
             title: "Berhasil",
-            message: "Jadwal berhasil dihapus.",
+            message: "Jadwal berhasil dibatalkan.",
             onClose: () => setModal((prev) => ({ ...prev, isOpen: false })),
           });
           fetchSchedules();
