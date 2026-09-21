@@ -8,18 +8,16 @@ export class AiBotController {
 
   @UseGuards(OptionalJwtAuthGuard)
   @Post('chat')
-  async chatUser(@Req() req: any, @Body() body: { message: string }) {
-    const userId = req.user?.userId || null;
-    console.log('REQ USER:', req.user);
-    console.log('USER ID:', userId);
+  async chatUser(@Req() req: any, @Body() body: { message: string; user_id?: string }) {
+    const userId = req.user?.userId || req.user?.id || (body.user_id && body.user_id.trim() !== '' ? body.user_id : null);
 
     return this.aiBotService.processUserMessage(body.message, userId);
   }
 
   @UseGuards(OptionalJwtAuthGuard)
   @Delete('chat')
-  async resetChat(@Req() req: any) {
-    const userId = req.user?.userId || null;
+  async resetChat(@Req() req: any, @Body() body?: { user_id?: string }) {
+    const userId = req.user?.userId || req.user?.id || (body?.user_id && body.user_id.trim() !== '' ? body.user_id : null);
     return this.aiBotService.clearChatHistory(userId);
   }
 }

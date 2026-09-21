@@ -199,14 +199,13 @@ export class AiBotService implements OnModuleInit {
 
         // Direct Category Routing (Bypass jika user mencari/mengetik kategori secara langsung)
         if (resolvedCategory && !nlpResult.intent?.startsWith('hotel.') && !nlpResult.intent?.startsWith('pembayaran.') && !nlpResult.intent?.startsWith('booking.')) {
-            if (nlpResult.intent === 'kamar.cari' || nlpResult.intent === 'kamar.detail_info' || nlpResult.score < this.CONFIDENCE_THRESHOLD) {
+            if (nlpResult.intent === 'kamar.cari' || nlpResult.score < this.CONFIDENCE_THRESHOLD) {
                 return this.fulfillCategorySearch(resolvedCategory, userId, rawMessage);
             }
         }
 
         if (currentState?.waitingFor === 'kamar_detail_fasilitas') {
-            const target = roomEntity || normalizedMsg;
-            const room = await this.findRoomByName(target);
+            const room = (await this.findRoomByName(normalizedMsg)) || (roomEntity ? await this.findRoomByName(roomEntity) : null);
             if (room) {
                 this.userStates.set(userKey, { lastRoomId: room.id, lastRoomName: room.name, updatedAt: Date.now() });
                 const reply = `Fasilitas untuk kamar **${room.name}** antara lain: ${room.facilities && room.facilities.length > 0 ? room.facilities.join(', ') : 'AC, Smart TV, Wi-Fi kencang, Kamar Mandi Pribadi dengan Air Panas'}.\n\n👉 [Lihat Detail & Foto ${room.name}](/rooms/${room.id})`;
@@ -221,8 +220,7 @@ export class AiBotService implements OnModuleInit {
         }
 
         if (currentState?.waitingFor === 'kamar_detail_harga') {
-            const target = roomEntity || normalizedMsg;
-            const room = await this.findRoomByName(target);
+            const room = (await this.findRoomByName(normalizedMsg)) || (roomEntity ? await this.findRoomByName(roomEntity) : null);
             if (room) {
                 this.userStates.set(userKey, { lastRoomId: room.id, lastRoomName: room.name, updatedAt: Date.now() });
                 const reply = `Harga untuk kamar **${room.name}** adalah **Rp${this.formatPrice(room.price_per_night)}/malam** (Kapasitas ${room.capacity || 2} orang, sudah termasuk sarapan prasmanan gratis 2 orang).\n\n👉 [Lihat Detail & Foto ${room.name}](/rooms/${room.id})`;
@@ -317,8 +315,10 @@ export class AiBotService implements OnModuleInit {
             }
 
             case 'kamar.detail_info': {
-                const target = roomEntity || currentState?.lastRoomName || normalizedMsg;
-                const room = await this.findRoomByName(target, currentState?.lastRoomId);
+                const room =
+                    (await this.findRoomByName(normalizedMsg)) ||
+                    (roomEntity ? await this.findRoomByName(roomEntity) : null) ||
+                    (currentState?.lastRoomId ? await this.findRoomByName(undefined, currentState.lastRoomId) : null);
                 if (!room) {
                     finalAnswer = 'Tipe kamar mana yang ingin Kakak ketahui detailnya? (Standard, Suite, atau Presidential Suite) ✨';
                     dynamicSuggestions = ['Standard Room', 'Suite Room', 'Presidential Suite'];
@@ -337,8 +337,10 @@ export class AiBotService implements OnModuleInit {
             }
 
             case 'kamar.detail_harga': {
-                const target = roomEntity || normalizedMsg || currentState?.lastRoomName;
-                const room = await this.findRoomByName(target, currentState?.lastRoomId);
+                const room =
+                    (await this.findRoomByName(normalizedMsg)) ||
+                    (roomEntity ? await this.findRoomByName(roomEntity) : null) ||
+                    (currentState?.lastRoomId ? await this.findRoomByName(undefined, currentState.lastRoomId) : null);
                 if (!room) {
                     this.userStates.set(userKey, {
                         waitingFor: 'kamar_detail_harga',
@@ -359,8 +361,10 @@ export class AiBotService implements OnModuleInit {
             }
 
             case 'kamar.detail_fasilitas': {
-                const target = roomEntity || normalizedMsg || currentState?.lastRoomName;
-                const room = await this.findRoomByName(target, currentState?.lastRoomId);
+                const room =
+                    (await this.findRoomByName(normalizedMsg)) ||
+                    (roomEntity ? await this.findRoomByName(roomEntity) : null) ||
+                    (currentState?.lastRoomId ? await this.findRoomByName(undefined, currentState.lastRoomId) : null);
                 if (!room) {
                     this.userStates.set(userKey, {
                         waitingFor: 'kamar_detail_fasilitas',
@@ -640,41 +644,87 @@ export class AiBotService implements OnModuleInit {
         if (!raw) return null;
 
         const trimmed = raw.trim();
-        const clean = trimmed
-            .toLowerCase()
-            .replace(/\bkamar\b|\broom\b|\btipe\b|\bfasilitas\b|\bharga\b|\binfo\b|\bapa\b|\baja\b|\bberapa\b/gi, '')
-            .replace(/\s+/g, ' ')
-            .trim();
+        const rawLower = trimmed.toLowerCase();
 
-        if (clean.includes('standard') || clean.includes('standar')) {
-            return this.prisma.resources.findFirst({
-                where: { OR: [{ type: { contains: 'standard', mode: 'insensitive' } }, { name: { contains: 'standar', mode: 'insensitive' } }] },
-                orderBy: { price_per_night: 'asc' },
-            });
+        // 1. Fetch all rooms from database
+        const allRooms = await this.prisma.resources.findMany();
+        if (allRooms.length === 0) return null;
+
+        // 2. Clean stop words from search string
+        const stopWordsRegex = /\b(kamar|room|tipe|fasilitas|fasilitasnya|harga|harganya|tarif|tarifnya|info|infonya|informasi|informasinya|detail|detailnya|tentang|spesifikasi|spesifikasinya|penjelasan|deskripsi|deskripsinya|lihat|cek|foto|fotonya|dong|min|kak|kakak|tolong|bisa|minta|apa|aja|saja|berapa|berapakah|nya|ada|ya|kah|mau|tahu|tau|tanya)\b/gi;
+        const clean = rawLower.replace(stopWordsRegex, '').replace(/[^\w\s]/gi, ' ').replace(/\s+/g, ' ').trim();
+
+        // Sort rooms by name length descending so specific room names match before generic ones
+        const sortedRooms = [...allRooms].sort((a, b) => b.name.length - a.name.length);
+
+        // A. Match room name or clean alias directly contained in the raw text
+        for (const r of sortedRooms) {
+            const rNameLower = r.name.toLowerCase();
+            const rCleanName = rNameLower.replace(/\bkamar\b|\broom\b|\btipe\b/gi, '').replace(/\s+/g, ' ').trim();
+
+            if (rawLower.includes(rNameLower)) {
+                return r;
+            }
+            if (rCleanName.length >= 3 && rawLower.includes(rCleanName)) {
+                return r;
+            }
         }
-        if (clean.includes('suite') && !clean.includes('presidential')) {
-            return this.prisma.resources.findFirst({
-                where: { OR: [{ type: { contains: 'suite', mode: 'insensitive' } }, { name: { contains: 'suite', mode: 'insensitive' } }] },
-                orderBy: { price_per_night: 'asc' },
-            });
+
+        // B. Match against cleaned search string
+        if (clean) {
+            for (const r of sortedRooms) {
+                const rNameLower = r.name.toLowerCase();
+                const rCleanName = rNameLower.replace(/\bkamar\b|\broom\b|\btipe\b/gi, '').replace(/\s+/g, ' ').trim();
+
+                if (rNameLower.includes(clean) || clean.includes(rCleanName)) {
+                    return r;
+                }
+                if (r.type && (r.type.toLowerCase().includes(clean) || clean.includes(r.type.toLowerCase()))) {
+                    return r;
+                }
+            }
+
+            // C. Multi-token partial matching (e.g. "test midtrans" matching room "Kamar Test Midtrans")
+            const tokens = clean.split(' ').filter((t) => t.length >= 3);
+            if (tokens.length > 0) {
+                let bestRoom = null;
+                let maxMatches = 0;
+
+                for (const r of allRooms) {
+                    const text = `${r.name} ${r.type || ''}`.toLowerCase();
+                    const matchCount = tokens.filter((tok) => text.includes(tok)).length;
+                    if (matchCount > maxMatches) {
+                        maxMatches = matchCount;
+                        bestRoom = r;
+                    }
+                }
+
+                if (bestRoom && maxMatches >= Math.ceil(tokens.length * 0.5)) {
+                    return bestRoom;
+                }
+            }
         }
+
+        // D. Category level fallback matching
         if (clean.includes('presidential')) {
-            return this.prisma.resources.findFirst({
-                where: { name: { contains: 'presidential', mode: 'insensitive' } },
-            });
+            return allRooms.find((r) => r.name.toLowerCase().includes('presidential') || r.type?.toLowerCase().includes('presidential')) || null;
+        }
+        if (clean.includes('suite')) {
+            return (
+                allRooms.find((r) => (r.type?.toLowerCase().includes('suite') || r.name.toLowerCase().includes('suite')) && !r.name.toLowerCase().includes('presidential')) || null
+            );
+        }
+        if (clean.includes('standard') || clean.includes('standar')) {
+            return allRooms.find((r) => r.type?.toLowerCase().includes('standard') || r.name.toLowerCase().includes('standar')) || null;
         }
 
-        if (!clean) return null;
+        // E. Last resort: check if last roomId exists
+        if (roomId) {
+            const byId = await this.prisma.resources.findUnique({ where: { id: roomId } });
+            if (byId) return byId;
+        }
 
-        return this.prisma.resources.findFirst({
-            where: {
-                OR: [
-                    { name: { contains: trimmed, mode: 'insensitive' } },
-                    { name: { contains: clean, mode: 'insensitive' } },
-                    { type: { contains: clean, mode: 'insensitive' } },
-                ],
-            },
-        });
+        return null;
     }
 
     private formatPrice(price: number): string {
@@ -699,31 +749,39 @@ export class AiBotService implements OnModuleInit {
         return `${header}\n${list}`;
     }
 
-    private async logChat(userId: string | undefined, message: string, response: string) {
-        if (userId && userId !== 'guest' && userId.trim() !== '') {
-            try {
-                await this.prisma.ai_chat_logs.create({
-                    data: {
-                        user_id: userId,
-                        message,
-                        response,
-                    },
-                });
-            } catch (err) {
-                console.error('Gagal simpan log chat ke DB:', err);
-            }
+    private async logChat(userId: string | undefined | null, message: string, response: string) {
+        try {
+            const isValidUuid =
+                userId &&
+                userId !== 'guest' &&
+                /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(userId.trim());
+
+            await this.prisma.ai_chat_logs.create({
+                data: {
+                    user_id: isValidUuid ? userId!.trim() : null,
+                    message,
+                    response,
+                },
+            });
+        } catch (err) {
+            console.error('Gagal simpan log chat ke DB:', err);
         }
     }
 
-    async clearChatHistory(userId?: string) {
-        if (userId && userId !== 'guest' && userId.trim() !== '') {
-            try {
+    async clearChatHistory(userId?: string | null) {
+        try {
+            const isValidUuid =
+                userId &&
+                userId !== 'guest' &&
+                /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(userId.trim());
+
+            if (isValidUuid) {
                 await this.prisma.ai_chat_logs.deleteMany({
-                    where: { user_id: userId },
+                    where: { user_id: userId!.trim() },
                 });
-            } catch (err) {
-                console.error('Gagal reset log chat:', err);
             }
+        } catch (err) {
+            console.error('Gagal reset log chat:', err);
         }
         return { message: 'Riwayat percakapan berhasil di-reset.' };
     }
