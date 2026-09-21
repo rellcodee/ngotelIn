@@ -1,296 +1,441 @@
 intent;question;answer
+sapaan.awal;halo;Halo Kak! Selamat datang di SiniBook, ada yang bisa Tini bantu hari ini? ✨
+sapaan.awal;hai;Hai Kak! Senang menyambut Kakak di SiniBook. Ada yang perlu Tini bantu? 😊
+sapaan.awal;halo min;Halo Kak! Tini siap bantu cari info kamar dan hotel untuk Kakak.
+sapaan.awal;pagi;Selamat pagi Kak! Ada yang bisa Tini bantu seputar SiniBook hari ini? ☀️
+sapaan.awal;siang;Selamat siang Kak! Ada yang bisa Tini bantu untuk rencana menginap Kakak?
+sapaan.awal;sore;Selamat sore Kak! Tini hadir buat mempermudah keperluan Kakak di SiniBook.
+sapaan.awal;malam;Selamat malam Kak! Ada yang bisa Tini bantu soal pemesanan kamar atau info hotel? 🌙
+sapaan.awal;permisi min;Halo Kak! Iya, Tini di sini. Ada yang bisa dibantu?
+sapaan.awal;tes;Hai Kak! Tini aktif dan siap melayani Kakak. Ada pertanyaan seputar hotel?
+sapaan.awal;halo tini;Hai Kak! Senang bisa menyapa Kakak. Mau cari kamar atau butuh info hotel?
+sapaan.awal;p;Halo Kak! Ada yang bisa Tini bantu soal SiniBook?
+sapaan.awal;ping;Halo Kak! Tini siap membantu, silakan tanyakan apa saja seputar hotel ya.
 
-sapaan.awal;halo;Halo Kak! Ada yang bisa Tini bantu di SiniBook? ✨
-sapaan.awal;halo;Halo Kak! Selamat datang di SiniBook, ada yang bisa Tini bantu?
-sapaan.awal;hai;Hai Kak! Ada yang bisa Tini bantu soal SiniBook?
-sapaan.awal;tes;Hai Kak! Senang menyambut Kakak di SiniBook. Ada yang bisa Tini bantu sekarang?
-sapaan.awal;pagi;Hai Kak! Ada yang bisa Tini bantu soal SiniBook?
-sapaan.awal;siang;Hai Kak! Senang menyambut Kakak di SiniBook. Ada yang perlu Tini bantu saat ini?
-sapaan.awal;sore;Hai Kak! Tini hadir buat bantu mempermudah keperluan Kakak di sini. Ada yang bisa Tini Bantu?
-sapaan.awal;malam;Hai Kak! Ada yang bisa Tini bantu soal SiniBook?
-sapaan.awal;permisi min;Halo Kak,iya Tini di sini. Ada yang bisa dibantu?
-sapaan.awal;p;-
-sapaan.awal;ping;-
-sapaan.awal;assalamualaikum;-
+sapaan.tanya;gua mau nanya;Boleh banget Kak! Silakan tanyakan apa saja seputar pilihan kamar, harga, fasilitas, sarapan, atau cara booking di SiniBook. Tini siap bantu! 😊✨
+sapaan.tanya;gw mau nanya;Boleh banget Kak! Ada hal yang ingin ditanyakan seputar hotel atau pemesanan kamar? Tini siap melayani! ✨
+sapaan.tanya;aku mau nanya;Silakan Kak! Tini siap membantu menjawab pertanyaan seputar fasilitas, kamar, dan reservasi hotel ya. 😊
+sapaan.tanya;saya mau nanya;Tentu boleh Kak! Silakan sampaikan apa yang ingin Kakak ketahui seputar SiniBook Hotel.
+sapaan.tanya;mau nanya dong;Boleh banget Kak! Mau cari info kamar hemat, jam check-in, atau info lainnya? Silakan tanyakan ya. ✨
+sapaan.tanya;mau nanya;Silakan Kak! Ada yang bisa Tini bantu untuk kebutuhan menginap Kakak hari ini?
+sapaan.tanya;mau tanya;Tentu boleh Kak! Tini siap membantu info seputar hotel dan pemesanan kamar kapan saja. 😊
+sapaan.tanya;boleh tanya gak;Boleh banget Kak! Silakan tanyakan apa saja yang ingin Kakak ketahui seputar SiniBook ya.
+sapaan.tanya;bisa tanya gak;Bisa banget Kak! Ada yang perlu Tini bantu seputar kamar, sarapan, atau fasilitas hotel?
+sapaan.tanya;nanya dong min;Iya Kak! Tini di sini siap membantu. Mau tanya seputar apa nih? ✨
+sapaan.tanya;tanya dong;Boleh Kak! Silakan tanyakan apa saja seputar hotel SiniBook ya.
+sapaan.tanya;ada yang mau gua tanyain;Boleh banget Kak, langsung tanyakan saja ya! Tini siap memberikan informasi lengkap untuk Kakak.
+sapaan.tanya;ada yang mau saya tanyakan;Silakan Kak, Tini siap menjawab semua pertanyaan Kakak seputar SiniBook Hotel! 😊
+sapaan.tanya;mau nanya sesuatu;Tentu boleh Kak! Silakan sampaikan pertanyaannya ya.
 
-sapaan.penutup;makasih;Sama-sama Kak! Kalau ada yang mau ditanyain lagi, Tini siap bantu.
-sapaan.penutup;terimakasih;Sama-sama Kak! Kalau ada yang mau ditanyain lagi, Tini siap bantu.
-sapaan.penutup;oke sip;Sip Kak! Jangan ragu tanya lagi ya kalau butuh info lain.
-sapaan.penutup;terima kasih infonya;Sama-sama Kak, senang bisa bantu!
-sapaan.penutup;makasih banyak ya;Sama-sama Kak! Senang bisa bantu keperluan Kakak hari ini.
-sapaan.penutup;thanks ya;Sama-sama Kak! Kalau butuh panduan lain, Tini siap sedia.
-sapaan.penutup;oke makasih min;Sama-sama Kak! Jangan sungkan buat tanya lagi ke Tini ya.
-sapaan.penutup;sip makasih infonya;Siap Kak, sama-sama! Semoga harinya menyenangkan ya.
-sapaan.penutup;tq;-
-sapaan.penutup;trims;-
-sapaan.penutup;trimss;-
-sapaan.penutup;y;-
-sapaan.penutup;ya ok;-
-sapaan.penutup;makasih;Sama-sama Kak! Senang bisa membantu. 😊
+sapaan.religi;assalamualaikum;Waalaikumsalam Kak! Selamat datang di SiniBook, ada yang bisa Tini bantu hari ini? ✨
+sapaan.religi;assalamu alaikum;Waalaikumsalam Kak! Senang menyambut Kakak di SiniBook. Ada yang bisa dibantu?
+sapaan.religi;samlikum;Waalaikumsalam Kak! Tini siap melayani pertanyaan seputar hotel ya.
 
-umum.bisa_apa;bot apa;Tini bisa bantu carikan info kamar, cek harga, fasilitas, kebijakan hotel, sampai panduan layanan di SiniBook ya Kak.
-umum.bisa_apa;bisa ngapain aja;Tini bisa jawab pertanyaan seputar kamar, kisaran harga, fasilitas hotel, dan bantu Kakak nemuin kamar yang pas!
-umum.bisa_apa;apa kegunaan bot;Tini bertugas sebagai asisten virtual buat jawab info hotel, detail kamar, fasilitas, dan aturan di SiniBook Kak.
-umum.bisa_apa;tini bisa apa;Tini bisa bantu kasih rekomendasi kamar, info harga per malam, fasilitas, dan panduan seputar layanan SiniBook.
-umum.bisa_apa;kamu gunanya buat apa;Tini siap bantu Kakak dapat info lengkap soal kamar, harga, fasilitas, dan aturan menginap di SiniBook!
-umum.bisa_apa;bisa bantu apa disini;Kakak bisa tanya soal tipe kamar, harga, fasilitas hotel, jam check-in/out, sampai rekomendasi kamar hemat ke Tini ya.
-umum.bisa_apa;apa aja yang bisa kamu jawab;Tini bisa jawab seputar tipe kamar, fasilitas, tarif per malam, jadwal check-in/out, dan informasi umum SiniBook Kak.
-umum.bisa_apa;bisa ngapain aja min;Banyak Kak! Mulai dari rekomendasi kamar, info fasilitas, cek harga, sampai info operasional hotel SiniBook bisa Tini bantu.
-umum.bisa_apa;apa tugas kamu;Tugas Tini nemenin Kakak dan kasih informasi lengkap soal kamar serta fasilitas di SiniBook biar rencana menginap makin mudah!
-umum.bisa_apa;peran lu apa;-
-umum.bisa_apa;fungsi lu ngapain;-
+sapaan.penutup;makasih;Sama-sama Kak! Kalau ada yang mau ditanyakan lagi, Tini selalu siap sedia ya! 🥰
+sapaan.penutup;terimakasih ya;Sama-sama Kak! Senang banget bisa bantu keperluan menginap Kakak hari ini.
+sapaan.penutup;oke sip;Sip Kak! Jangan ragu tanya lagi ke Tini ya kalau butuh info lainnya.
+sapaan.penutup;terima kasih infonya;Sama-sama Kak! Semoga rencana menginapnya menyenangkan ya! ✨
+sapaan.penutup;makasih banyak min;Sama-sama Kak! Senang bisa melayani Kakak. Sehat dan sukses selalu ya!
+sapaan.penutup;thanks ya;You're welcome Kak! Kalau butuh panduan lain, Tini siap sedia.
+sapaan.penutup;oke makasih ya;Sama-sama Kak! Selamat beraktivitas dan jangan sungkan chat Tini lagi ya.
+sapaan.penutup;tq min;Sama-sama Kak! Happy staying di SiniBook ya.
+sapaan.penutup;trims ya;Sama-sama Kak! Senang bisa melayani Kakak.
+sapaan.penutup;siap terimakasih;Siap Kak, sama-sama!
 
+umum.tentang_sinibook;apa itu sinibook;**SiniBook** adalah hotel modern sekaligus platform reservasi penginapan terpercaya yang berlokasi strategis di pusat bisnis Jakarta (Jl. Sudirman No. 123). Kami menyediakan berbagai pilihan kamar nyaman (Standard, Suite, hingga Presidential Suite), sarapan prasmanan gratis untuk 2 orang, basement parkir gratis, WiFi kencang, dan layanan resepsionis 24 jam nonstop! 🏨✨
+umum.tentang_sinibook;tentang sinibook;SiniBook adalah akomodasi hotel modern di pusat kota Jakarta yang mengutamakan kenyamanan, kebersihan, dan keamanan tamu dengan fasilitas lengkap seperti sarapan buffet gratis, free basement parking, dan staf profesional 24 jam.
+umum.tentang_sinibook;hotel sinibook itu apa;SiniBook adalah hotel dan sistem booking akomodasi modern yang memudahkan Kakak menemukan kamar menginap terbaik dengan fasilitas premium dan harga terjangkau di Jakarta Pusat.
+umum.tentang_sinibook;profil sinibook;SiniBook menghadirkan pengalaman menginap berkelas di Jl. Sudirman No. 123, Jakarta Pusat. Seluruh kamar sudah termasuk sarapan gratis 2 orang, free Wi-Fi, dan bebas biaya parkir.
+umum.tentang_sinibook;hotel apa ini;Ini adalah **SiniBook Hotel Jakarta**, akomodasi penginapan modern di Jakarta Pusat dengan fasilitas lengkap dan pelayanan 24 jam!
+umum.tentang_sinibook;ceritakan tentang sinibook;SiniBook adalah hotel pilihan ideal untuk staycation, liburan keluarga, maupun perjalanan bisnis di Jakarta. Kami menyediakan tipe kamar Standard, Suite, hingga Presidential Suite dengan standar kenyamanan prima!
 
-
-umum.tini;kamu siapa;Aku Tini, asisten virtual resmi SiniBook! 🏨
-bot.kritik;lu bego banget;Mohon maaf ya Kak kalau jawaban Tini kurang memuaskan 🙏. Ada yang bisa Tini bantu lagi, atau mau dihubungkan ke resepsionis?
-
-# 2. OPERASIONAL & FAQ (STATIS)
-jadwal.checkin;jam check in;Waktu check-in standar kami mulai jam 14:00 WIB ya Kak. 🕒
-jadwal.checkout;jam check out;Waktu check-out maksimal jam 12:00 WIB siang ya Kak. 🕛
-
-info.alamat;alamat hotelnya;Hotel kami berlokasi di Jl. Sudirman No. 123, Jakarta Pusat, Kak.
-info.alamat;lokasi hotel;Lokasinya di Jl. Sudirman No. 123, Jakarta Pusat.
-info.alamat;dimana hotel;SiniBook berlokasi di Jl. Sudirman No. 123, Jakarta Pusat, Kak.
-info.alamat;daerah mana;Alamat lengkap kami ada di Jl. Sudirman No. 123, Jakarta Pusat, Kak.
-info.alamat;posisi hotel;Posisi hotel kami ada di kawasan Jakarta Pusat, tepatnya di Jl. Sudirman No. 123, Kak.
-info.alamat;alamat lengkapnya;Alamat lengkap SiniBook ada di Jl. Sudirman No. 123, Jakarta Pusat, Kak.
-info.alamat;di kota mana;Kami berlokasi di daerah Jl. Sudirman No. 123, Jakarta Pusat, Kak.
-info.alamat;minta alamat dong;Tentu Kak! SiniBook beralamat di Jl. Sudirman No. 123, Jakarta Pusat.
-info.alamat;posisinya di mana min;Lokasi kami persis di Jl. Sudirman No. 123, Jakarta Pusat ya, Kak.
-info.alamat;hotelnya di wilayah mana;Hotel SiniBook terletak di kawasan Jakarta Pusat, alamat pastinya di Jl. Sudirman No. 123, Kak.
-info.alamat;jakarta mana;-
-info.alamat;jkt;-
-info.alamat;lok;-
+umum.user;siapa aku;Kakak adalah tamu terhormat kami di **SiniBook**! Tini siap bantu wujudkan pengalaman menginap yang nyaman dan menyenangkan. Ada yang ingin Kakak tanyakan seputar kamar atau hotel? ✨
+umum.user;gue;Kakak adalah tamu spesial kami di SiniBook! Ada rencana menginap atau butuh rekomendasi kamar hari ini? 😊
+umum.user;gw;Kakak adalah tamu istimewa kami di SiniBook! Ada yang bisa Tini bantu untuk rencana liburan atau staycation Kakak?
+umum.user;saya siapa;Kakak adalah tamu berharga kami di SiniBook. Tini selalu siap melayani pertanyaan seputar kamar dan reservasi ya Kak!
+umum.user;siapa saya;Kakak adalah tamu terhormat kami di SiniBook! Mau Tini bantu carikan kamar yang pas untuk menginap? ✨
 
 
-info.maps;ada maps gak;Kakak bisa cari "SiniBook Hotel Jakarta" di Google Maps ya, nanti muncul titik lokasinya.
-info.maps;link maps;bisa kakak cek di google maps ya, dengan keyword "SiniBook Hotel Jakarta".
-info.maps;titik lokasi;Silahkan Kakak cari titik lokasi hotel di Google Maps "SiniBook Hotel Jakarta".
-info.maps;gmaps;-
-info.maps;google maps;-
-info.maps;maps;-
-info.maps;maps;-
 
 
-info.sarapan;dapat sarapan gak;Seluruh kamar include sarapan prasmanan gratis untuk 2 orang tamu di Restoran Utama ya Kak!
-info.sarapan;makan;Pembookingan Kamar sudah include sarapan prasmanan untuk 2 orang tamu
-info.sarapan;sarapan;di SiniBook Hotel sudah include sarapan prasmanan untuk 2 orang tamu
-info.sarapan;makan pagi;-
-info.sarapan;mkn;-
-info.sarapan;brfast;-
-info.sarapan;makanan;-
+umum.tini;kamu siapa;Halo Kak! Aku Tini, asisten virtual resmi dari SiniBook yang siap bantu cari info kamar, harga, fasilitas, dan operasional hotel. 🏨✨
+umum.tini;ini siapa ya;Hai Kak! Kenalin, aku Tini, asisten virtual cerdas SiniBook yang siap nemenin dan bantu Kakak di sini.
+umum.tini;nama kamu siapa;Nama aku Tini, asisten concierge AI dari SiniBook yang siap melayani kebutuhan informasi Kakak.
+umum.tini;lu robot ya;Aku Tini, asisten AI resmi dari SiniBook. Walau bot, Tini siap melayani Kakak dengan sepenuh hati lho! 😊
+umum.tini;kamu ini bot atau manusia;Aku Tini, asisten bot AI dari SiniBook yang bertugas menjawab info hotel dan membantu reservasi kamar Kakak.
+umum.tini;kenalan dong;Halo Kak! Salam kenal ya, aku Tini dari SiniBook. Senang banget bisa menyapa Kakak! 👋
+umum.tini;bisa ngapain aja;Tini bisa bantu carikan kamar (hemat, mewah, keluarga), info sarapan gratis, basement parkir, check-in/out, dan panduan booking!
+umum.tini;fitur kamu apa;Tini bertugas memandu info kamar, harga, fasilitas, aturan hotel, dan reservasi di SiniBook Kak.
+
+umum.bahasa;bisa bahasa apa aja;Saat ini Tini hanya bisa melayani dan berkomunikasi dalam **Bahasa Indonesia** ya Kak. Ada yang bisa Tini bantu seputar pemesanan kamar atau fasilitas hotel di SiniBook? 😊🇮🇩
+umum.bahasa;kamu bisa bahasa apa;Saat ini Tini hanya melayani percakapan dalam **Bahasa Indonesia** ya Kak.
+umum.bahasa;bisa bahasa inggris gak;Mohon maaf Kak, saat ini Tini hanya bisa melayani dalam **Bahasa Indonesia** ya.
+umum.bahasa;can you speak english;Mohon maaf Kak, saat ini Tini hanya bisa melayani dalam **Bahasa Indonesia** (Currently I only support Bahasa Indonesia) ya! 😊🇮🇩
+umum.bahasa;do you speak english;Mohon maaf Kak, saat ini Tini hanya bisa berkomunikasi dalam **Bahasa Indonesia** ya.
+umum.bahasa;bahasa apa aja yang kamu bisa;Tini saat ini khusus dilatih untuk berkomunikasi dalam **Bahasa Indonesia** saja Kak.
+umum.bahasa;ngerti bahasa apa aja;Tini mengerti dan melayani dalam **Bahasa Indonesia** ya Kak.
+umum.bahasa;bisa english gak;Saat ini Tini hanya bisa melayani dalam **Bahasa Indonesia** ya Kak.
+
+bot.kritik;lu kok bego si;Mohon maaf yang sebesar-besarnya ya Kak kalau penjelasan Tini kurang jelas atau belum memuaskan 🙏. Tini terus belajar kok. Kalau butuh bantuan cepat, Kakak bisa hubungi resepsionis manusia kami di **+62 21 555 7890** ya!
+bot.kritik;lu gak jelas;Maaf ya Kak atas ketidaknyamanannya 🙏. Boleh tanyakan kembali secara spesifik (misal: harga kamar, sarapan, parkir, atau check-in)? Tini siap bantu jelaskan lagi.
+bot.kritik;gua ragu sama lu;-
+bot.kritik;bot bodoh;-
+bot.kritik;kaga jelas;Maaf ya Kak kalau infonya membingungkan 🙏. Ada hal spesifik yang ingin Kakak tanyakan?
+
+bot.ragu;gua ragu sama lu;Untuk informasi lebih lanjut bisa hubungi cs kami di +62 812-3456-7890 ya Kak.
+bot.ragu;valid gak;-;
+bot.ragu;ini beneran;-;
 
 
-info.parkir;parkir bayar gak;Gratis Kak! SiniBook menyediakan basement parkir mobil & motor free untuk tamu menginap. 🚗
-info.merokok;boleh merokok gak;Untuk Non-Smoking Room dilarang merokok di kamar (bisa di outdoor kantin Lt 1). Jika ingin merokok di kamar, pilih tipe Smoking Room ya Kak! 🚭
-info.sosmed;punya ig gak;Mohon maaf Kak, saat ini SiniBook belum memiliki media sosial resmi ya.
 
-kamar.rekomendasi;rekomen kamar dong;-
-kamar.rekomendasi;kamar yang bagus apa ya;-
-kamar.rekomendasi;kamar yang enak buat nginep;-
-kamar.rekomendasi;saran kamar yang recommended;-
+hotel.jadwal;jam check in jam berapa;Waktu standar check-in di SiniBook dimulai pukul **14:00 WIB** (jam 2 siang) dan batas check-out maksimal pukul **12:00 WIB** siang ya Kak. 🕒\n\nResepsionis kami berjaga 24 jam nonstop jika Kakak tiba larut malam.
+hotel.jadwal;jam check in dan out;Waktu standar check-in di SiniBook dimulai pukul **14:00 WIB** (jam 2 siang) dan batas check-out maksimal pukul **12:00 WIB** siang ya Kak. 🕒\n\nResepsionis kami berjaga 24 jam nonstop jika Kakak tiba larut malam.
+hotel.jadwal;jam check in & out;Waktu standar check-in di SiniBook dimulai pukul **14:00 WIB** (jam 2 siang) dan batas check-out maksimal pukul **12:00 WIB** siang ya Kak. 🕒\n\nResepsionis kami berjaga 24 jam nonstop jika Kakak tiba larut malam.
+hotel.jadwal;check in jam berapa;Waktu standar check-in di SiniBook dimulai pukul **14:00 WIB** (jam 2 siang) dan batas check-out maksimal pukul **12:00 WIB** siang ya Kak. 🕒\n\nResepsionis kami berjaga 24 jam nonstop jika Kakak tiba larut malam.
+hotel.jadwal;check out jam berapa;Waktu standar check-in di SiniBook dimulai pukul **14:00 WIB** (jam 2 siang) dan batas check-out maksimal pukul **12:00 WIB** siang ya Kak. 🕒\n\nResepsionis kami berjaga 24 jam nonstop jika Kakak tiba larut malam.
+hotel.jadwal;jadwal check in out;Waktu standar check-in di SiniBook dimulai pukul **14:00 WIB** (jam 2 siang) dan batas check-out maksimal pukul **12:00 WIB** siang ya Kak. 🕒\n\nResepsionis kami berjaga 24 jam nonstop jika Kakak tiba larut malam.
+hotel.jadwal;bisa early check in gak;Untuk permohonan **Early Check-in** atau **Late Check-out**, Kakak bisa konfirmasi saat tiba di lobi atau hubungi admin di **+62 21 555 7890** (tergantung ketersediaan slot kamar pada hari tersebut) ya Kak.
+hotel.jadwal;bisa late check out gak;Untuk permohonan **Early Check-in** atau **Late Check-out**, Kakak bisa konfirmasi saat tiba di lobi atau hubungi admin di **+62 21 555 7890** (tergantung ketersediaan slot kamar pada hari tersebut) ya Kak.
+hotel.jadwal;kalo check in tengah malam bisa;Bisa banget Kak! Resepsionis kami **berjaga 24 jam nonstop**. Kakak bisa check-in kapan saja, jangan lupa konfirmasi perkiraan jam tiba ke **+62 21 555 7890** ya.
+hotel.jadwal;check in subuh bisa ga;Bisa banget Kak! Resepsionis kami **berjaga 24 jam nonstop**. Kakak bisa check-in kapan saja, jangan lupa konfirmasi perkiraan jam tiba ke **+62 21 555 7890** ya.
+hotel.jadwal;aturan jam masuk dan keluar;Waktu standar check-in di SiniBook dimulai pukul **14:00 WIB** (jam 2 siang) dan batas check-out maksimal pukul **12:00 WIB** siang ya Kak. 🕒\n\nResepsionis kami berjaga 24 jam nonstop jika Kakak tiba larut malam.
 
-kamar.termurah;kamar paling murah;-
-kamar.termurah;kamar paling hemat;-
-kamar.termurah;kamar budget standard;-
+hotel.sarapan;info sarapan;Kabar gembira! **Seluruh reservasi kamar di SiniBook sudah termasuk prasmanan sarapan gratis untuk 2 orang tamu** di Restoran Utama kami, Kak! 🍳🥐
+hotel.sarapan;dapat sarapan gak;Kabar gembira! **Seluruh reservasi kamar di SiniBook sudah termasuk prasmanan sarapan gratis untuk 2 orang tamu** di Restoran Utama kami, Kak! 🍳🥐
+hotel.sarapan;include breakfast ga;Iya Kak, semua tipe kamar sudah include sarapan prasmanan gratis untuk 2 orang tamu ya!
+hotel.sarapan;ada sarapan pagi ga;Tentu ada Kak! Sarapan prasmanan gratis untuk 2 orang sudah termasuk di setiap pemesanan kamar SiniBook.
+hotel.sarapan;jam berapa sarapan pagi;Sarapan prasmanan kami disajikan setiap pagi di Restoran Utama hotel ya Kak.
+hotel.sarapan;sarapannya gratis apa bayar;Gratis Kak! Sudah include prasmanan (buffet) sarapan untuk 2 tamu per kamar.
+hotel.sarapan;sarapan;Semua pemesanan kamar di SiniBook sudah termasuk sarapan gratis untuk 2 orang di Restoran Utama Kak!
 
-kamar.termahal;kamar paling mewah;-
-kamar.termahal;kamar kelas sultan;-
-kamar.termahal;kamar presidential suite;-
+hotel.merokok;boleh merokok di kamar ga;Seluruh kamar di SiniBook pada dasarnya adalah **Non-Smoking Room**, kecuali pada beberapa tipe kamar tertentu yang sudah mendukung fasilitas merokok/balkon. Kakak bisa cek rincian fasilitasnya di katalog kamar ya! 🚭\n\nUntuk area merokok publik resmi, hotel menyediakan **Smoking Area yang asri di Taman Lantai 1 (Outdoor Garden)**.
+hotel.merokok;ada kamar smoking ga;Sebagian besar kamar kami Non-Smoking, namun beberapa kamar tertentu menyediakan fasilitas smoking. Silakan cek detail fasilitas kamar di web kami ya Kak.
+hotel.merokok;area merokok dimana;Area merokok resmi disediakan di **Taman Lantai 1 (Outdoor Garden)** hotel kami ya Kak. 🌿🚭
+hotel.merokok;kalo ngerokok di kamar dilarang ga;Di kamar non-smoking dilarang merokok ya Kak. Kakak bisa menggunakan **Smoking Area di Taman Lantai 1** atau memilih kamar yang memiliki fasilitas smoking di katalog kamar.
+hotel.merokok;info merokok;Seluruh kamar non-smoking kecuali tipe tertentu yang mendukung fasilitas merokok. Area merokok resmi berada di **Taman Lantai 1** ya Kak.
+hotel.merokok;merokok di balkon boleh gak;Jika kamar tidak berfasilitas smoking, silakan gunakan Smoking Area resmi di Taman Lantai 1 ya Kak.
 
-kamar.keluarga;kamar buat keluarga;-
-kamar.keluarga;kamar bawa anak kecil;-
-kamar.keluarga;kamar rombongan keluarga besar;-
+hotel.room_service;bisa pesan makanan ke kamar gak;Bisa banget Kak! Dapur restoran SiniBook beroperasi **24 Jam nonstop** dan siap mengantarkan pesanan makanan & minuman lezat langsung ke kamar Kakak (Room Service). 🍳🍲✨\n\nUntuk melihat pilihan menu dan melakukan pemesanan, Kakak bisa langsung hubungi WhatsApp CS / Resepsionis kami di **+62 21 555 7890** ya!
+hotel.room_service;jam berapa dapur hotel buka;Dapur restoran hotel kami buka **24 Jam nonstop** menerima pesanan makanan kapan saja untuk diantar ke kamar Kak. 🕒🍳
+hotel.room_service;pesan makan dari kamar gimana;Gampang banget Kak! Cukup hubungi WhatsApp/Telepon CS di **+62 21 555 7890** untuk memilih menu dan pesanan akan langsung diantar ke kamar Kakak.
+hotel.room_service;ada room service makanan gak;Ada Kak! Layanan Room Service kami melayani pemesanan makanan & minuman 24 jam nonstop ke kamar.
+hotel.room_service;bisa order makan tengah malam gak;Bisa banget Kak! Kitchen dapur kami siap 24 jam nonstop untuk pesanan tengah malam maupun subuh.
+hotel.room_service;nomor pesan makanan kamar;Kakak bisa langsung chat atau telepon ke WhatsApp CS di **+62 21 555 7890** untuk order makanan ya.
 
-kamar.kapasitas;kamar buat 3 orang;-
-kamar.kapasitas;kamar untuk 4 orang;-
-kamar.kapasitas;kamar bertiga;-
-kamar.kapasitas;kamar muat berapa orang;-
+hotel.resto;ada restoran gak di hotel;SiniBook memiliki **Restoran Utama** yang berlokasi di **Lantai 1** ya Kak! 🍽️✨\n\nRestoran & kitchen kami beroperasi **24 Jam nonstop**, menyajikan aneka hidangan lezat untuk makan di tempat (*dine-in*) maupun diantar ke kamar. Untuk info menu atau reservasi meja, Kakak bisa hubungi WhatsApp CS di **+62 21 555 7890**.
+hotel.resto;restoran hotel ada di lantai berapa;Restoran kami berlokasi di **Lantai 1** ya Kak dan beroperasi 24 Jam nonstop.
+hotel.resto;jam buka restoran jam berapa;Dapur & Restoran kami beroperasi **24 Jam nonstop** siap melayani sarapan, makan siang, hingga makan malam Kak! 🍳🍲
+hotel.resto;bisa makan di resto hotel gak;Bisa banget Kak! Tamu bisa langsung dine-in di restoran kami di Lantai 1 kapan saja (24 Jam).
+hotel.resto;tempat makan hotel dimana;Tempat makan utama berada di **Restoran Lantai 1** yang buka 24 jam nonstop ya Kak.
+hotel.resto;menu resto hotel apa aja;Restoran kami menyajikan aneka hidangan masakan nusantara, western, serta camilan lezat Kak.
+
+hotel.bar;ada bar gak di sinibook;Ada Kak! SiniBook memiliki **Bar & Lounge** yang berlokasi di **Lantai 1** untuk tempat bersantai yang nyaman. 🍸🍹✨\n\nBar kami beroperasi setiap hari mulai pukul **07:00 pagi – 22:00 malam** (07:00 – 22:00 WIB), menyajikan aneka kopi, mocktail, cocktail, dan aneka minuman segar.
+hotel.bar;bar buka jam berapa;Bar hotel kami buka dari pukul **07:00 pagi sampai 22:00 malam (07:00 – 22:00 WIB)** setiap hari ya Kak. 🍹
+hotel.bar;lokasi bar di lantai berapa;Bar & Lounge kami terletak di **Lantai 1** dengan suasana santai dan nyaman Kak.
+hotel.bar;bisa nongkrong di bar hotel gak;Bisa banget Kak! Bar kami di Lantai 1 siap menemani waktu santai Kakak dari jam 07:00 pagi hingga 22:00 malam.
+hotel.bar;ada lounge atau bar gak;Ada Kak, Bar & Lounge kami berada di Lantai 1 buka pukul 07:00 – 22:00 WIB.
+hotel.bar;menu minuman bar apa aja;Bar kami menyediakan racikan aneka kopi, mocktail, cocktail, teh spesial, dan jus buah segar Kak.
+
+hotel.resto_bar;ada resto dan bar gak di hotel;Ada Kak! SiniBook memiliki **Restoran & Bar** yang terletak di **Lantai 1**: 🍽️🍸\n\n• **Restoran & Kitchen**: Beroperasi **24 Jam nonstop**, melayani makan di tempat (*dine-in*) maupun diantar ke kamar.\n• **Bar & Lounge**: Beroperasi pukul **07:00 pagi – 22:00 malam** (07:00 – 22:00 WIB).\n\nUntuk info menu atau reservasi, Kakak bisa hubungi WhatsApp CS di **+62 21 555 7890** ya!
+hotel.resto_bar;jam buka restoran dan bar jam berapa;Restoran & Bar kami ada di **Lantai 1**. Bar beroperasi pukul **07:00 – 22:00 WIB**, sedangkan Restoran & Kitchen buka **24 Jam nonstop** Kak! 🍹🍽️
+hotel.resto_bar;restoran dan bar di lantai berapa;Restoran dan Bar SiniBook sama-sama berlokasi di **Lantai 1** ya Kak.
+hotel.resto_bar;info resto dan bar;Resto & Bar SiniBook ada di Lantai 1. Resto buka 24 jam dan Bar buka pukul 07:00 – 22:00 WIB.
+hotel.resto_bar;bisa makan dan nongkrong di resto bar gak;Bisa banget Kak! Restoran buka 24 jam dan Bar buka dari jam 07:00 pagi s/d 22:00 malam di Lantai 1.
+
+hotel.hewan;boleh bawa hewan peliharaan gak;Mohon maaf sekali Kak, di SiniBook **hewan peliharaan tidak diperbolehkan (No Pets)** demi kenyamanan, kebersihan, dan ketenangan seluruh tamu. 🐾
+hotel.hewan;bisa bawa anjing atau kucing;Mohon maaf Kak, hewan peliharaan seperti kucing, anjing, dan lainnya dilarang dibawa ke area hotel.
+hotel.hewan;bawa pet boleh ga;Demi kenyamanan bersama, hewan peliharaan tidak diperkenankan dibawa ya Kak.
+hotel.hewan;boleh bawa binatang peliharaan gak;Mohon maaf Kak, hewan atau binatang peliharaan tidak diperbolehkan masuk ke area hotel.
+
+hotel.pasangan;boleh bawa pasangan gak;Bisa banget dan **100% AMAN serta Privasi Terjaga** Kak! 👩‍❤️‍👨✨\n\nSiniBook sangat terbuka dan nyaman untuk staycation bersama pasangan/pacar dengan jaminan privasi penuh.\n\n*Mau Tini rekomendasikan kamar tipe Suite yang romantis dan luas untuk berdua?*
+hotel.pasangan;bisa staycation sama pacar gak;Bisa banget dan **100% AMAN serta Privasi Terjaga** Kak! 👩‍❤️‍👨✨\n\nSiniBook sangat terbuka dan nyaman untuk staycation bersama pasangan/pacar dengan kenyamanan maksimal.
+hotel.pasangan;bawa pacar aman gak;Aman banget Kak! Privasi dan ketenangan tamu adalah prioritas utama di SiniBook. Kakak dan pasangan bisa menikmati staycation dengan tenang. 🔒✨
+hotel.pasangan;nginep berdua sama pacar boleh gak;Boleh banget Kak! Seluruh kamar kami nyaman untuk menginap berdua bersama pasangan.
+hotel.pasangan;bawa cewek atau cowok boleh ga;Boleh banget Kak! SiniBook menjamin keamanan dan privasi penuh untuk seluruh tamu yang menginap.
+hotel.pasangan;staycation bareng pasangan;Tentu bisa Kak! SiniBook menyediakan kamar-kamar nyaman yang sangat cocok untuk staycation berdua bersama pasangan.
+hotel.pasangan;aturan menginap bareng pacar;Aturan menginap di SiniBook sangat fleksibel dan menjaga privasi penuh seluruh tamu Kak.
+
+hotel.syarat_nginep;syarat nginep apa aja;Syarat menginap di SiniBook sangat mudah dan praktis Kak! 🪪✨\n\nKakak **cuma butuh membawa & menunjukkan KTP (atau Passport/SIM)** yang masih berlaku saat proses check-in di meja resepsionis. Tidak memerlukan dokumen rumit lainnya!
+hotel.syarat_nginep;syarat check in apa aja;Syarat check-in cukup menunjukkan **KTP (atau Passport/SIM)** yang masih berlaku dan bukti e-voucher booking Kak. Sangat simpel dan bebas ribet! 🪪
+hotel.syarat_nginep;harus bawa apa pas check in;Hanya butuh membawa kartu identitas resmi berupa **KTP / Passport / SIM** asli yang masih aktif ya Kak.
+hotel.syarat_nginep;butuh dokumen apa buat nginep;Dokumen yang dibutuhkan hanya **KTP / Passport** saja saat check-in di lobi resepsionis Kak.
+hotel.syarat_nginep;perlu bawa surat nikah atau buku nikah gak;Tidak perlu Kak! Di SiniBook proses check-in sangat praktis, Kakak **hanya cukup menunjukkan KTP / Passport** yang masih berlaku saja. ✨
+hotel.syarat_nginep;cuma butuh ktp aja kan;Betul sekali Kak! Cukup tunjukkan KTP asli yang masih berlaku saat tiba di resepsionis. 🪪
+hotel.syarat_nginep;dokumen check in;Cukup tunjukkan KTP atau Passport yang masih berlaku saat proses check-in ya Kak.
+
+hotel.parkir;ada tempat parkir ga;Ada Kak! SiniBook menyediakan **Basement Parkir yang luas dan aman**, dan seluruh tamu yang menginap mendapatkan fasilitas **Parkir GRATIS (Free Parking)**! 🚗🛵
+hotel.parkir;parkir mobil bayar gak;Gratis Kak! Tamu hotel mendapatkan fasilitas free parking di area basement kami.
+hotel.parkir;bisa parkir motor;Bisa banget Kak! Basement parkir kami siap menampung kendaraan mobil dan motor dengan keamanan CCTV 24 jam.
+hotel.parkir;soal parkir;Parkir di basement SiniBook 100% GRATIS untuk seluruh tamu yang menginap dengan pengawasan CCTV 24 jam ya Kak.
+hotel.parkir;parkir gratis gak;Iya Kak, fasilitas parkir basement kami gratis tanpa biaya tambahan!
+
+hotel.deposit;ada deposit saat check in gak;Tidak ada Kak! Di SiniBook **TIDAK ADA biaya deposit saat check-in**. Kakak cukup menunjukkan identitas resmi (KTP/Passport) dan bukti booking saja. ✨
+hotel.deposit;checkin bayar jaminan ga;Nggak perlu jaminan deposit tunai Kak! Check-in di SiniBook praktis dan bebas deposit.
+hotel.deposit;harus ninggalin uang jaminan ga;Tidak perlu Kak, proses check-in kami sangat mudah tanpa uang deposit.
+hotel.deposit;deposit;Di SiniBook tidak ada pungutan deposit uang jaminan saat check-in Kak.
+
+hotel.anak_kebijakan;kalau bawa anak kecil bayar gak;Anak usia di bawah 5 tahun **GRATIS** menginap (menggunakan tempat tidur yang tersedia bersama orang tua) dan sudah termasuk **sarapan gratis** ya Kak! 👶✨\n\nUntuk anak usia 6 tahun ke atas atau yang memerlukan kasur ekstra, Kakak bisa memesan extra bed saat check-in.
+hotel.anak_kebijakan;aturan bawa anak kecil;Anak usia di bawah 5 tahun **GRATIS** menginap (menggunakan tempat tidur yang tersedia bersama orang tua) dan sudah termasuk **sarapan gratis** ya Kak! 👶✨\n\nUntuk anak usia 6 tahun ke atas atau yang memerlukan kasur ekstra, Kakak bisa memesan extra bed saat check-in.
+hotel.anak_kebijakan;anak kecil bayar ga;Anak usia di bawah 5 tahun **GRATIS** menginap (menggunakan tempat tidur yang tersedia bersama orang tua) dan sudah termasuk **sarapan gratis** ya Kak! 👶✨
+hotel.anak_kebijakan;bawa anak bayar berapa;Anak usia di bawah 5 tahun tidak dikenakan biaya tambahan (gratis sarapan dan menginap) Kak! 👶
+hotel.anak_kebijakan;anak gratis gak;Anak usia di bawah 5 tahun bebas biaya menginap & sarapan ya Kak.
+hotel.anak_kebijakan;batas umur anak gratis;Batas umur anak gratis menginap dan sarapan adalah usia di bawah 5 tahun Kak.
+
+hotel.extra_bed;bisa tambah kasur gak;Bisa banget Kak! Kami menyediakan fasilitas **Extra Bed (Kasur Tambahan)** seharga **Rp150.000/malam** (sudah termasuk tambahan sarapan prasmanan untuk 1 orang). 🛏️✨\n\nKakak bisa meminta kasur tambahan kepada resepsionis saat check-in atau menyertakan catatan saat booking.
+hotel.extra_bed;bisa nambah extra bed;Bisa banget Kak! Kami menyediakan fasilitas **Extra Bed (Kasur Tambahan)** seharga **Rp150.000/malam** (sudah termasuk tambahan sarapan prasmanan untuk 1 orang). 🛏️✨\n\nKakak bisa meminta kasur tambahan kepada resepsionis saat check-in atau menyertakan catatan saat booking.
+hotel.extra_bed;sewa extra bed berapa;Sewa kasur tambahan (Extra Bed) di SiniBook adalah **Rp150.000/malam** sudah termasuk gratis sarapan prasmanan 1 orang Kak. 🛏️
+hotel.extra_bed;ada kasur tambahan gak;Ada Kak! Fasilitas Extra Bed tersedia dengan tarif Rp150.000/malam (termasuk sarapan).
+hotel.extra_bed;biaya tambah tempat tidur;Biaya tambah tempat tidur (extra bed) adalah Rp150.000/malam termasuk sarapan prasmanan Kak.
+hotel.extra_bed;extra bed harganya berapa;Tarif Extra Bed Rp150.000/malam (sudah include breakfast 1 pax) ya Kak.
+
+hotel.titip_bagasi;bisa titip koper gak;Bisa banget dan **100% GRATIS** Kak! 🧳✨\n\nJika Kakak tiba sebelum jam check-in (14:00) atau setelah check-out (12:00) namun masih ingin beraktivitas di Jakarta, Kakak bisa menitipkan koper dan tas bawaan dengan aman di meja resepsionis 24 jam kami.
+hotel.titip_bagasi;bisa titip barang sebelum check in;Bisa banget dan **100% GRATIS** Kak! 🧳✨\n\nJika Kakak tiba sebelum jam check-in (14:00) atau setelah check-out (12:00) namun masih ingin beraktivitas di Jakarta, Kakak bisa menitipkan koper dan tas bawaan dengan aman di meja resepsionis 24 jam kami.
+hotel.titip_bagasi;bisa nitip koper setelah check out;Bisa banget dan **100% GRATIS** Kak! 🧳✨\n\nJika Kakak tiba sebelum jam check-in (14:00) atau setelah check-out (12:00) namun masih ingin beraktivitas di Jakarta, Kakak bisa menitipkan koper dan tas bawaan dengan aman di meja resepsionis 24 jam kami.
+hotel.titip_bagasi;ada tempat penitipan barang gak;Ada Kak! Layanan penitipan bagasi/koper gratis tersedia di lobi resepsionis 24 jam dengan sistem tanda terima nomor aman.
+hotel.titip_bagasi;titip tas bisa gak;Bisa Kak, penitipan tas & koper gratis sebelum check-in maupun sesudah check-out.
+hotel.titip_bagasi;luggage storage;Kami menyediakan fasilitas free luggage storage (penitipan koper gratis) 24 jam di meja resepsionis ya Kak.
+
+hotel.amenities;di kamar ada hair dryer gak;Lengkap banget Kak! Seluruh tipe kamar di SiniBook sudah dilengkapi amenities standar hotel berbintang: 🚿✨\n• Handuk bersih, sabun, shampoo, sikat gigi, & pasta gigi\n• Water Heater (Pemanas air mandi hangat)\n• Hair Dryer (Pengering rambut)\n• Teko listrik pemanas air, teh, kopi, & air mineral gratis\n• Kulkas mini / Minibar (khusus tipe Suite & Presidential)
+hotel.amenities;disediakan handuk dan sabun gak;Lengkap banget Kak! Seluruh kamar sudah disediakan handuk bersih, sabun, shampoo, sikat gigi, odol, dan water heater.
+hotel.amenities;ada sikat gigi dan perlengkapan mandi gak;Lengkap Kak! Amenities mandi (sikat gigi, sabun, shampoo, handuk, hair dryer) sudah tersedia gratis di dalam kamar.
+hotel.amenities;ada water heater dan teko listrik gak;Ada Kak! Di setiap kamar tersedia pemanas air mandi (water heater) dan teko listrik pembuat kopi/teh.
+hotel.amenities;ada kulkas mini di kamar gak;Kulkas mini (minibar) tersedia di tipe kamar **Suite Room** dan **Presidential Suite** ya Kak.
+hotel.amenities;perlengkapan kamar mandi apa aja;Perlengkapan mandi mencakup handuk, shower air hangat (water heater), hair dryer, sabun cair, shampoo, dan dental kit (sikat & pasta gigi) Kak.
+
+hotel.kolam;ada kolam renang gak;Fasilitas kolam renang (Private Pool) hanya tersedia di beberapa tipe kamar tertentu ya Kak. Kalau mau mencari kamar yang ada kolam renangnya, Kakak bisa cek langsung rincian fasilitasnya di katalog kamar kami ya! 🏊‍♂️✨
+hotel.kolam;ada swimming pool gak;Kolam renang hanya ada di tipe kamar tertentu ya Kak. Silakan cek rincian fasilitas di katalog kamar untuk melihat ketersediaannya. 🏊‍♂️
+hotel.kolam;kolam renang buka jam berapa;Fasilitas kolam renang privat ada di dalam kamar tertentu, jadi bisa dinikmati 24 jam bebas oleh tamu kamar tersebut Kak.
+hotel.kolam;kamar mana yang ada kolam renang;Fasilitas kolam renang tersedia di kamar tertentu, Kakak bisa cek langsung di detail fasilitas katalog kamar kami ya! 🏨🏊‍♂️
+hotel.kolam;ada kolam renang pribadi gak;Ada di tipe kamar tertentu Kak! Silakan cek di rincian fasilitas kamar pada web/aplikasi kami ya.
+
+hotel.gym;ada tempat gym gak;Fasilitas gym atau alat olahraga hanya tersedia di beberapa tipe kamar tertentu ya Kak. Untuk melihatnya, Kakak bisa cek langsung rincian fasilitas di katalog kamar kami ya! 🏋️‍♂️✨
+hotel.gym;ada fitness center gak;Alat fitness/gym hanya disediakan di tipe kamar tertentu Kak. Silakan cek detail fasilitas kamar di katalog kami.
+hotel.gym;bisa olahraga / gym gak;Fasilitas olahraga/gym tersedia khusus di kamar-kamar tertentu ya Kak, bisa dilihat pada rincian fasilitas tiap kamar.
+hotel.gym;gym buka jam berapa;Fasilitas gym privat tersedia di dalam kamar tertentu dan bisa digunakan kapan saja oleh tamu kamar tersebut Kak! 🏋️‍♂️
+
+hotel.fasilitas;fasilitas hotel;SiniBook dilengkapi dengan: **WiFi kencang gratis di seluruh area, sarapan prasmanan lezat, basement parkir gratis, keamanan & CCTV 24 jam, lokasi strategis pusat kota, serta pelayanan staf yang ramah dan profesional** Kak! 🏨✨
+hotel.fasilitas;fasilitas hotel apa aja;SiniBook dilengkapi dengan: **WiFi kencang gratis di seluruh area, sarapan prasmanan lezat, basement parkir gratis, keamanan & CCTV 24 jam, lokasi strategis pusat kota, serta pelayanan staf yang ramah dan profesional** Kak! 🏨✨
+hotel.fasilitas;ada wifi gratis ga;Tentu ada Kak! Koneksi Wi-Fi kencang dan stabil tersedia gratis di seluruh area hotel dan setiap kamar.
+hotel.fasilitas;keunggulan hotel ini apa;Keunggulan SiniBook: Lokasi super strategis di pusat kota (Sudirman), kamar bersih & nyaman, sarapan gratis 2 orang, parkir basement gratis, WiFi kencang, dan pelayanan ramah 24 jam!
+
+hotel.lokasi;lokasi & kontak;Hotel SiniBook berlokasi sangat strategis di **Jl. Sudirman No. 123, Jakarta Pusat**, Kak. Kontak kami: 📞 Telepon/WA **+62 21 555 7890**, ✉️ **info@sinibookhotel.com**. 📍
+hotel.lokasi;lokasi dan kontak;Hotel SiniBook berlokasi sangat strategis di **Jl. Sudirman No. 123, Jakarta Pusat**, Kak. Kontak kami: 📞 Telepon/WA **+62 21 555 7890**, ✉️ **info@sinibookhotel.com**. 📍
+hotel.lokasi;alamat hotelnya dimana;Hotel SiniBook berlokasi sangat strategis di **Jl. Sudirman No. 123, Jakarta Pusat**, Kak. 📍
+hotel.lokasi;lokasi hotel dimana;Lokasi kami di **Jl. Sudirman No. 123, Jakarta Pusat**, tepat di pusat kota dengan akses yang mudah!
+hotel.lokasi;minta link gmaps dong;Kakak bisa langsung buka aplikasi Google Maps dan ketik **"SiniBook Hotel Jakarta"** untuk panduan rute navigasi tercepat ya! 🗺️
+hotel.lokasi;ada titik maps nya ga;Ada Kak! Silakan cari kata kunci **"SiniBook Hotel Jakarta"** di Google Maps untuk melihat titik lokasi presisi kami.
+hotel.lokasi;patokan hotelnya apa;Patokan kami sangat mudah ditemukan di **Jl. Sudirman No. 123, Jakarta Pusat**, dekat dengan akses transportasi umum utama.
+hotel.lokasi;gmaps;Bisa langsung cari **"SiniBook Hotel Jakarta"** di aplikasi Google Maps ya Kak!
+
+hotel.kontak;hubungi cs;Kakak bisa langsung hubungi resepsionis kami di telepon/WhatsApp **+62 21 555 7890** atau email **info@sinibookhotel.com** ya. 📞
+hotel.kontak;nomor cs;Customer service kami siap membantu di WhatsApp/Telepon **+62 21 555 7890** ya Kak.
+hotel.kontak;nomor telepon cs;Customer service kami siap membantu di WhatsApp/Telepon **+62 21 555 7890** ya Kak.
+hotel.kontak;nomor telfon hotel;Kakak bisa langsung hubungi resepsionis kami di telepon/WhatsApp **+62 21 555 7890** ya. 📞
+hotel.kontak;minta no wa admin;Untuk kontak WhatsApp dan telepon customer service kami ada di **+62 21 555 7890**, Kak.
+hotel.kontak;email admin apa;Untuk email resmi SiniBook, Kakak bisa mengirimkan pesan ke **info@sinibookhotel.com** ya. ✉️
+hotel.kontak;info kontak lengkap hotel;Ini info kontak resmi SiniBook ya Kak: 📞 Telepon/WA: **+62 21 555 7890**, ✉️ Email: **info@sinibookhotel.com**, 📍 Lokasi: **Jl. Sudirman No. 123, Jakarta Pusat**.
+hotel.kontak;cara hubungi cs gimana;Gampang banget Kak! Kakak bisa telepon ke **+62 21 555 7890** atau kirim email ke **info@sinibookhotel.com**.
+
+hotel.sosmed;punya ig gak;Mohon maaf Kak, saat ini SiniBook belum memiliki akun media sosial resmi ya.
+hotel.sosmed;ada facebook nggak;Belum ada Kak, saat ini kami belum membuka akun media sosial resmi.
+hotel.sosmed;instagram hotel apa;Mohon maaf Kak, saat ini SiniBook belum memiliki media sosial resmi ya.
+
+booking.cara;gimana cara booking kamar;Untuk memesan kamar di SiniBook sangat mudah Kak:\n1. Pilih tipe kamar yang Kakak inginkan di katalog aplikasi.\n2. Tentukan tanggal check-in dan check-out.\n3. Lengkapi data diri tamu.\n4. Pilih metode pembayaran dan selesaikan transaksi.\n\nE-Voucher konfirmasi reservasi akan langsung terbit otomatis di akun Kakak!
+booking.cara;cara pesan kamar gimana;Untuk memesan kamar di SiniBook sangat mudah Kak:\n1. Pilih tipe kamar yang Kakak inginkan di katalog aplikasi.\n2. Tentukan tanggal check-in dan check-out.\n3. Lengkapi data diri tamu.\n4. Pilih metode pembayaran dan selesaikan transaksi.\n\nE-Voucher konfirmasi reservasi akan langsung terbit otomatis di akun Kakak!
+booking.cara;langkah langkah booking;Untuk memesan kamar di SiniBook sangat mudah Kak:\n1. Pilih tipe kamar yang Kakak inginkan di katalog aplikasi.\n2. Tentukan tanggal check-in dan check-out.\n3. Lengkapi data diri tamu.\n4. Pilih metode pembayaran dan selesaikan transaksi.\n\nE-Voucher konfirmasi reservasi akan langsung terbit otomatis di akun Kakak!
+booking.cara;alur reservasi kamar;Untuk memesan kamar di SiniBook sangat mudah Kak:\n1. Pilih tipe kamar yang Kakak inginkan di katalog aplikasi.\n2. Tentukan tanggal check-in dan check-out.\n3. Lengkapi data diri tamu.\n4. Pilih metode pembayaran dan selesaikan transaksi.\n\nE-Voucher konfirmasi reservasi akan langsung terbit otomatis di akun Kakak!
+booking.cara;mau pesan kamar lewat mana;Untuk memesan kamar di SiniBook sangat mudah Kak:\n1. Pilih tipe kamar yang Kakak inginkan di katalog aplikasi.\n2. Tentukan tanggal check-in dan check-out.\n3. Lengkapi data diri tamu.\n4. Pilih metode pembayaran dan selesaikan transaksi.\n\nE-Voucher konfirmasi reservasi akan langsung terbit otomatis di akun Kakak!
+booking.cara;bisa bokingin gak;Untuk memesan kamar di SiniBook sangat mudah Kak:\n1. Pilih tipe kamar yang Kakak inginkan di katalog aplikasi.\n2. Tentukan tanggal check-in dan check-out.\n3. Lengkapi data diri tamu.\n4. Pilih metode pembayaran dan selesaikan transaksi.\n\nE-Voucher konfirmasi reservasi akan langsung terbit otomatis di akun Kakak!
+booking.cara;cara sewa kamar gimana;Untuk memesan kamar di SiniBook sangat mudah Kak:\n1. Pilih tipe kamar yang Kakak inginkan di katalog aplikasi.\n2. Tentukan tanggal check-in dan check-out.\n3. Lengkapi data diri tamu.\n4. Pilih metode pembayaran dan selesaikan transaksi.\n\nE-Voucher konfirmasi reservasi akan langsung terbit otomatis di akun Kakak!
+
+pembayaran.metode;bisa bayar pakai apa aja;SiniBook menyediakan berbagai opsi pembayaran yang lengkap dan fleksibel Kak: 💳✨\n\n1. **QRIS & E-Wallet**: Scan QRIS instan dari semua m-banking/e-wallet & GoPay.\n2. **Virtual Account Bank**: BCA, Mandiri, dan BNI (verifikasi otomatis tanpa upload bukti).\n3. **Kartu Kredit/Debit**: Visa & Mastercard online yang aman.\n4. **Tunai (Cash)**: Bayar langsung di meja resepsionis saat tiba di hotel.\n\n*Kakak mau info lebih detail untuk salah satu metode di atas?*
+pembayaran.metode;metode pembayaran apa aja;SiniBook menyediakan berbagai opsi pembayaran yang lengkap dan fleksibel Kak: 💳✨\n\n1. **QRIS & E-Wallet**: Scan QRIS instan dari semua m-banking/e-wallet & GoPay.\n2. **Virtual Account Bank**: BCA, Mandiri, dan BNI (verifikasi otomatis tanpa upload bukti).\n3. **Kartu Kredit/Debit**: Visa & Mastercard online yang aman.\n4. **Tunai (Cash)**: Bayar langsung di meja resepsionis saat tiba di hotel.\n\n*Kakak mau info lebih detail untuk salah satu metode di atas?*
+pembayaran.metode;cara bayar gimana;SiniBook menyediakan berbagai opsi pembayaran yang lengkap dan fleksibel Kak: 💳✨\n\n1. **QRIS & E-Wallet**: Scan QRIS instan dari semua m-banking/e-wallet & GoPay.\n2. **Virtual Account Bank**: BCA, Mandiri, dan BNI (verifikasi otomatis tanpa upload bukti).\n3. **Kartu Kredit/Debit**: Visa & Mastercard online yang aman.\n4. **Tunai (Cash)**: Bayar langsung di meja resepsionis saat tiba di hotel.\n\n*Kakak mau info lebih detail untuk salah satu metode di atas?*
+pembayaran.metode;pilihan pembayaran di sinibook;SiniBook menyediakan berbagai opsi pembayaran yang lengkap dan fleksibel Kak: 💳✨\n\n1. **QRIS & E-Wallet**: Scan QRIS instan dari semua m-banking/e-wallet & GoPay.\n2. **Virtual Account Bank**: BCA, Mandiri, dan BNI (verifikasi otomatis tanpa upload bukti).\n3. **Kartu Kredit/Debit**: Visa & Mastercard online yang aman.\n4. **Tunai (Cash)**: Bayar langsung di meja resepsionis saat tiba di hotel.\n\n*Kakak mau info lebih detail untuk salah satu metode di atas?*
+pembayaran.metode;opsi bayar;SiniBook menyediakan berbagai opsi pembayaran yang lengkap dan fleksibel Kak: 💳✨\n\n1. **QRIS & E-Wallet**: Scan QRIS instan dari semua m-banking/e-wallet & GoPay.\n2. **Virtual Account Bank**: BCA, Mandiri, dan BNI (verifikasi otomatis tanpa upload bukti).\n3. **Kartu Kredit/Debit**: Visa & Mastercard online yang aman.\n4. **Tunai (Cash)**: Bayar langsung di meja resepsionis saat tiba di hotel.\n\n*Kakak mau info lebih detail untuk salah satu metode di atas?*
+
+pembayaran.qris;bisa bayar pake qris gak;Bisa banget Kak! Kami menerima pembayaran instan via **QRIS** (Quick Response Code Indonesian Standard). 📱✨\n\nSaat Kakak menyelesaikan reservasi di web, kode QRIS dinamis akan otomatis tampil di layar dan bisa langsung di-scan memakai aplikasi m-banking (BCA, Mandiri, BNI, BRI, dll) atau e-wallet (GoPay, OVO, DANA, ShopeePay). Pembayaran langsung terverifikasi otomatis dalam hitungan detik tanpa perlu upload bukti transfer!
+pembayaran.qris;ada qris gak;Bisa banget Kak! Kami menerima pembayaran instan via **QRIS** (Quick Response Code Indonesian Standard). 📱✨\n\nSaat Kakak menyelesaikan reservasi di web, kode QRIS dinamis akan otomatis tampil di layar dan bisa langsung di-scan memakai aplikasi m-banking (BCA, Mandiri, BNI, BRI, dll) atau e-wallet (GoPay, OVO, DANA, ShopeePay). Pembayaran langsung terverifikasi otomatis dalam hitungan detik tanpa perlu upload bukti transfer!
+pembayaran.qris;bayar qris bisa;Bisa banget Kak! Kami menerima pembayaran instan via **QRIS** (Quick Response Code Indonesian Standard). 📱✨\n\nSaat Kakak menyelesaikan reservasi di web, kode QRIS dinamis akan otomatis tampil di layar dan bisa langsung di-scan memakai aplikasi m-banking (BCA, Mandiri, BNI, BRI, dll) atau e-wallet (GoPay, OVO, DANA, ShopeePay). Pembayaran langsung terverifikasi otomatis dalam hitungan detik tanpa perlu upload bukti transfer!
+pembayaran.qris;bisa scan qris;Bisa banget Kak! Kami menerima pembayaran instan via **QRIS** (Quick Response Code Indonesian Standard). 📱✨\n\nSaat Kakak menyelesaikan reservasi di web, kode QRIS dinamis akan otomatis tampil di layar dan bisa langsung di-scan memakai aplikasi m-banking (BCA, Mandiri, BNI, BRI, dll) atau e-wallet (GoPay, OVO, DANA, ShopeePay). Pembayaran langsung terverifikasi otomatis dalam hitungan detik tanpa perlu upload bukti transfer!
+pembayaran.qris;bisa qris;Bisa banget Kak! Kami menerima pembayaran instan via **QRIS** (Quick Response Code Indonesian Standard). 📱✨\n\nSaat Kakak menyelesaikan reservasi di web, kode QRIS dinamis akan otomatis tampil di layar dan bisa langsung di-scan memakai aplikasi m-banking (BCA, Mandiri, BNI, BRI, dll) atau e-wallet (GoPay, OVO, DANA, ShopeePay). Pembayaran langsung terverifikasi otomatis dalam hitungan detik tanpa perlu upload bukti transfer!
+pembayaran.qris;bisa bayar qris;Bisa banget Kak! Kami menerima pembayaran instan via **QRIS** (Quick Response Code Indonesian Standard). 📱✨\n\nSaat Kakak menyelesaikan reservasi di web, kode QRIS dinamis akan otomatis tampil di layar dan bisa langsung di-scan memakai aplikasi m-banking (BCA, Mandiri, BNI, BRI, dll) atau e-wallet (GoPay, OVO, DANA, ShopeePay). Pembayaran langsung terverifikasi otomatis dalam hitungan detik tanpa perlu upload bukti transfer!
+pembayaran.qris;qris bisa;Bisa banget Kak! Kami menerima pembayaran instan via **QRIS** (Quick Response Code Indonesian Standard). 📱✨\n\nSaat Kakak menyelesaikan reservasi di web, kode QRIS dinamis akan otomatis tampil di layar dan bisa langsung di-scan memakai aplikasi m-banking (BCA, Mandiri, BNI, BRI, dll) atau e-wallet (GoPay, OVO, DANA, ShopeePay). Pembayaran langsung terverifikasi otomatis dalam hitungan detik tanpa perlu upload bukti transfer!
+pembayaran.qris;ada barcode qris;Bisa banget Kak! Kami menerima pembayaran instan via **QRIS** (Quick Response Code Indonesian Standard). 📱✨\n\nSaat Kakak menyelesaikan reservasi di web, kode QRIS dinamis akan otomatis tampil di layar dan bisa langsung di-scan memakai aplikasi m-banking (BCA, Mandiri, BNI, BRI, dll) atau e-wallet (GoPay, OVO, DANA, ShopeePay). Pembayaran langsung terverifikasi otomatis dalam hitungan detik tanpa perlu upload bukti transfer!
+pembayaran.qris;qris;Bisa banget Kak! Kami menerima pembayaran instan via **QRIS** (Quick Response Code Indonesian Standard). 📱✨\n\nSaat Kakak menyelesaikan reservasi di web, kode QRIS dinamis akan otomatis tampil di layar dan bisa langsung di-scan memakai aplikasi m-banking (BCA, Mandiri, BNI, BRI, dll) atau e-wallet (GoPay, OVO, DANA, ShopeePay). Pembayaran langsung terverifikasi otomatis dalam hitungan detik tanpa perlu upload bukti transfer!
+pembayaran.qris;bisa scan barcode;Bisa banget Kak! Kami menerima pembayaran instan via **QRIS** (Quick Response Code Indonesian Standard). 📱✨\n\nSaat Kakak menyelesaikan reservasi di web, kode QRIS dinamis akan otomatis tampil di layar dan bisa langsung di-scan memakai aplikasi m-banking (BCA, Mandiri, BNI, BRI, dll) atau e-wallet (GoPay, OVO, DANA, ShopeePay). Pembayaran langsung terverifikasi otomatis dalam hitungan detik tanpa perlu upload bukti transfer!
+
+pembayaran.gopay;bisa bayar pake gopay gak;Bisa banget Kak! SiniBook mendukung pembayaran instan via **GoPay**. 🟢\n\nKakak cukup pilih opsi GoPay saat checkout reservasi, lalu aplikasi Gojek akan terbuka secara otomatis untuk konfirmasi pembayaran. Status reservasi langsung aktif dan e-voucher langsung terbit!
+pembayaran.gopay;ada gopay gak;Bisa banget Kak! SiniBook mendukung pembayaran instan via **GoPay**. 🟢\n\nKakak cukup pilih opsi GoPay saat checkout reservasi, lalu aplikasi Gojek akan terbuka secara otomatis untuk konfirmasi pembayaran. Status reservasi langsung aktif dan e-voucher langsung terbit!
+pembayaran.gopay;terima gopay ga;Bisa banget Kak! SiniBook mendukung pembayaran instan via **GoPay**. 🟢\n\nKakak cukup pilih opsi GoPay saat checkout reservasi, lalu aplikasi Gojek akan terbuka secara otomatis untuk konfirmasi pembayaran. Status reservasi langsung aktif dan e-voucher langsung terbit!
+pembayaran.gopay;bisa gopay;Bisa banget Kak! SiniBook mendukung pembayaran instan via **GoPay**. 🟢\n\nKakak cukup pilih opsi GoPay saat checkout reservasi, lalu aplikasi Gojek akan terbuka secara otomatis untuk konfirmasi pembayaran. Status reservasi langsung aktif dan e-voucher langsung terbit!
+pembayaran.gopay;gopay bisa gak;Bisa banget Kak! SiniBook mendukung pembayaran instan via **GoPay**. 🟢\n\nKakak cukup pilih opsi GoPay saat checkout reservasi, lalu aplikasi Gojek akan terbuka secara otomatis untuk konfirmasi pembayaran. Status reservasi langsung aktif dan e-voucher langsung terbit!
+pembayaran.gopay;gopay;Bisa banget Kak! SiniBook mendukung pembayaran instan via **GoPay**. 🟢\n\nKakak cukup pilih opsi GoPay saat checkout reservasi, lalu aplikasi Gojek akan terbuka secara otomatis untuk konfirmasi pembayaran. Status reservasi langsung aktif dan e-voucher langsung terbit!
+
+pembayaran.transfer_bank;bisa transfer bank apa aja;Untuk transfer bank resmi, SiniBook menyediakan **Virtual Account (VA)** dari **Bank BCA, Mandiri, dan BNI** ya Kak. 🏦\n\nKeuntungan bayar via Virtual Account:\n• Otomatis terverifikasi 24 jam dalam hitungan detik\n• Tidak perlu repot upload struk / bukti transfer manual\n• Nomor VA unik otomatis terbit saat Kakak menyelesaikan checkout pemesanan.
+pembayaran.transfer_bank;rekening transfer apa aja;Untuk transfer bank resmi, SiniBook menyediakan **Virtual Account (VA)** dari **Bank BCA, Mandiri, dan BNI** ya Kak. 🏦\n\nKeuntungan bayar via Virtual Account:\n• Otomatis terverifikasi 24 jam dalam hitungan detik\n• Tidak perlu repot upload struk / bukti transfer manual\n• Nomor VA unik otomatis terbit saat Kakak menyelesaikan checkout pemesanan.
+pembayaran.transfer_bank;ada bca gak;Untuk transfer bank resmi, SiniBook menyediakan **Virtual Account (VA)** dari **Bank BCA, Mandiri, dan BNI** ya Kak. 🏦\n\nKeuntungan bayar via Virtual Account:\n• Otomatis terverifikasi 24 jam dalam hitungan detik\n• Tidak perlu repot upload struk / bukti transfer manual\n• Nomor VA unik otomatis terbit saat Kakak menyelesaikan checkout pemesanan.
+pembayaran.transfer_bank;bisa transfer mandiri atau bni;Untuk transfer bank resmi, SiniBook menyediakan **Virtual Account (VA)** dari **Bank BCA, Mandiri, dan BNI** ya Kak. 🏦\n\nKeuntungan bayar via Virtual Account:\n• Otomatis terverifikasi 24 jam dalam hitungan detik\n• Tidak perlu repot upload struk / bukti transfer manual\n• Nomor VA unik otomatis terbit saat Kakak menyelesaikan checkout pemesanan.
+pembayaran.transfer_bank;transfer bank via apa;Untuk transfer bank resmi, SiniBook menyediakan **Virtual Account (VA)** dari **Bank BCA, Mandiri, dan BNI** ya Kak. 🏦\n\nKeuntungan bayar via Virtual Account:\n• Otomatis terverifikasi 24 jam dalam hitungan detik\n• Tidak perlu repot upload struk / bukti transfer manual\n• Nomor VA unik otomatis terbit saat Kakak menyelesaikan checkout pemesanan.
+pembayaran.transfer_bank;bisa transfer;Untuk transfer bank resmi, SiniBook menyediakan **Virtual Account (VA)** dari **Bank BCA, Mandiri, dan BNI** ya Kak. 🏦\n\nKeuntungan bayar via Virtual Account:\n• Otomatis terverifikasi 24 jam dalam hitungan detik\n• Tidak perlu repot upload struk / bukti transfer manual\n• Nomor VA unik otomatis terbit saat Kakak menyelesaikan checkout pemesanan.
+pembayaran.transfer_bank;transfer bank bisa;Untuk transfer bank resmi, SiniBook menyediakan **Virtual Account (VA)** dari **Bank BCA, Mandiri, dan BNI** ya Kak. 🏦\n\nKeuntungan bayar via Virtual Account:\n• Otomatis terverifikasi 24 jam dalam hitungan detik\n• Tidak perlu repot upload struk / bukti transfer manual\n• Nomor VA unik otomatis terbit saat Kakak menyelesaikan checkout pemesanan.
+pembayaran.transfer_bank;bisa transfer bca;Untuk transfer bank resmi, SiniBook menyediakan **Virtual Account (VA)** dari **Bank BCA, Mandiri, dan BNI** ya Kak. 🏦\n\nKeuntungan bayar via Virtual Account:\n• Otomatis terverifikasi 24 jam dalam hitungan detik\n• Tidak perlu repot upload struk / bukti transfer manual\n• Nomor VA unik otomatis terbit saat Kakak menyelesaikan checkout pemesanan.
+pembayaran.transfer_bank;bisa transfer bni;Untuk transfer bank resmi, SiniBook menyediakan **Virtual Account (VA)** dari **Bank BCA, Mandiri, dan BNI** ya Kak. 🏦\n\nKeuntungan bayar via Virtual Account:\n• Otomatis terverifikasi 24 jam dalam hitungan detik\n• Tidak perlu repot upload struk / bukti transfer manual\n• Nomor VA unik otomatis terbit saat Kakak menyelesaikan checkout pemesanan.
+pembayaran.transfer_bank;bisa transfer mandiri;Untuk transfer bank resmi, SiniBook menyediakan **Virtual Account (VA)** dari **Bank BCA, Mandiri, dan BNI** ya Kak. 🏦\n\nKeuntungan bayar via Virtual Account:\n• Otomatis terverifikasi 24 jam dalam hitungan detik\n• Tidak perlu repot upload struk / bukti transfer manual\n• Nomor VA unik otomatis terbit saat Kakak menyelesaikan checkout pemesanan.
+pembayaran.transfer_bank;virtual account;Untuk transfer bank resmi, SiniBook menyediakan **Virtual Account (VA)** dari **Bank BCA, Mandiri, dan BNI** ya Kak. 🏦\n\nKeuntungan bayar via Virtual Account:\n• Otomatis terverifikasi 24 jam dalam hitungan detik\n• Tidak perlu repot upload struk / bukti transfer manual\n• Nomor VA unik otomatis terbit saat Kakak menyelesaikan checkout pemesanan.
+
+pembayaran.cash;bisa bayar cash gak;Bisa banget Kak! SiniBook melayani pembayaran **Tunai (Cash / Bayar di Tempat)**. 💵\n\nCaranya sangat mudah:\n1. Pilih kamar dan tanggal yang diinginkan di web.\n2. Pada pilihan metode pembayaran, pilih opsi **'Cash / Bayar di Tempat'**.\n3. Pembayaran tunai diselesaikan langsung ke staf resepsionis di meja lobi saat Kakak tiba untuk check-in!
+pembayaran.cash;bisa bayar tunai di tempat;Bisa banget Kak! SiniBook melayani pembayaran **Tunai (Cash / Bayar di Tempat)**. 💵\n\nCaranya sangat mudah:\n1. Pilih kamar dan tanggal yang diinginkan di web.\n2. Pada pilihan metode pembayaran, pilih opsi **'Cash / Bayar di Tempat'**.\n3. Pembayaran tunai diselesaikan langsung ke staf resepsionis di meja lobi saat Kakak tiba untuk check-in!
+pembayaran.cash;bayar di hotel langsung bisa gak;Bisa banget Kak! SiniBook melayani pembayaran **Tunai (Cash / Bayar di Tempat)**. 💵\n\nCaranya sangat mudah:\n1. Pilih kamar dan tanggal yang diinginkan di web.\n2. Pada pilihan metode pembayaran, pilih opsi **'Cash / Bayar di Tempat'**.\n3. Pembayaran tunai diselesaikan langsung ke staf resepsionis di meja lobi saat Kakak tiba untuk check-in!
+pembayaran.cash;bayar cash di mana;Bisa banget Kak! SiniBook melayani pembayaran **Tunai (Cash / Bayar di Tempat)**. 💵\n\nCaranya sangat mudah:\n1. Pilih kamar dan tanggal yang diinginkan di web.\n2. Pada pilihan metode pembayaran, pilih opsi **'Cash / Bayar di Tempat'**.\n3. Pembayaran tunai diselesaikan langsung ke staf resepsionis di meja lobi saat Kakak tiba untuk check-in!
+pembayaran.cash;bisa cash;Bisa banget Kak! SiniBook melayani pembayaran **Tunai (Cash / Bayar di Tempat)**. 💵\n\nCaranya sangat mudah:\n1. Pilih kamar dan tanggal yang diinginkan di web.\n2. Pada pilihan metode pembayaran, pilih opsi **'Cash / Bayar di Tempat'**.\n3. Pembayaran tunai diselesaikan langsung ke staf resepsionis di meja lobi saat Kakak tiba untuk check-in!
+pembayaran.cash;bisa tunai;Bisa banget Kak! SiniBook melayani pembayaran **Tunai (Cash / Bayar di Tempat)**. 💵\n\nCaranya sangat mudah:\n1. Pilih kamar dan tanggal yang diinginkan di web.\n2. Pada pilihan metode pembayaran, pilih opsi **'Cash / Bayar di Tempat'**.\n3. Pembayaran tunai diselesaikan langsung ke staf resepsionis di meja lobi saat Kakak tiba untuk check-in!
+pembayaran.cash;bayar di tempat bisa;Bisa banget Kak! SiniBook melayani pembayaran **Tunai (Cash / Bayar di Tempat)**. 💵\n\nCaranya sangat mudah:\n1. Pilih kamar dan tanggal yang diinginkan di web.\n2. Pada pilihan metode pembayaran, pilih opsi **'Cash / Bayar di Tempat'**.\n3. Pembayaran tunai diselesaikan langsung ke staf resepsionis di meja lobi saat Kakak tiba untuk check-in!
+pembayaran.cash;bayar waktu check in;Bisa banget Kak! SiniBook melayani pembayaran **Tunai (Cash / Bayar di Tempat)**. 💵\n\nCaranya sangat mudah:\n1. Pilih kamar dan tanggal yang diinginkan di web.\n2. Pada pilihan metode pembayaran, pilih opsi **'Cash / Bayar di Tempat'**.\n3. Pembayaran tunai diselesaikan langsung ke staf resepsionis di meja lobi saat Kakak tiba untuk check-in!
+pembayaran.cash;bisa bayar pas nyampe;Bisa banget Kak! SiniBook melayani pembayaran **Tunai (Cash / Bayar di Tempat)**. 💵\n\nCaranya sangat mudah:\n1. Pilih kamar dan tanggal yang diinginkan di web.\n2. Pada pilihan metode pembayaran, pilih opsi **'Cash / Bayar di Tempat'**.\n3. Pembayaran tunai diselesaikan langsung ke staf resepsionis di meja lobi saat Kakak tiba untuk check-in!
+
+pembayaran.kartu_kredit;bayar kamar pake kartu kredit bisa ga;Bisa Kak! Kami menerima pembayaran kartu kredit dan kartu debit berlogo **Visa & Mastercard**. 💳\n\nTransaksi diproses secara online melalui payment gateway terenkripsi dan aman (3D Secure). E-Voucher booking akan langsung terbit otomatis setelah transaksi berhasil.
+pembayaran.kartu_kredit;bisa pake kartu kredit;Bisa Kak! Kami menerima pembayaran kartu kredit dan kartu debit berlogo **Visa & Mastercard**. 💳\n\nTransaksi diproses secara online melalui payment gateway terenkripsi dan aman (3D Secure). E-Voucher booking akan langsung terbit otomatis setelah transaksi berhasil.
+pembayaran.kartu_kredit;terima visa mastercard ga;Bisa Kak! Kami menerima pembayaran kartu kredit dan kartu debit berlogo **Visa & Mastercard**. 💳\n\nTransaksi diproses secara online melalui payment gateway terenkripsi dan aman (3D Secure). E-Voucher booking akan langsung terbit otomatis setelah transaksi berhasil.
+pembayaran.kartu_kredit;bisa kartu kredit;Bisa Kak! Kami menerima pembayaran kartu kredit dan kartu debit berlogo **Visa & Mastercard**. 💳\n\nTransaksi diproses secara online melalui payment gateway terenkripsi dan aman (3D Secure). E-Voucher booking akan langsung terbit otomatis setelah transaksi berhasil.
+pembayaran.kartu_kredit;kartu kredit;Bisa Kak! Kami menerima pembayaran kartu kredit dan kartu debit berlogo **Visa & Mastercard**. 💳\n\nTransaksi diproses secara online melalui payment gateway terenkripsi dan aman (3D Secure). E-Voucher booking akan langsung terbit otomatis setelah transaksi berhasil.
+pembayaran.kartu_kredit;bisa cc;Bisa Kak! Kami menerima pembayaran kartu kredit dan kartu debit berlogo **Visa & Mastercard**. 💳\n\nTransaksi diproses secara online melalui payment gateway terenkripsi dan aman (3D Secure). E-Voucher booking akan langsung terbit otomatis setelah transaksi berhasil.
+pembayaran.kartu_kredit;credit card;Bisa Kak! Kami menerima pembayaran kartu kredit dan kartu debit berlogo **Visa & Mastercard**. 💳\n\nTransaksi diproses secara online melalui payment gateway terenkripsi dan aman (3D Secure). E-Voucher booking akan langsung terbit otomatis setelah transaksi berhasil.
+
+booking.cara_cancel;gimana cara cancel bookingan gw;Untuk mengajukan pembatalan pesanan di SiniBook sangat mudah Kak:\n1. Kunjungi menu **Riwayat Booking** di akun Kakak.\n2. Pilih pesanan yang ingin dibatalkan lalu klik **Request Pembatalan**.\n3. Hubungi nomor WhatsApp resepsionis kami di **+62 21 555 7890** agar permohonan pembatalan Kakak langsung diproses ya! 🔄📱
+booking.cara_cancel;mau batal booking yang udah gue pesen;Untuk mengajukan pembatalan, silakan buka menu **Riwayat Booking** di akun Kakak lalu klik **Request Pembatalan**. Setelah itu, konfirmasi ke WhatsApp resepsionis di **+62 21 555 7890** ya Kak.
+booking.cara_cancel;cara membatalkan pesanan kamar;Kakak bisa ajukan **Request Pembatalan** melalui menu **Riwayat Booking** pada web/aplikasi, lalu konfirmasi ke nomor WhatsApp resepsionis **+62 21 555 7890**.
+booking.cara_cancel;bisa cancel booking gak;Bisa Kak! Pembatalan dapat diajukan lewat menu **Riwayat Booking** di akun Kakak, kemudian hubungi resepsionis via WhatsApp **+62 21 555 7890**.
+booking.cara_cancel;mau cancel pesanan;Silakan ajukan **Request Pembatalan** di menu **Riwayat Booking**, lalu konfirmasi ke WhatsApp resepsionis di **+62 21 555 7890** ya Kak.
+booking.cara_cancel;cara cancel gimana;Cukup masuk ke menu **Riwayat Booking**, pilih pesanan, klik **Request Pembatalan**, dan hubungi WhatsApp CS **+62 21 555 7890**.
+booking.cara_cancel;cara batalin bookingan;Untuk mengajukan pembatalan pesanan di SiniBook sangat mudah Kak:\n1. Kunjungi menu **Riwayat Booking** di akun Kakak.\n2. Pilih pesanan yang ingin dibatalkan lalu klik **Request Pembatalan**.\n3. Hubungi nomor WhatsApp resepsionis kami di **+62 21 555 7890** agar permohonan pembatalan Kakak langsung diproses ya! 🔄📱
+booking.cara_cancel;bagaimana cara membatalkan pesanan;Untuk membatalkan pesanan, silakan masuk ke menu **Riwayat Booking**, pilih pesanan yang ingin dibatalkan, klik **Request Pembatalan**, dan hubungi WhatsApp resepsionis di **+62 21 555 7890**.
 
 
-info.email;email admin apa;Untuk email resmi SiniBook, Kakak bisa kirim pesan ke info@sinibookhotel.com ya.
-info.email;minta alamat email dong;Bisa Kak, alamat email kami ada di info@sinibookhotel.com.
-info.email;ada email yg bisa dihubungi;Ada Kak! Kakak bisa menghubungi kami via email di info@sinibookhotel.com.
-info.email;alamat surel;Tentu Kak, silakan kirim pertanyaan ke email kami: info@sinibookhotel.com.
-info.email;mau kirim email kemana;Kakak bisa mengirimkan email ke alamat info@sinibookhotel.com ya.
-info.email;email cs;Untuk layanan bantuan via email, silakan hubungi info@sinibookhotel.com, Kak.
-info.email;bisa kontak lewat email ga;Bisa banget Kak! Langsung aja email ke info@sinibookhotel.com ya.
-info.email;email hotelnya apa;Email SiniBook ada di info@sinibookhotel.com ya Kak, silakan kalau ada yang mau ditanyakan.
-info.email;minta email buat komplain;Segala bentuk masukan atau pertanyaan bisa Kakak sampaikan melalui email info@sinibookhotel.com ya.
-info.email;bagi alamat emailnya min;Siap Kak! Kakak bisa email kami ke info@sinibookhotel.com.
+booking.info_refund;bisa refund gak;Bisa banget Kak! SiniBook menyediakan jaminan **Pembatalan Gratis (Full Refund)** tanpa biaya hingga **H-1 (24 jam) sebelum tanggal check-in** yang telah Kakak pilih. 💵✨\n\nEstimasi pengembalian dana (refund) akan diproses maksimal **1x24 jam** ke rekening/e-wallet Kakak setelah diverifikasi oleh tim kami via WhatsApp **+62 21 555 7890**.
+booking.info_refund;kalau batal uang balik gak;Uang akan dikembalikan 100% (Full Refund) jika pembatalan dilakukan hingga H-1 (24 jam) sebelum tanggal check-in ya Kak! Estimasi pencairan dana maksimal **1x24 jam**. 💵
+booking.info_refund;berapa lama uang refund cair;Proses pengembalian dana (refund) estimasi selesai dalam waktu maksimal **1x24 jam** setelah permohonan diverifikasi oleh resepsionis kami Kak.
+booking.info_refund;bisa batalin pesanan dan refund uang gak;Bisa Kak! Selama diajukan sebelum H-1 (24 jam) tanggal check-in, dana akan di-refund 100% dalam estimasi 1x24 jam.
+booking.info_refund;kebijakan refund dan pembatalan;Kebijakan kami: Jaminan pembatalan gratis tanpa biaya hingga H-1 (24 jam) sebelum tanggal check-in, dengan estimasi pencairan dana refund maksimal 1x24 jam ya Kak.
+booking.info_refund;syarat refund kamar;Syarat refund: Pembatalan diajukan maksimal H-1 (24 jam) sebelum waktu check-in melalui menu Riwayat Booking & konfirmasi WhatsApp ke **+62 21 555 7890**.
 
-info.telpon;nomor telfon hotel;Kakak bisa langsung hubungi kami di nomor telepon +62 21 555 7890 ya.
-info.telpon;minta no hp admin;Untuk bantuan cepat, Kakak bisa telepon ke nomor +62 21 555 7890, Kak.
-info.telpon;ada wa atau nomor telpon ga;Ada Kak! Silakan hubungi nomor telepon kami di +62 21 555 7890.
-info.telpon;no telp yg aktif;Untuk saat ini Kakak bisa menghubungi nomor telepon resmi kami di +62 21 555 7890 ya.
-info.telpon;minta no tlp;Tentu Kak, nomor telepon SiniBook yang bisa dihubungi adalah +62 21 555 7890.
-info.telpon;telpon cs brp;Layanan Customer Service kami bisa dihubungi lewat telepon di +62 21 555 7890, Kak.
-info.telpon;bisa nelpon resepsionis;Bisa banget Kak, silakan langsung telepon ke +62 21 555 7890 ya.
-info.telpon;bagi no telpon dong;Ini nomor telepon kami yang bisa dihubungi ya Kak: +62 21 555 7890.
-info.telpon;nomor resepsionis berapa;Untuk terhubung dengan resepsionis SiniBook, Kakak bisa telepon ke +62 21 555 7890.
-info.telpon;bisa dihubungi ke nomor berapa;Kakak bisa menghubungi kami langsung di nomor telepon +62 21 555 7890 ya.
-
-info.kontak;ada cs manusia gak;Tentu Kak! Kakak bisa hubungi tim CS kami di +62 21 555 7890 atau email ke info@sinibookhotel.com.
-info.kontak;info kontak hotel;Untuk menghubungi SiniBook, Kakak bisa telepon ke +62 21 555 7890 atau kirim email ke info@sinibookhotel.com.
-info.kontak;hubungi siapa kalo ada kendala;Kakak bisa langsung hubungi admin kami di +62 21 555 7890 atau email info@sinibookhotel.com ya.
-info.kontak;cara hubungi cs gimana;Gampang Kak, bisa telepon langsung ke +62 21 555 7890 atau via email info@sinibookhotel.com.
-info.kontak;mau nanya ke admin langsung;Boleh Kak! Silakan telepon ke +62 21 555 7890 atau email ke info@sinibookhotel.com untuk ngobrol sama admin manusia kami.
-info.kontak;kontak resepsionis;Ini info kontak resepsionis kami ya Kak: Telepon di +62 21 555 7890 dan Email di info@sinibookhotel.com.
-info.kontak;bisa minta kontak lengkapnya;Tentu! Layanan pelanggan kami tersedia via telepon di +62 21 555 7890 atau email info@sinibookhotel.com, Kak.
-info.kontak;minta kontak yang bisa dihubungi;Ini kontak SiniBook ya Kak: Telepon (+62 21 555 7890) atau Email (info@sinibookhotel.com).
-info.kontak;bagi info kontak dong;Tentu Kak! Hubungi kami via telepon di +62 21 555 7890 atau email ke info@sinibookhotel.com.
-info.kontak;bisa ngobrol sama orang beneran ga;Bisa banget Kak! Kakak bisa ngobrol langsung sama tim kami di nomor telepon +62 21 555 7890 atau email info@sinibookhotel.com.
-
-info.sosmed;instagram hotel apa;Mohon maaf Kak, saat ini SiniBook belum punya media sosial resmi.
-info.sosmed;ada facebook nggak;Belum ada Kak, SiniBook belum memiliki akun media sosial resmi saat ini.
+booking.reschedule;cara ganti tanggal booking;Bisa banget Kak! Untuk perubahan jadwal (*reschedule*), Kakak bisa mengajukan permohonan melalui menu **Riwayat Booking** di akun Kakak, atau langsung koordinasi via WhatsApp resepsionis di **+62 21 555 7890** (perubahan tanggal menyesuaikan ketersediaan kamar pada tanggal baru ya). 📅✨
+booking.reschedule;mau reschedule jadwal nginep;Untuk reschedule tanggal menginap, Kakak bisa cek menu **Riwayat Booking** atau langsung hubungi WhatsApp resepsionis di **+62 21 555 7890**. 📅
+booking.reschedule;bisa ganti tanggal check in gak;Bisa Kak! Silakan ajukan ganti tanggal di menu **Riwayat Booking** atau konfirmasi via WhatsApp **+62 21 555 7890**.
+booking.reschedule;bisa undur jadwal booking;Bisa Kak, pengunduran atau perubahan jadwal bisa dikoordinasikan langsung ke WhatsApp resepsionis kami di **+62 21 555 7890**.
+booking.reschedule;mau ubah tanggal nginep gimana;Pengajuan ubah tanggal bisa dilakukan di menu **Riwayat Booking** atau chat WhatsApp resepsionis di **+62 21 555 7890**.
 
 
-jadwal.checkin;jam chekin jam berapa;Waktu check-in standar kami dimulai pukul 14:00 WIB ya, Kak.
-jadwal.checkin;kapan bisa masuk kamar;Untuk masuk kamar atau check-in bisa mulai dari pukul 14:00 WIB, Kak.
-jadwal.checkin;check in jam brp;Check-in di SiniBook dibuka mulai jam 14:00 WIB ya Kak.
-jadwal.checkin;waktu check in;Kakak bisa mulai proses check-in dari jam 2 siang (14:00 WIB) ya.
-jadwal.checkin;bisa masuk kamar jam brp;Bisa mulai masuk kamar dari jam 14:00 WIB ya Kak.
-jadwal.checkin;checkin jam brp si;Jadwal check-in kami terjadwal mulai pukul 14:00 WIB ya, Kak.
-jadwal.checkin;kalo check-in;Untuk check-in di SiniBook mulai jam 14:00 WIB ya Kak.
+kamar.cari;rekomendasi kamar;-
+kamar.cari;rekomendasi kamar hotel;-
+kamar.cari;minta rekomendasi kamar;-
+kamar.cari;rekomen kamar;-
+kamar.cari;rekomendasi;-
+kamar.cari;rekomen kamar dong;-
+kamar.cari;rekomendasiin kamar dong min;-
+kamar.cari;cari kamar;-
+kamar.cari;carikan kamar;-
+kamar.cari;mau cari kamar;-
+kamar.cari;butuh kamar;-
+kamar.cari;saran kamar;-
+kamar.cari;pilihan kamar;-
+kamar.cari;kamar yang bagus apa ya;-
+kamar.cari;gua butuh kamar yg bagus;-
+kamar.cari;kamar yang enak buat nginep;-
+kamar.cari;bingung mau pilih kamar yang mana;-
+kamar.cari;pilihan kamar yang recommended;-
+kamar.cari;saran kamar yang pas;-
+kamar.cari;kamar paling murah apa;-
+kamar.cari;kamar yang paling hemat;-
+kamar.cari;ada kamar budget gak;-
+kamar.cari;kamar low budget;-
+kamar.cari;kamar lowbudget;-
+kamar.cari;kamar yang murmer apa;-
+kamar.cari;kamar ramah kantong;-
+kamar.cari;kamar kantong pelajar;-
+kamar.cari;kamar murah meriah;-
+kamar.cari;kamar hemat budget;-
+kamar.cari;kamar kelas menengah yang mana;-
+kamar.cari;kamar yang tengah tengah mana;-
+kamar.cari;rekomendasi kamar suite;-
+kamar.cari;kamar yang sedang sedang aja;-
+kamar.cari;kamar semi mewah;-
+kamar.cari;kamar paling mewah apa;-
+kamar.cari;kamar kelas sultan yang mana;-
+kamar.cari;kamar buat sultan;-
+kamar.cari;kamar vvip;-
+kamar.cari;kamar presidential suite ada gak;-
+kamar.cari;kamar buat keluarga ada gak;-
+kamar.cari;kamar bawa anak kecil;-
+kamar.cari;kamar buat honeymoon apa ya;-
+kamar.cari;kamar romantis untuk pasangan;-
+kamar.cari;kamar buat 3 orang;-
+kamar.cari;kamar untuk 4 orang;-
+kamar.cari;kamar bertiga;-
+kamar.cari;kamar berdua;-
+kamar.cari;kamar kapasitas 2 orang;-
+kamar.cari;kamar muat berapa orang;-
+kamar.cari;ada tipe kamar apa aja;-
+kamar.cari;kamar yang tersedia apa aja;-
+kamar.cari;lihat daftar kamar hotel;-
+
+kamar.tingkatan_level;level kamar di sinibook apa aja;-
+kamar.tingkatan_level;kasta kamar di sini apa aja;-
+kamar.tingkatan_level;tingkatan tipe kamar di sinibook;-
+kamar.tingkatan_level;urutan tipe kamar dari murah ke mahal;-
+kamar.tingkatan_level;urutan kelas kamar;-
+kamar.tingkatan_level;perbedaan kasta dan tingkatan kamar;-
+kamar.tingkatan_level;tipe kamar terendah sampai tertinggi;-
+kamar.tingkatan_level;hierarki kamar di sini;-
+kamar.tingkatan_level;ada berapa level kamar;-
+kamar.tingkatan_level;penjelasan kelas kamar;-
+kamar.tingkatan_level;kasta kamar;-
+kamar.tingkatan_level;level kamar;-
+kamar.tingkatan_level;kelas kamar apa aja;-
+kamar.tingkatan_level;tingkatan kamar hotel;-
+
+kamar.detail_info;info kamar standard;-
+kamar.detail_info;detail kamar presidential suite;-
+kamar.detail_info;tentang kamar suite;-
+kamar.detail_info;spesifikasi kamar standard;-
+kamar.detail_info;penjelasan detail kamar standard;-
+kamar.detail_info;penjelasan detail kamar suite;-
+kamar.detail_info;detail kamar suite;-
+kamar.detail_info;detail kamar standard;-
 
 
-jadwal.checkout;check out jam berapa;Waktu check-out maksimal pukul 12:00 WIB siang ya, Kak.
-jadwal.checkout;paling telat keluar jam brp;Batas akhir check-out di SiniBook adalah jam 12:00 WIB siang, Kak.
-jadwal.checkout;jam berapa harus check out;Untuk waktu keluar atau check-out paling lambat pukul 12:00 WIB ya Kak.
-jadwal.checkout;batas check out;Check-out dijadwalkan maksimal pukul 12:00 WIB siang ya, Kak.
-jadwal.checkout;cek out jam brp;Kakak bisa check-out paling lambat sebelum atau tepat jam 12:00 WIB siang ya.
-jadwal.checkout;kalo out;Batas waktu check-out kamar sampai jam 12:00 WIB siang ya, Kak.
-jadwal.checkout;cekout;Waktu maksimal untuk check-out adalah pukul 12:00 WIB siang ya Kak.
 
-jadwal.keduanya;jam check in dan check out kapan;Untuk jadwal di SiniBook: Check-in mulai jam 14:00 WIB dan Check-out maksimal jam 12:00 WIB ya, Kak.
-jadwal.keduanya;jadwal check in out;Untuk jadwal di SiniBook: Check-in mulai jam 14:00 WIB dan Check-out maksimal jam 12:00 WIB ya, Kak.
-jadwal.keduanya;aturan jam masuk dan keluar;Untuk jadwal di SiniBook: Check-in mulai jam 14:00 WIB dan Check-out maksimal jam 12:00 WIB ya, Kak.
-jadwal.keduanya;waktu in out;Untuk jadwal di SiniBook: Check-in mulai jam 14:00 WIB dan Check-out maksimal jam 12:00 WIB ya, Kak.
-jadwal.keduanya;masuk keluarnya jamnya jam brpa;-
-jadwal.keduanya;msk kluar nya jam brp;-
-jadwal.keduanya;masuk keluarnya jamnya jam brp;-
+kamar.detail_harga;harga kamar berapa;-
+kamar.detail_harga;berapa tarif permalam;-
+kamar.detail_harga;harga presidential suite berapa;-
+kamar.detail_harga;berapa harga kamar suite;-
+kamar.detail_harga;harga kamar standard berapa;-
+kamar.detail_harga;harga standard;-
+kamar.detail_harga;harga suite;-
+kamar.detail_harga;harga presidential;-
+kamar.detail_harga;berapa biaya standard;-
+kamar.detail_harga;harganya berapa;-
+kamar.detail_harga;berapa harganya;-
+kamar.detail_harga;tarifnya berapa;-
 
+kamar.detail_fasilitas;fasilitas kamar ada apa aja;-
+kamar.detail_fasilitas;fasilitas kamar standard apa aja;-
+kamar.detail_fasilitas;kamar ada ac dan tv gak;-
+kamar.detail_fasilitas;fasilitas kamar suite apa aja;-
+kamar.detail_fasilitas;fasilitas standard;-
+kamar.detail_fasilitas;fasilitas suite;-
+kamar.detail_fasilitas;fasilitas presidential suite;-
+kamar.detail_fasilitas;fasilitasnya apa aja;-
+kamar.detail_fasilitas;ada fasilitas apa aja;-
+kamar.detail_fasilitas;kelengkapan kamar apa aja;-
 
-jadwal.early_checkin;bisa early check in gak;Bisa mengajukan early check-in tergantung ketersediaan kamar ya Kak. Silakan hubungi admin kami di +62 21 555 7890 untuk konfirmasi.
-jadwal.early_checkin;bisa masuk sebelum jam 2 siang;Bisa mengajukan early check-in tergantung ketersediaan kamar ya Kak. Silakan hubungi admin kami di +62 21 555 7890 untuk konfirmasi.
-jadwal.early_checkin;kalo datang pagi bisa langsung masuk;Bisa mengajukan early check-in tergantung ketersediaan kamar ya Kak. Silakan hubungi admin kami di +62 21 555 7890 untuk konfirmasi.
-jadwal.early_checkin;early checkin;Bisa mengajukan early check-in tergantung ketersediaan kamar ya Kak. Silakan hubungi admin kami di +62 21 555 7890 untuk konfirmasi.
-jadwal.early_checkin;kalo nyampe hotel jam 10 pagi bisa masuk kamar ga;Bisa mengajukan early check-in tergantung ketersediaan kamar ya Kak. Silakan hubungi admin kami di +62 21 555 7890 untuk konfirmasi.
-jadwal.early_checkin;check in lebih awal bisa ga;Bisa mengajukan early check-in tergantung ketersediaan kamar ya Kak. Silakan hubungi admin kami di +62 21 555 7890 untuk konfirmasi.
-jadwal.early_checkin;pengen masuk kamar lebih cepet;Bisa mengajukan early check-in tergantung ketersediaan kamar ya Kak. Silakan hubungi admin kami di +62 21 555 7890 untuk konfirmasi.
-jadwal.early_checkin;bisa cekin pagi gak;Bisa mengajukan early check-in tergantung ketersediaan kamar ya Kak. Silakan hubungi admin kami di +62 21 555 7890 untuk konfirmasi.
-jadwal.early_checkin;kalo check in jam 12 siang bisa;Bisa mengajukan early check-in tergantung ketersediaan kamar ya Kak. Silakan hubungi admin kami di +62 21 555 7890 untuk konfirmasi.
-jadwal.early_checkin;early cekin bayar lagi ga;Bisa mengajukan early check-in tergantung ketersediaan kamar ya Kak. Silakan hubungi admin kami di +62 21 555 7890 untuk konfirmasi.
+kamar.ketersediaan;kamar masih kosong gak sekarang;Untuk ketersediaan tanggal dan slot kamar real-time, Kakak bisa langsung cek di Halaman Kamar pada aplikasi ya! 🏨
+kamar.ketersediaan;kamar apa yang masih available;Ketersediaan kamar langsung terhubung real-time di halaman katalog kamar kami Kak.
 
-jadwal.late_checkout;bisa late check out gak;Untuk late check-out bisa dikoordinasikan langsung dengan resepsionis ya Kak, tergantung jadwal kamar berikutnya.
-jadwal.late_checkout;kalo keluar lewat jam 12 kena denda ga;Untuk late check-out bisa dikoordinasikan langsung dengan resepsionis ya Kak, tergantung jadwal kamar berikutnya.
-jadwal.late_checkout;bisa keluar lebih lambat;Untuk late check-out bisa dikoordinasikan langsung dengan resepsionis ya Kak, tergantung jadwal kamar berikutnya.
-jadwal.late_checkout;late checkout;Untuk late check-out bisa dikoordinasikan langsung dengan resepsionis ya Kak, tergantung jadwal kamar berikutnya.
-jadwal.late_checkout;kalo telat out;Untuk late check-out bisa dikoordinasikan langsung dengan resepsionis ya Kak, tergantung jadwal kamar berikutnya.
-jadwal.late_checkout;kalo cekout jam 2 siang bisa ga;Untuk late check-out bisa dikoordinasikan langsung dengan resepsionis ya Kak, tergantung jadwal kamar berikutnya.
-jadwal.late_checkout;pengen keluar jam 3 sore;Untuk late check-out bisa dikoordinasikan langsung dengan resepsionis ya Kak, tergantung jadwal kamar berikutnya.
-jadwal.late_checkout;ada biaya late check out brp;Untuk late check-out bisa dikoordinasikan langsung dengan resepsionis ya Kak, tergantung jadwal kamar berikutnya.
-jadwal.late_checkout;bisa extend jam check out;Untuk late check-out bisa dikoordinasikan langsung dengan resepsionis ya Kak, tergantung jadwal kamar berikutnya.
-jadwal.late_checkout;kalo checkout telat denda ga;Untuk late check-out bisa dikoordinasikan langsung dengan resepsionis ya Kak, tergantung jadwal kamar berikutnya.
+None;mau beli nasi goreng di mana;Maaf Kak, Tini cuma asisten virtual khusus informasi dan reservasi hotel SiniBook ya. Ada yang bisa Tini bantu seputar kamar atau hotel? 😊
+None;cuaca hari ini mendung gak ya;Maaf Kak, Tini fokus melayani seputar hotel SiniBook. Mau Tini bantu carikan rekomendasi kamar yang nyaman?
+None;bantuin aku ngoding javascript;Wah, Tini khusus dilatih untuk membantu Kakak seputar hotel SiniBook nih. Ada info kamar yang mau ditanyakan?
+None;resep martabak manis;Maaf Kak, Tini bertugas membantu info kamar dan reservasi di SiniBook. Mau cek jadwal check-in atau promo kamar?
+None;hotel sebelah lebih murah gak sih;Tini hanya menyediakan info seputar fasilitas dan layanan terbaik di SiniBook ya Kak. Kami punya kamar hemat sampai kelas presidential mewah!
+None;beli pulsa di mana ya;Maaf Kak, Tini cuma melayani kebutuhan informasi hotel SiniBook ya.
 
-jadwal.late_checkin;kalo check in tengah malam bisa;Bisa Kak! Resepsionis kami 24 jam. Jangan lupa infokan jam kedatangannya ke admin di +62 21 555 7890 ya biar kamar disiapkan.
-jadwal.late_checkin;late check in;Tentu bisa Kak. Mohon kabari estimasi jam kedatangan Kakak ke nomor +62 21 555 7890 agar tim kami siap menyambut ya.
-jadwal.late_checkin;kalo baru sampe hotel jam 11 malem gmn;Aman Kak! Kami melayani check-in 24 jam. Konfirmasi aja jam kedatangannya ke admin (+62 21 555 7890) ya Kak.
-jadwal.late_checkin;bisa cekin telat ga;Bisa banget Kak. Tinggal WhatsApp/telepon admin di +62 21 555 7890 buat infoin jam Kakak sampai di hotel.
-jadwal.late_checkin;batas maksimal check in jam berapa;-
-jadwal.late_checkin;kalo datang malem kamarnya angus ga;-
-jadwal.late_checkin;check in jam pagi bisa;-
-jadwal.late_checkin;bisa masuk kamar malam hari;-
-jadwal.late_checkin;kalo telat check in gimana;-
-jadwal.late_checkin;late checkin konfirmasi ke siapa;-
-jadwal.late_checkin;gw ada urusan, jadinya telat dari jam 14 atau 2, gak masalah kan?;-
-jadwal.late_checkin;tlat msk;-
-jadwal.late_checkin;tlt msuk kmar;-
-
-
-jadwal.early_checkout;kalo check out subuh bisa;Bisa banget Kak! Proses check-out bisa dilakukan kapan saja, resepsionis kami berjaga 24 jam.
-jadwal.early_checkout;bisa check out pagi buta ga;Bisa banget Kak! Proses check-out bisa dilakukan kapan saja, resepsionis kami berjaga 24 jam.
-jadwal.early_checkout;early check out;Bisa banget Kak! Proses check-out bisa dilakukan kapan saja, resepsionis kami berjaga 24 jam.
-jadwal.early_checkout;kalo pesawat pagi cekout jam 4 subuh gmn;Bisa banget Kak! Proses check-out bisa dilakukan kapan saja, resepsionis kami berjaga 24 jam.
-jadwal.early_checkout;mau keluar hotel jam 5 pagi bisa;Bisa banget Kak! Proses check-out bisa dilakukan kapan saja, resepsionis kami berjaga 24 jam.
-jadwal.early_checkout;cara check out subuh;Bisa banget Kak! Proses check-out bisa dilakukan kapan saja, resepsionis kami berjaga 24 jam.
-jadwal.early_checkout;kalo early checkout balikin kunci kmn;Bisa banget Kak! Proses check-out bisa dilakukan kapan saja, resepsionis kami berjaga 24 jam.
-jadwal.early_checkout;keluar kamar sebelum subuh bisa ga;Bisa banget Kak! Proses check-out bisa dilakukan kapan saja, resepsionis kami berjaga 24 jam.
-jadwal.early_checkout;bisa cekout lebih cepet;Bisa banget Kak! Proses check-out bisa dilakukan kapan saja, resepsionis kami berjaga 24 jam.
-jadwal.early_checkout;mau check out jam 6 pagi;Bisa banget Kak! Proses check-out bisa dilakukan kapan saja, resepsionis kami berjaga 24 jam.
-
-
-info.fasilitas_umum;fasilitas hotel apa aja;Hotel kami dilengkapi keamanan CCTV 24 jam, lokasi strategis di pusat kota, dan staf yang ramah serta profesional, Kak.
-info.fasilitas_umum;ada kolam renang gak;Untuk detail fasilitas umum terbaru, boleh cek juga di halaman fasilitas aplikasi ya Kak, tapi hotel kami mengutamakan kenyamanan dan keamanan 24 jam dengan CCTV.
-info.keunggulan;kenapa harus pilih hotel ini;Karena SiniBook punya lokasi sangat strategis di pusat kota, kamar nyaman dan aman, kebersihan terjamin, staf ramah dan profesional, serta keamanan 24 jam dengan CCTV, Kak.
-info.keunggulan;kelebihan hotel ini apa;Beberapa keunggulan kami: lokasi strategis, kamar nyaman, kebersihan terjamin, dan keamanan 24 jam, Kak.
-info.keunggulan;keunggulan nya apa;Keunggulan kami di banding Hotel Lain Ialah Mengutamakan Kenyamanan dan Keamanan Pelanggan Kami.
-info.keunggulan;alasan apa yg ngebuat aku milih hotel mu?;Karena Kita Memiliki Beberapa Keunggulan, Beberapa keunggulan kami: lokasi strategis, kamar nyaman, kebersihan terjamin, dan keamanan 24 jam, Kak.
-
-info.kebijakan;boleh bawa hewan peliharaan gak;Untuk kebijakan hewan peliharaan, Kakak bisa konfirmasi langsung ke admin kami ya di +62 21 555 7890.
-info.kebijakan;kalau mau cancel gimana;Untuk pembatalan atau reschedule, Kakak bisa cek langsung di menu booking aplikasi, atau hubungi admin kami.
-
-pertanyaan.spesifik.kamar;saya butuh rekomendasi kamar;Boleh banget, Kak! Biar Tini kasih rekomendasi yang pas, Kakak lagi cari kamar yang hemat, yang mewah, atau mungkin buat liburan bareng pasangan nih?
-pertanyaan.spesifik.kamar;ada rekomendasi kamar ga;Dengan senang hati, Kak! Kakak butuh kamar yang murah meriah, yang paling premium, atau buat menginap bareng pasangan? Kasih tahu Tini ya.
-pertanyaan.spesifik.kamar;bingung milih kamar nih, enaknya yg mana;Tini siap bantu! Kakak lebih suka kamar dengan harga budget, suite mewah, atau kamar romantis untuk berdua? Ketik aja kebutuhannya ya Kak.
-pertanyaan.spesifik.kamar;kamar yang bagus apa ya;Tentu, Kak! Biar lebih sesuai, Kakak butuh rekomendasi kamar yang hemat, mewah eksklusif, atau khusus untuk pasangan? Coba ceritain sedikit ke Tini.
-pertanyaan.spesifik.kamar;minta saran dong kamar yang enak;Siap Kak! Kakak prefer kamar tipe budget, kelas sultan yang mewah, atau butuh yang suasananya pas buat pasangan?
-pertanyaan.spesifik.kamar;pilihin kamar dong buat nginep;Bisa dong! Kira-kira Kakak lagi cari tipe yang ekonomis, paling mewah, atau untuk staycation bareng pasangan nih, Kak?
-pertanyaan.spesifik.kamar;rekomen kamar dong;Tini punya banyak pilihan nih. Kakak mau cari yang harganya paling hemat, fasilitas super mewah, atau kamar yang cocok buat pasangan?
-pertanyaan.spesifik.kamar;kamar yang paling recommended yang mana;Boleh Kak! Kasih tahu Tini ya, Kakak butuh yang hemat di kantong, yang paling mewah, atau untuk liburan berdua bareng pasangan?
-pertanyaan.spesifik.kamar;saranin kamar buat saya dong min;Tentu saja! Biar Tini nggak salah pilih, Kakak cari kamar budget, premium mewah, atau kamar romantis buat berdua?
-pertanyaan.spesifik.kamar;ada saran kamar yg pas ga;Siap bantu, Kak! Kakak mau kamar dengan harga terjangkau, kamar paling eksklusif, atau untuk nginep bareng pasangan? Ketik aja kriterianya ya!
-
-kamar.termurah;kamar paling murah apa;-
-kamar.termurah;yang paling hemat kamar apa;-
-kamar.termurah;ada kamar budget gak;-
-kamar.termahal_mewah;kamar paling mewah apa;-
-kamar.termahal_mewah;kamar terbaik kalian apa;-
-kamar.termahal_mewah;yang paling premium kamar apa;-
-kamar.rekomendasi_umum;rekomendasiin kamar dong;-
-kamar.rekomendasi_umum;kamar apa yang bagus;-
-kamar.rekomendasi_umum;enaknya pilih kamar yang mana;-
-kamar.untuk_keluarga;kamar buat keluarga ada gak;-
-kamar.untuk_keluarga;rekomendasi kamar buat liburan sama anak;-
-kamar.untuk_keluarga;kamar yang muat 4 orang apa;-
-kamar.untuk_honeymoon;kamar buat honeymoon apa;-
-kamar.untuk_honeymoon;rekomendasi kamar romantis;-
-kamar.untuk_honeymoon;kamar cocok buat bulan madu;-
-kamar.untuk_bisnis;kamar buat kerja ada gak;-
-kamar.untuk_bisnis;rekomendasi kamar buat business trip;-
-kamar.untuk_solo;kamar buat sendirian ada gak;-
-kamar.untuk_solo;kamar single yang murah apa;-
-kamar.daftar_semua_tipe;ada tipe kamar apa aja;-
-kamar.daftar_semua_tipe;kamar yang tersedia apa aja sih;-
-kamar.harga;harga kamar deluxe berapa;-
-kamar.harga;berapa harga executive suite;-
-kamar.harga;harga permalam kamar standard;-
-kamar.fasilitas;fasilitas kamar deluxe apa aja;-
-kamar.fasilitas;kamar executive suite ada tv gak;-
-kamar.ketersediaan;kamar deluxe masih ada gak;Maaf Kak, Untuk Jadwal Dan Pembookingan Kamar, Tini kurang tahu, Kakak Bisa cek di Halaman Kamar Ya, supaya datanya real time
-kamar.ketersediaan;ada kamar kosong gak sekarang;Maaf Kak, Untuk Jadwal Dan Pembookingan Kamar, Tini kurang tahu, Kakak Bisa cek di Halaman Kamar Ya, supaya datanya real time
-kamar.ketersediaan;kamar apa yang masih available;Maaf Kak, Untuk Jadwal Dan Pembookingan Kamar, Tini kurang tahu, Kakak Bisa cek di Halaman Kamar Ya, supaya datanya real time
-
-booking.cara;gimana cara booking;Untuk booking, Kakak bisa pilih kamar yang diinginkan lalu lanjut ke proses reservasi langsung di aplikasi kami ya.
-booking.cara;cara pesan kamar gimana;Kakak tinggal pilih kamar di aplikasi, lalu ikuti langkah reservasi yang tersedia di sana.
-
-booking.pembayaran;bisa bayar cash gak;Bisa Kak, kami menerima GOPAY, QRIS, transfer bank, kartu kredit, maupun cash saat booking di aplikasi.
-pembayaran.cash;cash bayar di mana?;Pembayaran bisa di lakukan di Petugas Administrasi SiniBook ya kak, di Lobby Hotel.
-booking.pembayaran;bayar pakai apa aja bisa;Pembayaran bisa via GOPAY, QRIS, Bank Transfer (BCA, Mandiri, BNI), Credit Card, atau Cash, dilakukan saat proses booking di aplikasi ya Kak.
-booking.pembayaran;bisa bayar cash gak;Bisa Kak, kami menerima GOPAY, QRIS, transfer bank, kartu kredit, maupun cash saat booking di aplikasi.
-pembayaran.transfer;terima transfer bank apa aja;Kami menerima transfer BCA, Mandiri, dan BNI, Kak.
-pembayaran.transfer;buat transfer gimana?;Kami menerima transfer BCA, Mandiri, dan BNI, Kak.
-
-booking.ubah_batal;mau reschedule gimana caranya;Untuk reschedule atau pembatalan, silakan cek di menu booking aplikasi ya Kak, atau hubungi admin kami.
-booking.cek_jadwal;di tanggal masih kosong gak;Untuk cek ketersediaan tanggal spesifik, Kakak bisa langsung cek di halaman kamar pada aplikasi ya, supaya datanya real time.
-komplain.umum;saya kecewa sama pelayanan kemarin;Mohon maaf atas ketidaknyamanannya Kak. Boleh hubungi admin kami di +62 21 555 7890 atau info@sinibookhotel.com supaya bisa ditindaklanjuti langsung.
-komplain.umum;kamar kemarin kotor banget;Mohon maaf Kak atas pengalamannya. Silakan sampaikan keluhan ini ke admin kami di +62 21 555 7890 agar segera ditangani.
-butuh.bantuan_lanjut;bisa ngomong sama orang beneran gak;Tentu Kak, Kakak bisa hubungi admin kami di +62 21 555 7890 atau email info@sinibookhotel.com.
-luar_konteks.umum;eh btw menurut kamu cuaca hari ini gimana;Maaf Kak, Tini cuma bisa bantu seputar info SiniBook ya. Ada yang mau ditanyakan soal kamar atau hotel?
-luar_konteks.umum;bantuin aku ngoding dong;Maaf Kak, Tini khusus bantu info seputar SiniBook aja ya. Ada yang bisa dibantu soal hotel?
-luar_konteks.hotel_lain;hotel sebelah lebih murah gak sih;Maaf Kak, Tini cuma bisa kasih info seputar SiniBook ya.
-
-
-None;mau beli nasi goreng;Maaf Kak, Tini khusus asisten informasi hotel SiniBook ya.
-None;cuaca hari ini mendung gak;Maaf Kak, Tini cuma melayani info seputar SiniBook ya.

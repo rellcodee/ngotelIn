@@ -28,7 +28,7 @@ export default function AiAssistantModal() {
   const INITIAL_SUGGESTIONS = [
     "Rekomendasi kamar",
     "Jam Check-in & Out",
-    "Info Sarapan & Parkir",
+    "Info Sarapan",
     "Lokasi & Kontak",
   ];
 
