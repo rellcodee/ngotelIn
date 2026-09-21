@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -41,7 +41,6 @@ interface BookingItem {
   created_at: string;
 }
 
-
 // Model Prisma: `notifications`
 interface NotificationItem {
   id: string;
@@ -63,8 +62,6 @@ interface ReviewItem {
   created_at: string;
 }
 
-
-
 const MOCK_REVIEWS: ReviewItem[] = [
   {
     id: "rev-01",
@@ -77,7 +74,8 @@ const MOCK_REVIEWS: ReviewItem[] = [
   },
 ];
 
-export default function UserDashboardPage() {
+// KOMPONEN ISI (Logika dan Tampilan Utama)
+function UserDashboardContent() {
   const router = useRouter();
 
   // State Tab Navigasi Active
@@ -1019,8 +1017,6 @@ export default function UserDashboardPage() {
                 </div>
               )}
 
-
-
               {/* TAB 3: PUSAT NOTIFIKASI (NOTIFICATIONS) */}
               {activeTab === "notifications" && (
                 <div className="space-y-6">
@@ -1069,19 +1065,17 @@ export default function UserDashboardPage() {
                       {notifications.map((n) => (
                         <div
                           key={n.id}
-                          className={`flex items-start justify-between p-4.5 rounded-2xl border transition-all duration-200 ${
-                            n.is_read
+                          className={`flex items-start justify-between p-4.5 rounded-2xl border transition-all duration-200 ${n.is_read
                               ? "bg-white border-slate-200/80 text-slate-600 shadow-sm"
                               : "bg-gradient-to-r from-blue-50/80 via-indigo-50/40 to-white border-blue-200/90 text-slate-900 shadow-[0_4px_16px_rgba(29,78,216,0.08)]"
-                          }`}
+                            }`}
                         >
                           <div className="flex items-start gap-3.5">
                             <div
-                              className={`p-2.5 rounded-xl mt-0.5 transition-all ${
-                                n.is_read
+                              className={`p-2.5 rounded-xl mt-0.5 transition-all ${n.is_read
                                   ? "bg-slate-100 text-slate-400"
                                   : "bg-gradient-to-br from-[#001a52] to-[#1D4ED8] text-white shadow-md shadow-blue-900/20 border border-blue-400/30"
-                              }`}
+                                }`}
                             >
                               <span className="material-symbols-outlined text-[18px]">
                                 notifications
@@ -1288,11 +1282,10 @@ export default function UserDashboardPage() {
                       className="p-1 transition-transform hover:scale-125 active:scale-95 focus:outline-none"
                     >
                       <span
-                        className={`material-symbols-outlined text-[32px] transition-colors ${
-                          star <= reviewRating
+                        className={`material-symbols-outlined text-[32px] transition-colors ${star <= reviewRating
                             ? "text-amber-400 drop-shadow-[0_2px_6px_rgba(245,158,11,0.5)]"
                             : "text-slate-300"
-                        }`}
+                          }`}
                       >
                         star
                       </span>
@@ -1338,5 +1331,38 @@ export default function UserDashboardPage() {
       {/* Footer */}
       <Footer />
     </div>
+  );
+}
+
+// BUNGKUSAN UTAMA (Solusi Error Vercel Suspense)
+export default function UserDashboardPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+          <div className="flex items-center gap-3 text-[#1D4ED8] font-semibold">
+            <svg className="animate-spin h-6 w-6" viewBox="0 0 24 24">
+              <circle
+                className="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                strokeWidth="4"
+                fill="none"
+              />
+              <path
+                className="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+              />
+            </svg>
+            <span>Memuat Dashboard Member...</span>
+          </div>
+        </div>
+      }
+    >
+      <UserDashboardContent />
+    </Suspense>
   );
 }
