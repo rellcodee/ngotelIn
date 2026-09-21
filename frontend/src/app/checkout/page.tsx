@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -8,11 +8,13 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Header from "../landing-pages/Header";
 import Footer from "../landing-pages/Footer";
 
-export default function CheckoutPage() {
+// KOMPONEN ISI (Logic dipindah ke sini)
+function CheckoutContent() {
   const router = useRouter();
   // Baca roomId dari URL
   const searchParams = useSearchParams();
   const roomId = searchParams.get("roomId");
+
   // State buat nyimpen data kamar asli dari API
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [roomData, setRoomData] = useState<Record<string, any> | null>(null);
@@ -71,7 +73,7 @@ export default function CheckoutPage() {
       setIsLoadingRoom(false);
       return;
     }
-    
+
     fetch(`http://localhost:3001/resources/${roomId}`)
       .then((res) => res.json())
       .then((data) => {
@@ -91,7 +93,7 @@ export default function CheckoutPage() {
     1,
     Math.ceil(
       (new Date(checkOut).getTime() - new Date(checkIn).getTime()) /
-        (1000 * 3600 * 24),
+      (1000 * 3600 * 24),
     ) || 2,
   );
 
@@ -99,14 +101,14 @@ export default function CheckoutPage() {
   const serviceFee = 25000;
   const totalPrice = subtotal + serviceFee;
 
-    const handleProcessCheckout = async (e: React.FormEvent) => {
+  const handleProcessCheckout = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
     try {
       // Ambil token dari local storage buat otentikasi
       const token = localStorage.getItem("token");
-      
+
       // Tambahin jam check-in & check-out standar hotel (14:00 dan 12:00) biar backend lu gak nolak
       const formattedCheckIn = `${checkIn}T14:00:00.000Z`;
       const formattedCheckOut = `${checkOut}T12:00:00.000Z`;
@@ -480,5 +482,14 @@ export default function CheckoutPage() {
 
       <Footer />
     </div>
+  );
+}
+
+// WRAPPER (Yang di-export default)
+export default function CheckoutPage() {
+  return (
+    <Suspense fallback={<div className="p-8 text-center">Memuat...</div>}>
+      <CheckoutContent />
+    </Suspense>
   );
 }
